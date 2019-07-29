@@ -17,7 +17,7 @@ const xerror = require('koa-xerror')
 const xauth = require('koa-xauth')
 const xlog = require('koa-xlog')
 
-// 德州应用服务
+// 应用服务
 const app = new Koa()
 app.use(mount(staticRoot, staticServer(__dirname + '/static')))
 app.use(mount('/', cors()))
