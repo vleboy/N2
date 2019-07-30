@@ -15,7 +15,8 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/agent/create"
+            "/agent/create",
+            "/agent/update"
         ],
         "role": {
             "admin": [
@@ -27,7 +28,7 @@
         "errStatus": 401
     },
     "server": {
-        "port": 80,
+        "port": 2000,
         "staticRoot": "/n2/",
         "xnosqlRoot": "/xnosql",
         "controllerRoot": "/xserver",
