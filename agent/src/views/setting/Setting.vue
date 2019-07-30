@@ -1,0 +1,55 @@
+<template>
+  <div class="setting">
+    <van-nav-bar
+      title="设置"
+  />
+    <div class="box">
+      <van-cell title="个人信息" is-link size="large" to="personal" />
+      <van-cell title="修改密码" is-link size="large" to="changePwd"/>
+      <van-cell title="佣金模拟器" is-link size="large" to="simulator"/>
+      <van-cell title="关于亚博" is-link size="large"/>
+      <van-button type="info" round size="large">退出登录</van-button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'setting',
+  data() {
+    return {
+
+    }
+  }  
+}
+</script>
+
+<style lang="less" scoped>
+  .setting {
+    color: #515151;
+    /*顶部导航*/
+  .van-nav-bar {
+    height: 50px;
+    line-height: 50px;
+    .van-icon {
+      color: #505050;
+      font-size: 1.2rem; 
+    }
+    .van-nav-bar__title {
+      color: #505050;
+      font-size: 1.2rem; 
+    }
+  }
+    .box {
+      padding: .2rem;
+      .van-cell {
+        margin-bottom:5px;
+      }
+      .van-button {
+        margin-top: 1rem;
+        padding: 0 40px;
+      }
+    }
+  }
+</style>
+
