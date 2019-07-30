@@ -19,6 +19,7 @@
             "/agent/update",
             "/agent/delete",
             "/agent/query",
+            "/agent/page",
             "/agent/get"
         ],
         "role": {
