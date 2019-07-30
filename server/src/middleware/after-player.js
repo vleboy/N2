@@ -16,21 +16,17 @@ router.post('/player/create', async (ctx, next) => {
     ctx.body = { id: inparam.id, createAt: inparam.createAt }
 })
 
-/**
- * 更新玩家
- */
-router.post('/player/update', async (ctx, next) => {
-    let inparam = ctx.request.body
-    if (inparam.username) {
-        let token = jwt.sign({
-            role: 'player',
-            username: inparam.username,
-            // exp: Math.floor(Date.now() / 1000) + 86400 * 30
-        }, config.auth.secret)
-        ctx.body = { username: inparam.username, token }
-    } else {
-        ctx.body = { err: false }
-    }
 
+/**
+ * 查询玩家
+ */
+router.get('/agent/query', async (ctx, next) => {
+    let res = _.orderBy(ctx.body.res, 'createAt', 'desc')
+    let playerList = []
+    for (let item of res) {
+        playerList.push(_.pick(item, ['playerId', 'playerName', 'playerNick', 'id', 'status', 'createAt']))
+    }
+    ctx.body = playerList
 })
+
 module.exports = router

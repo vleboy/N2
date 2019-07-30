@@ -19,7 +19,7 @@ router.post('/agent/create', async (ctx, next) => {
     if (!inparam.userName || !inparam.userPwd || !inparam.userNick) {
         ctx.body = { err: true, res: '请检查入参' }
     } else if (await mongodb.findOne('agent', { $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
-        ctx.body = { err: true, res: '帐号已存在' }
+        ctx.body = { err: true, res: '帐号/昵称已存在' }
     } else {
         // 查询上级代理
         let parent = inparam.parentId ? await mongodb.findOne('agent', { id: inparam.parentId }) : {}
@@ -57,7 +57,6 @@ router.post('/agent/update', async (ctx, next) => {
     } else if (!await mongodb.findOne('agent', { id: inparam.id })) {
         ctx.body = { err: true, res: '代理不存在' }
     } else {
-        inparam.status = inparam.status == 0 ? 0 : 1
         return next()
     }
 })

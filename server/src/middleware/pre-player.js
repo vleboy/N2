@@ -42,17 +42,25 @@ router.post('/player/create', async (ctx, next) => {
 router.post('/player/update', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (!inparam.password) {
-        delete inparam.password
-    }
-    if (!inparam.username) {
-        delete inparam.username
-        return next()
-    } else if (await mongodb.findOne('player', { username: inparam.username })) {
-        ctx.body = { err: true, res: '帐号已存在' }
+    if (inparam.playerPwd && (inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20)) {
+        ctx.body = { err: true, res: '密码长度不合法' }
+    } else if (inparam.playerNick && (inparam.playerNick.length < 3 || inparam.playerNick.length > 20)) {
+        ctx.body = { err: true, res: '昵称长度不合法' }
+    } else if (!await mongodb.findOne('player', { id: inparam.id })) {
+        ctx.body = { err: true, res: '玩家不存在' }
     } else {
         return next()
     }
+})
+
+/**
+ * 查询玩家
+ */
+router.get('/player/query', async (ctx, next) => {
+    let inparam = ctx.request.query
+    let mongodb = global.mongodb
+
+    return next()
 })
 
 module.exports = router
