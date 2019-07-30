@@ -15,7 +15,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 router.post('/agent/create', async (ctx, next) => {
     let inparam = ctx.request.body
     // let mongodb = global.mongodb
-    ctx.body = { id: inparam.id, createAt: inparam.createAt }
+    ctx.body = { userId: inparam.userId, createAt: inparam.createAt }
 })
 
 router.post('/agent/query', async (ctx, next) => {
