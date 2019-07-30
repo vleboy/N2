@@ -16,7 +16,10 @@
         "tokenname": "token",
         "pass": [
             "/agent/create",
-            "/agent/update"
+            "/agent/update",
+            "/agent/delete",
+            "/agent/query",
+            "/agent/get"
         ],
         "role": {
             "admin": [

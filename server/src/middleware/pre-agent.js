@@ -45,12 +45,4 @@ router.post('/agent/update', async (ctx, next) => {
     return next()
 })
 
-/**
- * 查询代理
- */
-router.post('/agent/query', async (ctx, next) => {
-
-})
-
-
 module.exports = router
