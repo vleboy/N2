@@ -15,20 +15,24 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/poker/calcTexas",
-            "/player/create",
-            "/login",
-            "/room/query"
+            "/agent/create",
+            "/agent/update",
+            "/agent/delete",
+            "/agent/query",
+            "/agent/page",
+            "/agent/get"
         ],
-        "role":{
-            "player":[".*"]
+        "role": {
+            "admin": [
+                ".*"
+            ]
         },
         "cors": true,
         "errMsg": "未认证",
         "errStatus": 401
     },
     "server": {
-        "port": 3636,
+        "port": 2000,
         "staticRoot": "/n2/",
         "xnosqlRoot": "/xnosql",
         "controllerRoot": "/xserver",

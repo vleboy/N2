@@ -30,7 +30,7 @@
         "errStatus": 401
     },
     "server": {
-        "port": 3636,
+        "port": 2000,
         "staticRoot": "/n2/",
         "xnosqlRoot": "/xnosql",
         "controllerRoot": "/xserver",
