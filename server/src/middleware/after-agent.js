@@ -10,16 +10,22 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 
 /**
  * 创建代理
- * 返回agentId
  */
 router.post('/agent/create', async (ctx, next) => {
     let inparam = ctx.request.body
-    // let mongodb = global.mongodb
     ctx.body = { id: inparam.id, createAt: inparam.createAt }
 })
 
-router.post('/agent/query', async (ctx, next) => {
-    ctx.body.res = _.orderBy(ctx.body.res, 'createAt', 'desc')
+/**
+ * 查询代理
+ */
+router.get('/agent/query', async (ctx, next) => {
+    let res = _.orderBy(ctx.body.res, 'createAt', 'desc')
+    let agentList = []
+    for (let item of res) {
+        agentList.push(_.pick(item, ['userName', 'userNick', 'gameList', 'id', 'status', 'createAt']))
+    }
+    ctx.body = agentList
 })
 
 module.exports = router

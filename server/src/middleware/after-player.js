@@ -13,15 +13,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
  */
 router.post('/player/create', async (ctx, next) => {
     let inparam = ctx.request.body
-    let mongodb = global.mongodb
-    let player = await mongodb.findOne('player', { username: inparam.username })
-    let token = jwt.sign({
-        role: 'player',
-        _id: player._id,
-        username: player.username,
-        // exp: Math.floor(Date.now() / 1000) + 86400 * 30
-    }, config.auth.secret)
-    ctx.body = { _id: player._id, username: player.username, token }
+    ctx.body = { id: inparam.id, createAt: inparam.createAt }
 })
 
 /**
