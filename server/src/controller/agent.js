@@ -7,7 +7,7 @@ const router = new Router()
 /**
  * 代理登陆接口
  */
-router.post('/agent/login', async (ctx, next) => {
+router.post('/login', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     let agentInfo = await mongodb.findOne('agent', { userName: inparam.userName })
@@ -30,21 +30,21 @@ router.post('/agent/login', async (ctx, next) => {
 /**
  * 代理加减点操作
  */
-router.post('/agent/handlerPoint', async (ctx, next) => {
+router.post('/handlerPoint', async (ctx, next) => {
 
 })
 
 /**
  * 启用/停用代理
  */
-router.post('/agent/handlerStatus', async (ctx, next) => {
+router.post('/handlerStatus', async (ctx, next) => {
 
 })
 
 /**
  * 代理流水查询
  */
-router.post('/agent/queryBill', async (ctx, next) => {
+router.post('/queryBill', async (ctx, next) => {
 
 })
 
