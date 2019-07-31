@@ -15,6 +15,7 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
+            "/agent/login",
             "/agent/create",
             "/agent/update",
             "/agent/delete",

@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 // 工具相关
 const _ = require('lodash')
+const bcrypt = require('bcryptjs')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -32,9 +33,10 @@ router.post('/agent/create', async (ctx, next) => {
         }
         inparam.status = 1
         inparam.parentId = parent.id || 0
-        inparam.parentName = parent.userName || ''
         inparam.level = parent.level + 1 || 0
+        inparam.parentName = parent.userName || 'system'
         inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id
+        inparam.userHashPwd = getHashPwd(inparam.userPwd)
         inparam.createAt = Date.now()
         return next()
     }
@@ -57,6 +59,9 @@ router.post('/agent/update', async (ctx, next) => {
     } else if (!await mongodb.findOne('agent', { id: inparam.id })) {
         ctx.body = { err: true, res: '代理不存在' }
     } else {
+        if (inparam.userPwd) {
+            inparam.userHashPwd = getHashPwd(inparam.userPwd)
+        }
         return next()
     }
 })
@@ -76,6 +81,11 @@ router.get('/agent/query', async (ctx, next) => {
 function checkType(o) {
     let s = Object.prototype.toString.call(o)
     return s.match(/\[object (.*?)\]/)[1].toLowerCase()
+}
+function getHashPwd(pwd) {
+    let salt = bcrypt.genSaltSync(10)
+    let hash = bcrypt.hashSync(pwd, salt)
+    return hash
 }
 
 

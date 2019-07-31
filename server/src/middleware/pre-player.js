@@ -3,6 +3,8 @@ const config = require('config')
 // 路由相关
 const Router = require('koa-router')
 const router = new Router()
+//工具相关
+const _ = require('lodash')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -14,7 +16,7 @@ router.post('/player/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     let agentInfo = ''
-    if (!inparam.playerName || !inparam.playerPwd || !parentId || inparam.playerName.length > 20 || inparam.playerPwd.length > 20 || inparam.playerName.length < 3 || inparam.playerPwd.length < 6) {
+    if (!inparam.playerName || !inparam.playerPwd || !inparam.parentId || inparam.playerName.length > 20 || inparam.playerPwd.length > 20 || inparam.playerName.length < 3 || inparam.playerPwd.length < 6) {
         ctx.body = { err: true, res: '请检查入参' }
     } else if (await mongodb.findOne('player', { playerName: inparam.playerName })) {
         ctx.body = { err: true, res: '帐号已存在' }

@@ -4,22 +4,24 @@ const bcrypt = require('bcryptjs')
 const Router = require('koa-router')
 const router = new Router()
 
-router.post('/login', async (ctx, next) => {
+//代理登陆接口
+router.post('/agent/login', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    let player = await mongodb.findOne('player', { username: inparam.username })
-    if (!player) {
+    let agentInfo = await mongodb.findOne('agent', { userName: inparam.userName })
+    if (!agentInfo) {
         ctx.body = { err: true, res: '帐号不存在' }
-    } else if (!bcrypt.compareSync(player.password, inparam.password)) {
+    } else if (!bcrypt.compareSync(inparam.userPwd, agentInfo.userHashPwd)) {
         ctx.body = { err: true, res: '密码不正确' }
     } else {
         let token = jwt.sign({
-            role: 'agent',
-            _id: player._id,
-            username: player.username,
+            role: agentInfo.role,
+            id: agentInfo.id,
+            userName: agentInfo.userName,
+            userNick: agentInfo.userNick
             // exp: Math.floor(Date.now() / 1000) + 86400 * 30
         }, config.auth.secret)
-        ctx.body = { _id: player._id, username: player.username, token }
+        ctx.body = { id: agentInfo.id, userNick: agentInfo.userNick, token }
     }
 })
 
