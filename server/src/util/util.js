@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const bcrypt = require('bcryptjs')
 
 const TIMEOUT = {
     ALL_ALLIN: 2000

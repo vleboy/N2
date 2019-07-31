@@ -5,7 +5,6 @@ const Router = require('koa-router')
 const router = new Router()
 // 工具相关
 const _ = require('lodash')
-const bcrypt = require('bcryptjs')
 const { CheckType, GetHashPwd } = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
@@ -27,7 +26,7 @@ router.post('/agent/create', async (ctx, next) => {
         let parent = inparam.parentId ? await mongodb.findOne('agent', { id: inparam.parentId }) : {}
         let flag = true
         while (flag) {
-            inparam.id = _.random(999999)
+            inparam.id = _.random(100000,999999)
             if (!await mongodb.findOne('agent', { id: inparam.id })) {
                 flag = false
             }

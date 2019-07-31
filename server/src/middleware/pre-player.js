@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 //工具相关
 const _ = require('lodash')
+const { GetHashPwd } = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -25,7 +26,7 @@ router.post('/player/create', async (ctx, next) => {
     } else {
         let flag = true
         while (flag) {
-            inparam.id = _.random(99999999)
+            inparam.id = _.random(10000000, 99999999)
             if (!await mongodb.findOne('player', { id: inparam.id })) {
                 flag = false
             }
@@ -33,6 +34,8 @@ router.post('/player/create', async (ctx, next) => {
         inparam.status = 1
         inparam.parentId = agentInfo.id
         inparam.parentName = agentInfo.userName
+        inparam.playerHashPwd = GetHashPwd(inparam.playerPwd)
+        inparam.role = "player"
         inparam.createAt = Date.now()
         return next()
     }
