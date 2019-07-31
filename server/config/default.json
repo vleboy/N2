@@ -15,13 +15,7 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/agent/login",
-            "/agent/create",
-            "/agent/update",
-            "/agent/delete",
-            "/agent/query",
-            "/agent/page",
-            "/agent/get"
+            "/agent/login"
         ],
         "role": {
             "admin": [
