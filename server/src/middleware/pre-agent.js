@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 // 工具相关
 const _ = require('lodash')
+const { CheckType, GetHashPwd } = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -25,16 +26,17 @@ router.post('/agent/create', async (ctx, next) => {
         let parent = inparam.parentId ? await mongodb.findOne('agent', { id: inparam.parentId }) : {}
         let flag = true
         while (flag) {
-            inparam.id = _.random(999999)
+            inparam.id = _.random(100000, 999999)
             if (!await mongodb.findOne('agent', { id: inparam.id })) {
                 flag = false
             }
         }
         inparam.status = 1
         inparam.parentId = parent.id || 0
-        inparam.parentName = parent.userName || ''
         inparam.level = parent.level + 1 || 0
+        inparam.parentName = parent.userName || 'system'
         inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id
+        inparam.userHashPwd = GetHashPwd(inparam.userPwd)
         inparam.createAt = Date.now()
         return next()
     }
@@ -45,18 +47,28 @@ router.post('/agent/create', async (ctx, next) => {
  * 更新代理
  */
 router.post('/agent/update', async (ctx, next) => {
+    const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     // inparam = _.pick(inparam, ['userPwd', 'userNick', 'gameList', 'status'])
+    let agentInfo = ''
     if (inparam.userPwd && (inparam.userPwd.length < 6 || inparam.userPwd.length > 20)) {
         ctx.body = { err: true, res: '密码长度不合法' }
     } else if (inparam.userNick && (inparam.userNick.length < 3 || inparam.userNick.length > 20)) {
         ctx.body = { err: true, res: '昵称长度不合法' }
-    } else if (inparam.gameList && (checkType(inparam.gameList) != 'array')) {
+    } else if (inparam.gameList && (CheckType(inparam.gameList) != 'array')) {
         ctx.body = { err: true, res: '游戏列表不合法' }
-    } else if (!await mongodb.findOne('agent', { id: inparam.id })) {
+    } else if (!(agentInfo = await mongodb.findOne('agent', { id: inparam.id }))) {
         ctx.body = { err: true, res: '代理不存在' }
     } else {
+        if (inparam.userPwd) {
+            inparam.userHashPwd = GetHashPwd(inparam.userPwd)
+        }
+        if (inparam.status == 0 || inparam.status == 1) {
+            if (token.id != agentInfo.parentId) {
+                return ctx.body = { err: true, res: '不能越级操作' }
+            }
+        }
         return next()
     }
 })
@@ -71,12 +83,7 @@ router.get('/agent/query', async (ctx, next) => {
     return next()
 })
 
-/****内部方法****/
-//校验入参类型
-function checkType(o) {
-    let s = Object.prototype.toString.call(o)
-    return s.match(/\[object (.*?)\]/)[1].toLowerCase()
-}
+
 
 
 module.exports = router

@@ -15,16 +15,18 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/agent/create",
-            "/agent/update",
-            "/agent/delete",
-            "/agent/query",
-            "/agent/page",
-            "/agent/get"
+            "/xserver/agent/login",
+            "/xserver/player/login"
         ],
         "role": {
             "admin": [
                 ".*"
+            ],
+            "test":[
+                "/xnosql/player/create"
+            ],
+            "player":[
+                "/xnosql/review/create"
             ]
         },
         "cors": true,

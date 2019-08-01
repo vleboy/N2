@@ -3,6 +3,9 @@ const config = require('config')
 // 路由相关
 const Router = require('koa-router')
 const router = new Router()
+//工具相关
+const _ = require('lodash')
+const { GetHashPwd } = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -14,7 +17,7 @@ router.post('/player/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     let agentInfo = ''
-    if (!inparam.playerName || !inparam.playerPwd || !parentId || inparam.playerName.length > 20 || inparam.playerPwd.length > 20 || inparam.playerName.length < 3 || inparam.playerPwd.length < 6) {
+    if (!inparam.playerName || !inparam.playerPwd || !inparam.parentId || inparam.playerName.length > 20 || inparam.playerPwd.length > 20 || inparam.playerName.length < 3 || inparam.playerPwd.length < 6) {
         ctx.body = { err: true, res: '请检查入参' }
     } else if (await mongodb.findOne('player', { playerName: inparam.playerName })) {
         ctx.body = { err: true, res: '帐号已存在' }
@@ -23,7 +26,7 @@ router.post('/player/create', async (ctx, next) => {
     } else {
         let flag = true
         while (flag) {
-            inparam.id = _.random(99999999)
+            inparam.id = _.random(10000000, 99999999)
             if (!await mongodb.findOne('player', { id: inparam.id })) {
                 flag = false
             }
@@ -31,6 +34,8 @@ router.post('/player/create', async (ctx, next) => {
         inparam.status = 1
         inparam.parentId = agentInfo.id
         inparam.parentName = agentInfo.userName
+        inparam.playerHashPwd = GetHashPwd(inparam.playerPwd)
+        inparam.role = "player"
         inparam.createAt = Date.now()
         return next()
     }

@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken')
 // 路由相关
 const Router = require('koa-router')
 const router = new Router()
+// 工具
+const _ = require('lodash')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -20,7 +22,7 @@ router.post('/player/create', async (ctx, next) => {
 /**
  * 查询玩家
  */
-router.get('/agent/query', async (ctx, next) => {
+router.get('/player/query', async (ctx, next) => {
     let res = _.orderBy(ctx.body.res, 'createAt', 'desc')
     let playerList = []
     for (let item of res) {
