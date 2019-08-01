@@ -23,13 +23,13 @@
               label="本月公司输赢值(¥)"
               placeholder="请输入公司输赢值"
               size="large"
-              @click="test"
             />
             <van-field
               v-model="stadium"
               label="会员游戏场馆"
               disabled
               placeholder="选择场馆 >"
+              @click="test"
               size="large"
             />
             <!-- <van-cell title="会员游戏场馆" size="large"/> -->
@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     test() {
-      alert('show')
+      console.log(show)
     },
     onClickLeft() {
       this.$router.push('/setting')

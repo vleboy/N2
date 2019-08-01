@@ -3,8 +3,8 @@
     <div class="top">
       <div class="username">
         <van-image
-            width="30"
-            height="30"
+            width="3.125rem"
+            height="3.125rem"
             round
             src="https://img.yzcdn.cn/vant/cat.jpeg"
           />
@@ -38,29 +38,29 @@
     </div>
     <div class="container">
       <div class="list">
-        <div>
+        <div @click="jump('/commissionReport')">
           <van-image
-            width="50"
-            height="50"
+            width="3.125rem"
+            height="3.125rem"
             :src="img_commission"
           />
           <div>佣金报表</div>
         </div>
         <div class="split"></div>
-        <div>
+        <div @click="jump('/financeReport')">
           <van-image
-            width="50"
-            height="50"
+            width="3.125rem"
+            height="3.125rem"
             :src="img_financing"
           />
           <div>财务报表</div>
         </div>
       </div>
       <div class="list">
-        <div>
+        <div @click="jump('/WithdrawalApplication')">
           <van-image
-            width="50"
-            height="50"
+            width="3.125rem"
+            height="3.125rem"
             :src="img_withdrawal"
           />
           <div>取款申请</div>
@@ -68,23 +68,24 @@
         <div class="split"></div>
         <div>
           <van-image
-            width="50"
-            height="50"
+            width="3.125rem"
+            height="3.125rem"
             :src="img_user"
           />
           <div>用户信息</div>
         </div>
       </div>
       <div class="list">
-        <div>
+        <div @click="jump('/news')">
           <van-image
-            width="50"
-            height="50"
+            width="3.125rem"
+            height="3.125rem"
             :src="img_info"
           />
           <div>消息</div>
         </div>
         <div class="split"></div>
+        <div></div>
       </div>
     </div>
   </div>
@@ -100,6 +101,11 @@ export default {
       img_user: require('../../assets/images/home/yonghu.png'),
       img_info: require('../../assets/images/home/xiaoxi.png')
     }
+  },
+  methods: {
+    jump(name) {
+      this.$router.push(name)
+    }
   }
 }
 </script>
@@ -110,8 +116,9 @@ export default {
     .top {
       box-sizing: border-box;
       background: #6cbfff;
-      height: 220px;
-      padding: 40px 1rem;
+      /* height: 220px; */
+      height: 13.75rem;
+      padding: 2.5rem /* 40/16 */ 1rem;
       position: relative;
       .username {
         display: flex;
@@ -141,7 +148,8 @@ export default {
         }
       }
       .detail {
-        height: 70px;
+        /* height: 70px; */
+        height: 4.975rem;
         background: #fff;
         position: absolute;
         width: 92%;
@@ -152,7 +160,7 @@ export default {
         box-shadow: 0px 8px 10px #bebebe;
         ul {
           display: flex;
-          height: 70px;
+          height: 4.375rem;
           justify-content: space-around;
           align-items: center;
           li {
@@ -179,18 +187,18 @@ export default {
       .list {
         display: flex;
         align-items: center;
-        /* justify-content: space-around; */
+        justify-content: space-around;
         padding: 0 1rem;
         margin-bottom: 40px;
         >div {
           text-align: center;
-          margin: 0 2rem;
-          width: 64px;
+          /* margin: 0 2rem; */
+          width: 7rem;
         }
       }
       .split {
-        height: 40px;
-        width: 2px !important;
+        height: 2.5rem;
+        width: 0.125rem !important;
         background: #eceaea;
         transform: scaleX(.4)
       }

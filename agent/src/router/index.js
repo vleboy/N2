@@ -12,6 +12,14 @@ import Agent from '../views/agent/Agent.vue'
 import Vip from '../views/vip/Vip.vue'
 
 import Home from '../views/home/Home.vue'
+import CommissionReport from '../views/home/detail/CommissionReport.vue'
+import WithdrawalRecord from '../views/home/detail/WithdrawalRecord.vue'
+import News from '../views/home/detail/News.vue'
+import WithdrawalApplication from '../views/home/detail/WithdrawalApplication.vue'
+import FinanceReport from '../views/home/detail/FinanceReport.vue'
+
+
+import Table from '../components/Table.vue'
 
 
 Vue.use(Router)
@@ -47,7 +55,7 @@ export default new Router({
       ]
     },
 
-    /* 设置 */
+    /* 设置相关 */
     {
       path: '/personal',
       name: 'personal',
@@ -62,7 +70,46 @@ export default new Router({
       path: '/simulator',
       name: 'simulator',
       component: Simulator,
+    },
+
+    /* 首页相关 */
+    {
+      path: '/commissionReport',
+      name: 'commissionReport',
+      component: CommissionReport,
+    },
+    {
+      path: '/commissionReport',
+      name: 'commissionReport',
+      component: WithdrawalRecord,
+    },
+    {
+      path: '/news',
+      name: 'news',
+      component: News,
+    },
+    {
+      path: '/withdrawalApplication',
+      name: 'withdrawalApplication',
+      component: WithdrawalApplication
+    },
+    {
+      path: '/withdrawalRecord',
+      name: 'withdrawalRecord',
+      component: WithdrawalRecord
+    },
+    {
+      path: '/financeReport',
+      name: 'financeReport',
+      component: FinanceReport
+    },
+
+    {
+      path: '/table',
+      name: 'table',
+      component: Table
     }
+
     /* {
       path: '/about',
       name: 'about',

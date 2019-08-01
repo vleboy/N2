@@ -33,11 +33,11 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 20px; 
     }
     .van-nav-bar__title {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 20px; 
     }
   }
     .box {
