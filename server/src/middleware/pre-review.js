@@ -22,6 +22,7 @@ router.post('/review/create', async (ctx, next) => {
         if (!playerInfo) {
             ctx.body = { err: true, res: '玩家不存在' }
         } else {
+            inparam.proposerId = playerInfo.id
             inparam.proposerName = playerInfo.playerName
             inparam.status = 0
             inparam.createAt = Date.now()
