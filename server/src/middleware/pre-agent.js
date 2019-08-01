@@ -26,7 +26,7 @@ router.post('/agent/create', async (ctx, next) => {
         let parent = inparam.parentId ? await mongodb.findOne('agent', { id: inparam.parentId }) : {}
         let flag = true
         while (flag) {
-            inparam.id = _.random(100000,999999)
+            inparam.id = _.random(100000, 999999)
             if (!await mongodb.findOne('agent', { id: inparam.id })) {
                 flag = false
             }
@@ -47,20 +47,27 @@ router.post('/agent/create', async (ctx, next) => {
  * 更新代理
  */
 router.post('/agent/update', async (ctx, next) => {
+    const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     // inparam = _.pick(inparam, ['userPwd', 'userNick', 'gameList', 'status'])
+    let agentInfo = ''
     if (inparam.userPwd && (inparam.userPwd.length < 6 || inparam.userPwd.length > 20)) {
         ctx.body = { err: true, res: '密码长度不合法' }
     } else if (inparam.userNick && (inparam.userNick.length < 3 || inparam.userNick.length > 20)) {
         ctx.body = { err: true, res: '昵称长度不合法' }
     } else if (inparam.gameList && (CheckType(inparam.gameList) != 'array')) {
         ctx.body = { err: true, res: '游戏列表不合法' }
-    } else if (!await mongodb.findOne('agent', { id: inparam.id })) {
+    } else if (!(agentInfo = await mongodb.findOne('agent', { id: inparam.id }))) {
         ctx.body = { err: true, res: '代理不存在' }
     } else {
         if (inparam.userPwd) {
             inparam.userHashPwd = GetHashPwd(inparam.userPwd)
+        }
+        if (inparam.status == 0 || inparam.status == 1) {
+            if (token.id != agentInfo.parentId) {
+                return ctx.body = { err: true, res: '不能越级操作' }
+            }
         }
         return next()
     }

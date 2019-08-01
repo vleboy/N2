@@ -2,6 +2,8 @@
 const Router = require('koa-router')
 const router = new Router()
 
+//工具
+const _ = require('lodash')
 
 /**
  * 审核充值/提现接口
@@ -86,7 +88,7 @@ async function getAgentBalance(agentId) {
 }
 
 //获取玩家的余额
-async function getAgentBalance(playerId) {
+async function getPlayerBalance(playerId) {
     let playerInfo = await mongodb.findOne('player', { id: playerId })
     if (!playerInfo) {
         throw { err: true, res: '玩家不存在' }
