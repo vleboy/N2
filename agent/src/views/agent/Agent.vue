@@ -47,6 +47,7 @@ export default {
 
 <style lang="less" scoped>
   .agent {
+    font-size: 16px;
     color: #515151;
     /*顶部导航*/
   .van-nav-bar {
@@ -54,29 +55,29 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #515151;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #50505;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
     .box {
-      padding: 0 1rem;
+      padding: 0 16px;
       .list {
         li {
           border-bottom: 1px solid #ededed;
-          padding: 1rem 0 ;
+          padding: 16px 0 ;
           .content {
             display: flex;
             align-items: center;
             justify-content: space-between;
           
             .link {
-              width: 14rem;
+              width: 224px;
               overflow: auto;
               word-wrap:break-word;
-              font-size: .8rem;
+              font-size: 12.8px;
               color: #b6b6b6;
             }
           }
@@ -84,7 +85,7 @@ export default {
       }
     }
     .van-button--small {
-      padding: 0 2rem;
+      padding: 0 32px;
     }
   }
 

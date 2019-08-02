@@ -59,7 +59,7 @@ export default {
 
 <style lang="less" scoped>
   .chanePwd {
-    
+    font-size: 16px;
     .box {
       height: 100%;
       position: absolute;
@@ -74,18 +74,18 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     
   }
   .sub {
-    padding: 0 1rem;
+    padding: 0 16px;
     .van-button {
-        margin-top: 1rem;
+        margin-top: 16px;
         border-radius: 20px;
       }
   }

@@ -3,8 +3,7 @@
     <div class="top">
       <div class="username">
         <van-image
-            width="3.125rem"
-            height="3.125rem"
+            
             round
             src="https://img.yzcdn.cn/vant/cat.jpeg"
           />
@@ -40,8 +39,7 @@
       <div class="list">
         <div @click="jump('/commissionReport')">
           <van-image
-            width="3.125rem"
-            height="3.125rem"
+            
             :src="img_commission"
           />
           <div>佣金报表</div>
@@ -49,27 +47,24 @@
         <div class="split"></div>
         <div @click="jump('/financeReport')">
           <van-image
-            width="3.125rem"
-            height="3.125rem"
+           
             :src="img_financing"
           />
           <div>财务报表</div>
         </div>
       </div>
       <div class="list">
-        <div @click="jump('/WithdrawalApplication')">
+        <div @click="jump('/withdrawalApplication')">
           <van-image
-            width="3.125rem"
-            height="3.125rem"
+           
             :src="img_withdrawal"
           />
           <div>取款申请</div>
         </div>
         <div class="split"></div>
-        <div>
+        <div @click="jump('/userInfo')">
           <van-image
-            width="3.125rem"
-            height="3.125rem"
+            
             :src="img_user"
           />
           <div>用户信息</div>
@@ -78,8 +73,7 @@
       <div class="list">
         <div @click="jump('/news')">
           <van-image
-            width="3.125rem"
-            height="3.125rem"
+          
             :src="img_info"
           />
           <div>消息</div>
@@ -102,6 +96,10 @@ export default {
       img_info: require('../../assets/images/home/xiaoxi.png')
     }
   },
+  mounted() {
+    console.log('enter');
+    
+  },
   methods: {
     jump(name) {
       this.$router.push(name)
@@ -113,19 +111,24 @@ export default {
 
 <style lang="less" scoped>
   .home {
+    font-size: 16px;
     .top {
       box-sizing: border-box;
       background: #6cbfff;
       /* height: 220px; */
-      height: 13.75rem;
-      padding: 2.5rem /* 40/16 */ 1rem;
+      height: 220px;
+      padding: 40px /* 40/16 */ 16px;
       position: relative;
       .username {
         display: flex;
         align-items: center;
         color: #fff;
+        .van-image {
+          width: 50px;
+          height: 50px;
+        }
         p {
-          margin-left: .8rem;
+          margin-left: 12.8px;
         }
       }
       .amount {
@@ -137,11 +140,11 @@ export default {
           align-items: center;
           letter-spacing: 1px;
           &:first-child {
-            font-size: .7rem;
+            font-size: 12px;
             font-weight: normal;
           }
           &:last-child {
-            font-size: 1.5rem;
+            font-size: 30px;
             font-weight: bold;
             margin-top: 8px;
           }
@@ -149,7 +152,7 @@ export default {
       }
       .detail {
         /* height: 70px; */
-        height: 4.975rem;
+        height: 80px;
         background: #fff;
         position: absolute;
         width: 92%;
@@ -160,7 +163,7 @@ export default {
         box-shadow: 0px 8px 10px #bebebe;
         ul {
           display: flex;
-          height: 4.375rem;
+          height: 70px;
           justify-content: space-around;
           align-items: center;
           li {
@@ -168,12 +171,12 @@ export default {
               margin: 0;
               text-align: center;
               &:first-child {
-                font-size: 1.3rem;
+                font-size: 20px;
                 color: #20a0ff;
               }
               &:last-child {
                 color: #c4c4c4;
-                font-size: .8rem;
+                font-size: 12.8px;
                 margin-top: 2px;
               }
             }
@@ -188,17 +191,22 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-around;
-        padding: 0 1rem;
+        padding: 0 16px;
         margin-bottom: 40px;
+        font-size: 16px;
+        .van-image {
+          width: 50px;
+          height: 50px;
+        }
         >div {
           text-align: center;
-          /* margin: 0 2rem; */
-          width: 7rem;
+          width: 112px;
+          
         }
       }
       .split {
-        height: 2.5rem;
-        width: 0.125rem !important;
+        height: 40px;
+        width: 2px !important;
         background: #eceaea;
         transform: scaleX(.4)
       }

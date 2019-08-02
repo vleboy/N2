@@ -18,7 +18,7 @@
           </div>
         </van-tab>
         <van-tab title="联系我们">
-          <div style="padding:0 .8rem;">
+          <div style="padding:0 12.8px;">
             <div class="list flex">
               <div class="flex">
                 <van-image
@@ -26,11 +26,11 @@
                   width="30"
                   height="30"
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
-                  style="margin-right:1rem"
+                  style="margin-right:16px"
                 />
                 <div>
                   <div class="flex">
-                    <div style="margin-right:0.5rem">合营部QQ</div>
+                    <div style="margin-right:8px">合营部QQ</div>
                     <div>1线</div>
                   </div>
                   <div>87866091</div>
@@ -45,11 +45,11 @@
                   width="30"
                   height="30"
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
-                  style="margin-right:1rem"
+                  style="margin-right:16px"
                 />
                 <div>
                   <div class="flex">
-                    <div style="margin-right:0.5rem">合营部QQ</div>
+                    <div style="margin-right:8px">合营部QQ</div>
                     <div>1线</div>
                   </div>
                   <div>87866091</div>
@@ -64,11 +64,11 @@
                   width="30"
                   height="30"
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
-                  style="margin-right:1rem"
+                  style="margin-right:16px"
                 />
                 <div>
                   <div class="flex">
-                    <div style="margin-right:0.5rem">合营部QQ</div>
+                    <div style="margin-right:8px">合营部QQ</div>
                     <div>1线</div>
                   </div>
                   <div>87866091</div>
@@ -123,25 +123,25 @@ export default {
       
     .noDada {
       position: absolute;
-      top: 10rem;
+      top: 160px;
       left: 50%;
       transform: translateX(-50%)
     }  
     .list {
       box-sizing: border-box;
       border-bottom:1px solid rgb(214, 212, 212);
-      padding: .8rem;
+      padding: 12.8px;
       .van-button {
         border-radius: 20px;
-        padding: 0 1rem;
+        padding: 0 16px;
       }
     }
     .service {
-      padding: 0 1rem;
+      padding: 0 16px;
       margin-top: 50%;
       .van-button {
         border-radius: 10px;
-        margin-bottom: .5rem;
+        margin-bottom: 8px;
       }
     }
     }
@@ -153,11 +153,11 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
   

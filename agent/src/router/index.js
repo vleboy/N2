@@ -17,6 +17,7 @@ import WithdrawalRecord from '../views/home/detail/WithdrawalRecord.vue'
 import News from '../views/home/detail/News.vue'
 import WithdrawalApplication from '../views/home/detail/WithdrawalApplication.vue'
 import FinanceReport from '../views/home/detail/FinanceReport.vue'
+import UserInfo from '../views/home/detail/UserInfo.vue'
 
 
 import Table from '../components/Table.vue'
@@ -102,6 +103,11 @@ export default new Router({
       path: '/financeReport',
       name: 'financeReport',
       component: FinanceReport
+    },
+    {
+      path: '/userInfo',
+      name: 'userInfo',
+      component: UserInfo
     },
 
     {

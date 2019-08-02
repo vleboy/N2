@@ -1,7 +1,9 @@
 <template>
   <div class="main">
     <div>
-      <router-view />
+      <keep-alive>
+        <router-view />
+      </keep-alive>
     </div>
     <div class="tabbar">
       <van-tabbar v-model="active" active-color="#20a0ff" inactive-color="#A2A2A2" fixed :z-index="99" route>

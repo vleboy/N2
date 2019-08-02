@@ -9,22 +9,22 @@
         @click-right="onClickRight"
         :border="false"
         />
-        <p style="font-size:.7rem">可取款金额</p>
-        <van-row style="margin-bottom:.5rem;">
+        <p class="fs12">可取款金额</p>
+        <van-row>
           <van-col span="7"></van-col>
-          <van-col span="10" style="text-align:center;color:#fff;font-size:1.4rem;">0.00</van-col>
+          <van-col span="10" class="col10">0.00</van-col>
           <van-col span="7"></van-col>
         </van-row>
         <van-row align="center">
-          <van-col span="7" style="text-align:center;color:#fff;font-size:0.8rem;">
+          <van-col span="7" class="col7">
             <div>0.00</div>
             <div>锁定钱包</div>
           </van-col>
-          <van-col span="10" style="text-align:center;color:#fff;font-size:0.8rem;">
+          <van-col span="10" class="col7"> 
             <div>2019-06</div>
             <div>发放月份</div>
           </van-col>
-          <van-col span="7" style="text-align:center;color:#fff;font-size:0.8rem;">
+          <van-col span="7" class="col7">
             <div>0.00</div>
             <div>合计</div>
           </van-col>
@@ -43,7 +43,7 @@
             <van-button disabled type="info" size="large">提交申请</van-button>
           </div>
         </van-tab>
-        <van-tab title="提款至中心钱包">内容 2</van-tab>
+        <van-tab title="提款至中心钱包"></van-tab>
       </van-tabs>
     </div>
   </div>
@@ -74,7 +74,7 @@ export default {
     .top {
       box-sizing: border-box;
       background: #6cbfff;
-      height: 11rem;
+      height: 160px;
       position: relative;
       padding-top: 10px;
       box-sizing: border-box;
@@ -82,7 +82,7 @@ export default {
         margin: 0;
         color: #fff;
         text-align: center;
-        margin-bottom: .5rem;
+        margin-bottom: 8px;
       }
       .detail {
         display: flex;
@@ -90,28 +90,28 @@ export default {
         color: #fff;
         div {
           text-align: center;
-          font-size: .8rem;
+          font-size: 12.8px;
         }
       }
     }
     .container {
       .add {
-        padding: 1rem;
+        padding: 16px;
         >div {
           background: rgb(230, 230, 230);
-          height: 5rem;
+          height: 80px;
           text-align: center;
           color: rgb(201, 201, 201);
           box-sizing: border-box;
-          padding: 1rem 0;
+          padding: 16px 0;
         }
       }
       .sub {
         position: fixed;
         width: 100%;
         box-sizing: border-box;
-        padding: 0 1rem;
-        height:5rem;
+        padding: 0 16px;
+        height:80px;
         bottom: 0;
         background:rgb(230, 230, 230);
         .van-button {
@@ -130,13 +130,26 @@ export default {
     }
     .van-icon {
       color: #fff;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #fff;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
   }
+.fs12 {
+  font-size: 12px;
+}
 
+.col7 {
+  text-align:center;
+  color:#fff;
+  font-size:13px;
+}
+.col10 {
+  text-align:center;
+  color:#fff;
+  font-size:23px;
+}
 </style>

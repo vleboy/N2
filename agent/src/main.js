@@ -5,7 +5,7 @@ import store from './store/index.js'
 import './registerServiceWorker'
 import Vant from 'vant';
 import 'vant/lib/index.css';
-//import 'lib-flexible'
+import 'lib-flexible'
 
 Vue.use(Vant);
 

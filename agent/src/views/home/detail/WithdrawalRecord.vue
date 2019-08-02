@@ -50,7 +50,7 @@ export default {
         color: #888888;
       }
       .van-button {
-        padding: 0 2rem;
+        padding: 0 32px;
         border-radius: 20px;
         
       }
@@ -62,11 +62,11 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
 

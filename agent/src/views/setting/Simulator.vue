@@ -1,7 +1,7 @@
 <template>
   <div class="simulator">
       <div class="navBar">
-        <van-icon name="arrow-left" size="19px" @click="onClickLeft"/>
+        <van-icon name="arrow-left" @click="onClickLeft"/>
         <div>
           <div class="count" :class="{'menu-active': showIndex == 0}" @click="showCount">佣金模拟器</div>
           <div class="rules" :class="{'menu-active': showIndex == 1}" @click="showRules">计算规则</div>
@@ -70,12 +70,12 @@ export default {
     },
     showCount() {
       this.showIndex = 0
-      this.$refs.bottomSpan.style.left = '74px'
+      this.$refs.bottomSpan.style.left = '140px'
       this.$refs.box.style.transform = 'translateX(0)'
     },
     showRules() {
       this.showIndex = 1
-      this.$refs.bottomSpan.style.left = '236px'
+      this.$refs.bottomSpan.style.left = '475px'
       this.$refs.box.style.transform = 'translateX(-50%)'
     }
   }
@@ -94,6 +94,9 @@ export default {
       height: 50px;
       position: relative;
       border-bottom:1px solid #e7e3e3;
+      .van-icon {
+       font-size: 19px;
+      }
       .bottomSpan {
           width: 96px;
           height: 3px;
@@ -109,7 +112,7 @@ export default {
         align-items: center;
         justify-content: space-around;
         color: #505050;
-        font-size: 1.2rem;
+        font-size: 19.2px;
         position: relative;
         .menu-active {
           color: #20a0ff !important;
@@ -136,7 +139,6 @@ export default {
       .commission_rules {
         width: 375px;
         height: 200px;
-        background: blue;
       }
     }
   }
@@ -146,11 +148,11 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #50505;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
   

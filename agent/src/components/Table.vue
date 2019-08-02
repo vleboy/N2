@@ -15,20 +15,23 @@
         </tr>
         <tr v-for="(val ,index1) in tabData" :key="index1" :class="{'stripe': isShowStripe}">
           <td v-for="(item, index) in tabColumns" :key="index">
-            {{val[item.key]}}
+            <!-- <slot>{{val[item.key]}}</slot> -->
+            <slot :name="item.key" :todo="val">
+              <!-- 后备内容 -->
+              {{ val[item.key] }}
+            </slot>
           </td>
         </tr>
       </table>
     </div>
-    <div style="height:10rem;background:red;"></div>
-    <div style="height:10vh;background:blue;"></div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'van-table',
-  props: ['columns', 'data', 'showHeader', 'stripe'],  
+  props: ['columns', 'data', 'showHeader', 'stripe'],
+    
   computed: {
     tabColumns() {
       return this.columns
@@ -42,7 +45,7 @@ export default {
     },
     //是否显示斑马纹,默认不显示
     isShowStripe() {
-      return this.stripe == undefined ? false : this.showHeader
+      return this.stripe == undefined ? false : this.stripe
     }
   }  
 }
@@ -53,19 +56,20 @@ export default {
   table,td {
     border-collapse:separate;/*默认值，边框会被分开*/
     border-collapse:collapse;/*如果可能，边框会合并为一个单一的边框*/
-    font-size: .8rem;
+    font-size: 12.8px;
   }
   th {
-    background: skyblue;
-    height: 2rem;
+    color: #737373;
+    background: #F8FBFF;
+    height: 32px;
   }
   td {
-    height: 2rem;
+    height: 32px;
   }
   
   .stripe {
     &:nth-child(2n-1) {
-      background: red;
+      background: #FAF9F9;
     }
   }
   

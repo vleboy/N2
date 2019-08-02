@@ -45,21 +45,22 @@ export default {
 
 <style lang="less" scoped>
   .home {
+    font-size: 16px;
     .top {
       box-sizing: border-box;
       background: #6cbfff;
       height: 130px;
-      padding: 40px 1rem;
+      padding: 40px 16px;
       position: relative;
      
       .detail {
         box-sizing: border-box;
-        padding: 0.5rem 1rem;
-        height: 80px;
+        padding: 8px 16px;
+        height: 90px;
         background: #fff;
         position: absolute;
         width: 92%;
-        bottom: -40px;
+        bottom: -45px;
         border-radius: 5px;
         left: 50%;
         transform: translateX(-50%);
@@ -72,13 +73,13 @@ export default {
           display: flex;
           justify-content: center;
           .van-button {
-            padding: 0 8rem;
+            padding: 0 128px;
             border-radius: 15px;
             background: #52b1fa;
             color: #fff;
-            height: 2.5rem /* 40/16 */;
-            line-height: 2.5rem /* 40/16 */;
-            font-size: 1rem;
+            height: 40px /* 40/16 */;
+            line-height: 40px /* 40/16 */;
+            font-size: 16px;
           }
         } 
       }
@@ -94,7 +95,7 @@ export default {
         color: #888888;
       }
       .van-button {
-        padding: 0 2rem;
+        padding: 0 32px;
         border-radius: 20px;
         
       }
@@ -106,11 +107,11 @@ export default {
     background: rgba(255,255,255,0);
     .van-icon {
       color: #fff;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #fff;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
   }

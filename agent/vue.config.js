@@ -1,5 +1,5 @@
 //px转rem
-/* module.exports = {
+module.exports = {
   css: {
     loaderOptions: {
       css: {},
@@ -12,7 +12,7 @@
       }
     }
   },
-} */
+}
 //px转vh/vw
 /* module.exports = {
   css: {

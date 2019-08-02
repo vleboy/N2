@@ -2,12 +2,19 @@
   <div class="home">
     <div class="top">
       <van-nav-bar
-        title="财务报表"
+        title="用户信息"
         left-arrow
         @click-left="onClickLeft"
         :border="false"
         />
       <div class="detail">
+        <van-field
+          v-model="username"
+          clearable
+          left-icon="contact"
+          placeholder="请输入用户名"
+          :border="false"
+        />
         <div class="time">
           <div>
             <span class="fs14">2019-07-01</span>
@@ -41,54 +48,58 @@
         @change="getStartTime"
         v-if="showModel1"
       /> -->
-      <div class="list">
-        <div>
-          <div class="name">存款</div>
-          <div class="num">100.00</div>
-        </div>
-        <div>
-          <div class="name">取款</div>
-          <div class="num">0.00</div>
-        </div>
-      </div>
-      <div class="list">
-        <div>
-          <div class="name">红利加返水</div>
-          <div class="num">1.05</div>
-        </div>
-        <div>
-          <div class="name">平台费</div>
-          <div class="num">
-            <div>0.00</div>
-            <van-button type="default" size="small">查看详情</van-button>
-          </div>
-        </div>
-      </div>
-      <div class="list">
-        <div>
-          <div class="name">总输赢</div>
-          <div class="num">
-            <div>-0.27</div>
-            <van-button type="default" size="small">查看详情</van-button>
-          </div>
-        </div>
-        <div>
-          <div class="name">净输赢</div>
-          <div class="num">-1.32</div>
-        </div>
-      </div>
-    </div>
-    <div class="footer">
-      <p>提示:</p>
-      <p>总输赢,净输赢中正数表示公司盈利,负数表示公司亏损.每天数据只做普通参考,并不做诗句佣金派发标准</p>
+      <Table :columns="column1" :data="userList" :stripe="true">
+        <!-- <template slot-scope="{row, index}" slot="winLose">
+          {{1321564321}}
+        </template> -->
+        <template v-slot:name="{ winLose }">
+          1231
+        </template>
+      </Table>
     </div>
   </div>
 </template>
 
 <script>
+import Table from '../../../components/Table'
 export default {
+  components: {
+    Table
+  },
   data() {
     return {
+      column1:[
+        {
+          title: '用户名',
+          key: 'username'
+        },
+        {
+          title: '输赢',
+          key: 'winLose'
+        },
+        {
+          title: '存款',
+          key: 'fund'
+        },
+        {
+          title: '取款',
+          key: 'Withdrawal'
+        }
+      ],
+      userList:[
+        {
+          username: 'ly13',
+          winLose: -0.27,
+          fund: 100,
+          Withdrawal: 0
+        },
+        {
+          username: 'ly14',
+          winLose: -0.27,
+          fund: 100,
+          Withdrawal: 0
+        }
+      ],
       noData: require('../../../assets/images/home/no_data.jpg'),
       currentDate: new Date(),
       st: '',
@@ -97,7 +108,8 @@ export default {
       endTime: '',
       startWeek: '2233',
       endWeek: '',
-      showModel1: false
+      showModel1: false,
+      username: ''
     }
   },
   methods: {
@@ -124,27 +136,31 @@ export default {
 
 <style lang="less" scoped>
   .home {
-    font-size: 16px;
+    
     .top {
       box-sizing: border-box;
       background: #6cbfff;
-      height: 130px;
+      height: 160px;
       padding: 30px 8px;
       position: relative;
       
       .detail {
         box-sizing: border-box;
         padding: 8px 8px;
-        height: 90px;
+        height: 140px;
         background: #fff;
         position: absolute;
         width: 92%;
-        bottom: -45px;
+        bottom: -70px;
         border-radius: 5px;
         left: 50%;
         transform: translateX(-50%);
         box-shadow: 0px 8px 10px #bebebe;
+        .van-cell {
+          padding: 5px 5px;
+        }
         .time {
+          margin: 15px 0;
           display: flex;
           justify-content: space-around;
           align-items: center;
@@ -169,7 +185,7 @@ export default {
       /* display: flex;
       justify-content: space-around;
       background: blue; */
-      margin-top: 70px;
+      margin-top: 90px;
       .list {
         display: flex;
         align-items: center;
@@ -204,22 +220,6 @@ export default {
               margin-top: 5px;
             }
           }
-        }
-      }
-    }
-    .footer {
-      box-sizing: border-box;
-      padding: 0 21px;
-      margin-top: 16px;
-      p {
-        margin: 0;
-        color: #515151;
-        &:first-child {
-          font-size: 16px;
-        }
-        &:last-child {
-          font-size: 12.8px;
-          margin-top: 5px;
         }
       }
     }

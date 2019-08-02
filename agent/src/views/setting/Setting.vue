@@ -41,12 +41,12 @@ export default {
     }
   }
     .box {
-      padding: .2rem;
+      padding: 8px;
       .van-cell {
         margin-bottom:5px;
       }
       .van-button {
-        margin-top: 1rem;
+        margin-top: 16px;
         padding: 0 40px;
       }
     }

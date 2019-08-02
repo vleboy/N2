@@ -19,6 +19,7 @@ export default {
 
 <style lang="less" scoped>
   .vip {
+    font-size: 16px;
     color: #515151;
     /*顶部导航*/
   .van-nav-bar {
@@ -26,17 +27,17 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #515151;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #50505;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
     .box {
-      padding: 0 1rem;
+      padding: 0 16px;
       .mark {
-        font-size: .8rem;
+        font-size: 12.8px;
         padding: 10px 0;
       }
     }

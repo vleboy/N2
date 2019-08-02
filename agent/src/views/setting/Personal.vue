@@ -41,10 +41,10 @@ export default {
       .edit {
         display: flex;
         align-items: center;
-        padding-left: 1rem;
+        padding-left: 16px;
         color: rgb(196, 196, 196);
         a {
-          margin-left: .5rem;
+          margin-left: 8px;
           color: #20a0ff;
         }
       }
@@ -56,11 +56,11 @@ export default {
     line-height: 50px;
     .van-icon {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
     .van-nav-bar__title {
       color: #505050;
-      font-size: 1.2rem; 
+      font-size: 19.2px; 
     }
   }
   
