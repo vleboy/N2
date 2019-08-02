@@ -25,6 +25,11 @@
             "test":[
                 "/xnosql/player/create"
             ],
+            "user":[
+                "/xnosql/player/create",
+                "/xserver/agent/handlerPoint",
+                "/xserver/player/handlerPoint"
+            ],
             "player":[
                 "/xnosql/review/create"
             ]

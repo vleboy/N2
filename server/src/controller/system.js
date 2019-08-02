@@ -25,16 +25,14 @@ router.post('/handlerReview', async (ctx, next) => {
     //下面应该用事务做（暂时写流程）
     let agentItem = {
         billId: _.random(99999999),
-        amount: reviewInfo.amount,
         ownerId: token.id,
         ownerName: token.userName,
         createAt: Date.now()
     }
     let playerItem = {
         billId: _.random(99999999),
-        amount: reviewInfo.amount,
-        ownerId: reviewInfo.reviewerId,
-        ownerName: reviewInfo.reviewerName,
+        ownerId: reviewInfo.proposerId,
+        ownerName: reviewInfo.proposerName,
         createAt: Date.now()
     }
     if (reviewInfo.project == '充值') {
@@ -44,10 +42,12 @@ router.post('/handlerReview', async (ctx, next) => {
             return ctx.body = { err: true, res: '代理余额不足' }
         }
         //代理新增扣钱流水
-        agentItem.project = '扣点'
+        agentItem.project = '减点'
+        agentItem.amount = Math.abs(reviewInfo.amount) * -1
         await mongodb.insert('agentBill', agentItem)
         //玩家新增加钱流水
         playerItem.project = '加点'
+        playerItem.amount = Math.abs(reviewInfo.amount)
         await mongodb.insert('playerBill', playerItem)
     } else if (reviewInfo.project == '提现') {
         //判断玩家余额是否足够
@@ -55,8 +55,9 @@ router.post('/handlerReview', async (ctx, next) => {
         if (balance < reviewInfo.amount) {
             return ctx.body = { err: true, res: '玩家余额不足' }
         }
-        //玩家新增扣钱流水
-        playerItem.project = '扣点'
+        //玩家提现代理不加点只有玩家减点记录
+        playerItem.project = '减点'
+        playerItem.amount = Math.abs(reviewInfo.amount) * -1
         await mongodb.insert('playerBill', playerItem)
     }
     // 更新审核条件
@@ -72,23 +73,28 @@ router.post('/handlerReview', async (ctx, next) => {
 
 //获取代理的余额
 async function getAgentBalance(agentId) {
+    let balance = 0
     let agentInfo = await mongodb.findOne('agent', { id: agentId })
     if (!agentInfo) {
         throw { err: true, res: '代理不存在' }
     }
     if (agentInfo.level == 0) {
-        return 'system'
+        balance = 'system'
+        return balance
     }
-    let agentGroupArr = await mongodb.db.collection('agentBill').aggregate([{ $group: { name: "$ownerName", count: { $sum: "$amount" } } }])
+    let agentGroupArr = await mongodb.db.collection('agentBill').aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of agentGroupArr) {
-        if (item.name == agentInfo.userName) {
-            return item.count
+        if (item._id == agentInfo.id) {
+            balance = item.count
+            return balance
         }
     }
+    return balance
 }
 
 //获取玩家的余额
 async function getPlayerBalance(playerId) {
+    let balance = 0
     let playerInfo = await mongodb.findOne('player', { id: playerId })
     if (!playerInfo) {
         throw { err: true, res: '玩家不存在' }
@@ -96,12 +102,13 @@ async function getPlayerBalance(playerId) {
     if (playerInfo.status == 0) {
         throw { err: true, res: '玩家已被冻结' }
     }
-    let playerGroupArr = await mongodb.db.collection('playerBill').aggregate([{ $group: { name: "$ownerName", count: { $sum: "$amount" } } }])
+    let playerGroupArr = await mongodb.db.collection('playerBill').aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of playerGroupArr) {
-        if (item.name == playerInfo.playerName) {
+        if (item._id == playerInfo.id) {
             return item.count
         }
     }
+    return balance
 }
 
 module.exports = router

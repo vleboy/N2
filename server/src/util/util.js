@@ -1,10 +1,6 @@
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
 
-const TIMEOUT = {
-    ALL_ALLIN: 2000
-}
-
 //检查类型
 function CheckType(o) {
     let s = Object.prototype.toString.call(o)
@@ -17,8 +13,8 @@ function GetHashPwd(pwd) {
     return hash
 }
 
+
 module.exports = {
     CheckType,
-    GetHashPwd,
-    TIMEOUT
+    GetHashPwd
 }

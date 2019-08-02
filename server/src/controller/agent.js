@@ -1,6 +1,7 @@
 const config = require('config')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const _ = require('lodash')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -20,7 +21,8 @@ router.post('/login', async (ctx, next) => {
             role: agentInfo.role,
             id: agentInfo.id,
             userName: agentInfo.userName,
-            userNick: agentInfo.userNick
+            userNick: agentInfo.userNick,
+            level: agentInfo.level
             // exp: Math.floor(Date.now() / 1000) + 86400 * 30
         }, config.auth.secret)
         ctx.body = { id: agentInfo.id, userNick: agentInfo.userNick, token }
@@ -51,37 +53,37 @@ router.post('/handlerPoint', async (ctx, next) => {
                 return ctx.body = { err: true, res: '余额不足' }
             }
             //当前代理减点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理加点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: agentInfo.id, owenerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (inparam.project == '提现') {
             let balance = await getAgentBalance(agentInfo.id)
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '余额不足' }
             }
             //当前代理加点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理减点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: agentInfo.id, owenerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         }
     } else { //系统
         if (inparam.project == '充值') {
             //当前代理减点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理加点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: agentInfo.id, owenerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (inparam.project == '提现') {
             let balance = await getAgentBalance(agentInfo.id)
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '余额不足' }
             }
             //当前代理加点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理减点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: agentInfo.id, owenerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         }
     }
-
+    ctx.body = { err: false, msg: '操作成功' }
 })
 
 /**
@@ -100,19 +102,23 @@ router.post('/queryBill', async (ctx, next) => {
 
 //获取代理的余额
 async function getAgentBalance(agentId) {
+    let balance = 0
     let agentInfo = await mongodb.findOne('agent', { id: agentId })
     if (!agentInfo) {
         throw { err: true, res: '代理不存在' }
     }
     if (agentInfo.level == 0) {
-        return 'system'
+        balance = 'system'
+        return balance
     }
-    let agentGroupArr = await mongodb.db.collection('agentBill').aggregate([{ $group: { name: "$ownerName", count: { $sum: "$amount" } } }])
+    let agentGroupArr = await mongodb.db.collection('agentBill').aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of agentGroupArr) {
-        if (item.name == agentInfo.userName) {
-            return item.count
+        if (item._id == agentInfo.id) {
+            balance = item.count
+            return balance
         }
     }
+    return balance
 }
 
 module.exports = router

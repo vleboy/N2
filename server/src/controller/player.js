@@ -30,7 +30,7 @@ router.post('/login', async (ctx, next) => {
 /**
  * 玩家加减点操作
  */
-router.post('/handlerPlayerPoint', async (ctx, next) => {
+router.post('/handlerPoint', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
@@ -51,57 +51,63 @@ router.post('/handlerPlayerPoint', async (ctx, next) => {
                 return ctx.body = { err: true, res: '余额不足' }
             }
             //当前代理减点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求玩家加点
-            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: playerInfo.id, owenerName: playerInfo.playerName, createAt: Date.now() })
+            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: playerInfo.id, ownerName: playerInfo.playerName, createAt: Date.now() })
         } else if (inparam.project == '提现') {
             let balance = await getPlayerBalance(playerInfo.id)
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '余额不足' }
             }
             //当前代理加点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求玩家减点
-            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: playerInfo.id, owenerName: playerInfo.playerName, createAt: Date.now() })
+            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: playerInfo.id, ownerName: playerInfo.playerName, createAt: Date.now() })
         }
     } else { //系统
         if (inparam.project == '充值') {
             //当前代理减点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求玩家加点
-            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: playerInfo.id, owenerName: playerInfo.playerName, createAt: Date.now() })
+            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: playerInfo.id, ownerName: playerInfo.playerName, createAt: Date.now() })
         } else if (inparam.project == '提现') {
             let balance = await getPlayerBalance(playerInfo.id)
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '余额不足' }
             }
             //当前代理加点
-            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: inparam.amount, ownerId: token.id, owenerName: token.userName, createAt: Date.now() })
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理减点
-            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '减点', amount: inparam.amount, ownerId: playerInfo.id, owenerName: playerInfo.playerName, createAt: Date.now() })
+            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: playerInfo.id, ownerName: playerInfo.playerName, createAt: Date.now() })
         }
     }
+    ctx.body = { err: false, msg: '操作成功' }
 })
 
 //获取代理的余额
 async function getAgentBalance(agentId) {
+    let balance = 0
     let agentInfo = await mongodb.findOne('agent', { id: agentId })
     if (!agentInfo) {
         throw { err: true, res: '代理不存在' }
     }
     if (agentInfo.level == 0) {
-        return 'system'
+        balance = 'system'
+        return balance
     }
-    let agentGroupArr = await mongodb.db.collection('agentBill').aggregate([{ $group: { name: "$ownerName", count: { $sum: "$amount" } } }])
+    let agentGroupArr = await mongodb.db.collection('agentBill').aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of agentGroupArr) {
-        if (item.name == agentInfo.userName) {
-            return item.count
+        if (item._id == agentInfo.id) {
+            balance = item.count
+            return balance
         }
     }
+    return balance
 }
 
 //获取玩家的余额
 async function getPlayerBalance(playerId) {
+    let balance = 0
     let playerInfo = await mongodb.findOne('player', { id: playerId })
     if (!playerInfo) {
         throw { err: true, res: '玩家不存在' }
@@ -109,12 +115,13 @@ async function getPlayerBalance(playerId) {
     if (playerInfo.status == 0) {
         throw { err: true, res: '玩家已被冻结' }
     }
-    let playerGroupArr = await mongodb.db.collection('playerBill').aggregate([{ $group: { name: "$ownerName", count: { $sum: "$amount" } } }])
+    let playerGroupArr = await mongodb.db.collection('playerBill').aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of playerGroupArr) {
-        if (item.name == playerInfo.playerName) {
+        if (item._id == playerInfo.id) {
             return item.count
         }
     }
+    return balance
 }
 
 
