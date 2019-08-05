@@ -37,7 +37,7 @@ router.post('/agent/create', async (ctx, next) => {
         inparam.level = parent.level + 1 || 0
         inparam.parentName = parent.userName || 'system'
         inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id.toString()
-        inparam.userHashPwd = GetHashPwd(inparam.userPwd)
+        // inparam.userHashPwd = GetHashPwd(inparam.userPwd)
         inparam.createAt = Date.now()
         return next()
     }

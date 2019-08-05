@@ -34,7 +34,7 @@ router.post('/player/create', async (ctx, next) => {
         inparam.status = 1
         inparam.parentId = agentInfo.id
         inparam.parentName = agentInfo.userName
-        inparam.playerHashPwd = GetHashPwd(inparam.playerPwd)
+        // inparam.playerHashPwd = GetHashPwd(inparam.playerPwd)
         inparam.role = "player"
         inparam.createAt = Date.now()
         return next()

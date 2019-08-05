@@ -6,7 +6,7 @@ const router = new Router()
 const _ = require('lodash')
 
 /**
- * 审核充值/提现接口
+ * 审核（充值/提现）接口（来源于申请单可以是代理或者玩家）
  */
 router.post('/handlerReview', async (ctx, next) => {
     const token = ctx.tokenVerify
@@ -22,43 +22,34 @@ router.post('/handlerReview', async (ctx, next) => {
     if (reviewInfo.status == 1) {
         return ctx.body = { err: true, res: '订单已处理' }
     }
-    //下面应该用事务做（暂时写流程）
-    let agentItem = {
-        billId: _.random(99999999),
-        ownerId: token.id,
-        ownerName: token.userName,
-        createAt: Date.now()
-    }
-    let playerItem = {
-        billId: _.random(99999999),
-        ownerId: reviewInfo.proposerId,
-        ownerName: reviewInfo.proposerName,
-        createAt: Date.now()
-    }
     if (reviewInfo.project == '充值') {
-        //判断代理是否有钱扣
-        let balance = await getAgentBalance(token.id)
-        if (balance != 'system' && balance < reviewInfo.amount) {
-            return ctx.body = { err: true, res: '代理余额不足' }
+        if (reviewInfo.role == 'agent') {
+            let agentInfo = await mongodb.findOne('agent', { id: reviewInfo.proposerId })
+            if (!agentInfo) {
+                return ctx.body = { err: true, res: '代理不存在' }
+            }
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(reviewInfo.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+        } else if (reviewInfo.role == 'player') {
+            let player = await mongodb.findOne('player', { id: reviewInfo.proposerId })
+            if (!player) {
+                return ctx.body = { err: true, res: '玩家不存在' }
+            }
+            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '加点', amount: Math.abs(reviewInfo.amount), ownerId: player.id, ownerName: player.userName, createAt: Date.now() })
         }
-        //代理新增扣钱流水
-        agentItem.project = '减点'
-        agentItem.amount = Math.abs(reviewInfo.amount) * -1
-        await mongodb.insert('agentBill', agentItem)
-        //玩家新增加钱流水
-        playerItem.project = '加点'
-        playerItem.amount = Math.abs(reviewInfo.amount)
-        await mongodb.insert('playerBill', playerItem)
     } else if (reviewInfo.project == '提现') {
-        //判断玩家余额是否足够
-        let balance = await getPlayerBalance(reviewInfo.proposerId)
-        if (balance < reviewInfo.amount) {
-            return ctx.body = { err: true, res: '玩家余额不足' }
+        if (reviewInfo.role == 'agent') {
+            let agentInfo = await mongodb.findOne('agent', { id: reviewInfo.proposerId })
+            if (!agentInfo) {
+                return ctx.body = { err: true, res: '代理不存在' }
+            }
+            await mongodb.insert('agentBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(reviewInfo.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+        } else if (reviewInfo.role == 'player') {
+            let player = await mongodb.findOne('player', { id: reviewInfo.proposerId })
+            if (!player) {
+                return ctx.body = { err: true, res: '玩家不存在' }
+            }
+            await mongodb.insert('playerBill', { billId: _.random(99999999), project: '减点', amount: Math.abs(reviewInfo.amount) * -1, ownerId: player.id, ownerName: player.userName, createAt: Date.now() })
         }
-        //玩家提现代理不加点只有玩家减点记录
-        playerItem.project = '减点'
-        playerItem.amount = Math.abs(reviewInfo.amount) * -1
-        await mongodb.insert('playerBill', playerItem)
     }
     // 更新审核条件
     let updateItem = {

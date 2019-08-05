@@ -14,7 +14,7 @@ router.post('/login', async (ctx, next) => {
     let player = await mongodb.findOne('player', { playerName: inparam.playerName })
     if (!player) {
         ctx.body = { err: true, res: '帐号不存在' }
-    } else if (!bcrypt.compareSync(inparam.playerPwd, player.playerHashPwd)) {
+    } else if (!bcrypt.compareSync(player.playerPwd, inparam.playerPwd)) {
         ctx.body = { err: true, res: '密码不正确' }
     } else {
         let token = jwt.sign({
