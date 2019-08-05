@@ -32,10 +32,11 @@ router.post('/agent/create', async (ctx, next) => {
             }
         }
         inparam.status = 1
+        inparam.role = 'agent'
         inparam.parentId = parent.id || 0
         inparam.level = parent.level + 1 || 0
         inparam.parentName = parent.userName || 'system'
-        inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id
+        inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id.toString()
         inparam.userHashPwd = GetHashPwd(inparam.userPwd)
         inparam.createAt = Date.now()
         return next()

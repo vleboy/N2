@@ -86,12 +86,6 @@ router.post('/handlerPoint', async (ctx, next) => {
     ctx.body = { err: false, msg: '操作成功' }
 })
 
-/**
- * 启用/停用代理
- */
-router.post('/handlerStatus', async (ctx, next) => {
-
-})
 
 /**
  * 代理流水查询
@@ -99,6 +93,51 @@ router.post('/handlerStatus', async (ctx, next) => {
 router.post('/queryBill', async (ctx, next) => {
 
 })
+
+/**
+ * 代理树型结构
+ */
+router.get('/tree', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    let mongodb = global.mongodb
+    //查出所有代理
+    let agentArr = await mongodb.find('agent', { role: 'agent' })
+    if (token.role != 'admin') { //任意层级代理需要过滤代理
+        agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
+    }
+    agentArr = _.sortBy(agentArr, ['level'])
+    let data = []
+    if (token.role == 'admin') {
+        data.push({ id: 0, userNick: token.userNick, userName: token.userName, children: [] })
+    } else {
+        data.push({ ...agentArr.shift(), children: [] })
+    }
+    tree(data, agentArr)
+    ctx.body = data[0].children
+})
+
+function tree(treeArray, array) {
+    // 遍历所有节点
+    for (let treeNode of treeArray) {
+        let id = treeNode.id
+        let children = treeNode.children || []
+        // 遍历剩余节点
+        for (let j = 0; j < array.length; j++) {
+            let item = array[j]
+            item.children = []
+            // 找到父亲，加入父亲节点，并从剩余节点删除
+            if (item.parentId == id) {
+                children.push(item)
+                array.splice(j, 1)
+                j--
+            }
+        }
+        // 剩余节点不为0时，递归查询
+        if (array.length != 0) {
+            tree(children, array)
+        }
+    }
+}
 
 //获取代理的余额
 async function getAgentBalance(agentId) {

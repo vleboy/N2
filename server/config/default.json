@@ -20,18 +20,46 @@
         ],
         "role": {
             "admin": [
-                ".*"
-            ],
-            "test":[
-                "/xnosql/player/create"
-            ],
-            "user":[
-                "/xnosql/player/create",
+                "/xnosql/agent/create",
+                "/xnosql/agent/get/",
+                "/xnosql/agent/query",
+                "/xnosql/agent/update",
                 "/xserver/agent/handlerPoint",
-                "/xserver/player/handlerPoint"
+                "/xnosql/player/create",
+                "/xnosql/player/get/",
+                "/xnosql/player/query",
+                "/xnosql/player/update",
+                "/xserver/player/handlerPoint",
+                "/xnosql/playerBill/query",
+                "/xnosql/agentBill/query",
+                "/xnosql/role/create",
+                "/xnosql/role/query",
+                "/xnosql/role/delete/",
+                "/xnosql/review/query",
+                "/xnosql/message/create",
+                "/xnosql/message/delete/",
+                "/xnosql/message/query",
+                "/xserver/system/handlerReview"
             ],
-            "player":[
-                "/xnosql/review/create"
+            "agent": [
+                "/xnosql/agent/get/",
+                "/xnosql/agent/query",
+                "/xnosql/agent/update",
+                "/xserver/agent/handlerPoint",
+                "/xnosql/player/create",
+                "/xnosql/player/get/",
+                "/xnosql/player/query",
+                "/xnosql/player/update",
+                "/xserver/player/handlerPoint",
+                "/xnosql/playerBill/query",
+                "/xnosql/review/query",
+                "/xserver/system/handlerReview"
+            ],
+            "player": [
+                "/xnosql/player/update",
+                "/xnosql/playerBill/query",
+                "/xnosql/review/create",
+                "/xnosql/review/query"
             ]
         },
         "cors": true,
