@@ -42,7 +42,7 @@ router.post('/handlerPoint', async (ctx, next) => {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     // 检查代理/玩家是否满足操作条件
-    checkUserHandlerPoint(inparam)
+    await checkUserHandlerPoint(inparam)
     // 加点操作
     if (inparam.project == ProjectEnum.addPoint) {
         // 给代理加点
@@ -139,7 +139,7 @@ router.post('/handlerReview', async (ctx, next) => {
 })
 
 //检查用户是否可以转账
-function checkUserHandlerPoint(inparam) {
+async function checkUserHandlerPoint(inparam) {
     if (inparam.role == RoleEnum.agent) {
         let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.id })
         if (!agentInfo || agentInfo.status == 0) {
