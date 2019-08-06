@@ -20,14 +20,14 @@ router.post('/review/create', async (ctx, next) => {
         ctx.body = { err: true, res: '请检查入参' }
     } else {
         if (inparam.role == 'agent') {
-            let agentInfo = await mongodb.findOne('agent', { id: inparam.proposerId })
+            let agentInfo = await mongodb.collection('agent').findOne( { id: inparam.proposerId })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }
             }
             inparam.proposerName = agentInfo.userName
         }
         if (inparam.role == 'player') {
-            let playerInfo = await mongodb.findOne('player', { id: inparam.proposerId })
+            let playerInfo = await mongodb.collection('player').findOne( { id: inparam.proposerId })
             if (!playerInfo) {
                 return ctx.body = { err: true, res: '玩家不存在' }
             }

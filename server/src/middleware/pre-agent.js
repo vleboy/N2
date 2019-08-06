@@ -5,7 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 // 工具相关
 const _ = require('lodash')
-const { CheckType, GetHashPwd } = require('../util/util')
+const { CheckType } = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -19,15 +19,15 @@ router.post('/agent/create', async (ctx, next) => {
     // 入参检查
     if (!inparam.userName || !inparam.userPwd || !inparam.userNick) {
         ctx.body = { err: true, res: '请检查入参' }
-    } else if (await mongodb.findOne('agent', { $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
+    } else if (await mongodb.collection('agent').findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
         ctx.body = { err: true, res: '帐号/昵称已存在' }
     } else {
         // 查询上级代理
-        let parent = inparam.parentId ? await mongodb.findOne('agent', { id: inparam.parentId }) : {}
+        let parent = inparam.parentId ? await mongodb.collection('agent').findOne( { id: inparam.parentId }) : {}
         let flag = true
         while (flag) {
             inparam.id = _.random(100000, 999999)
-            if (!await mongodb.findOne('agent', { id: inparam.id })) {
+            if (!await mongodb.collection('agent').findOne( { id: inparam.id })) {
                 flag = false
             }
         }
@@ -37,7 +37,6 @@ router.post('/agent/create', async (ctx, next) => {
         inparam.level = parent.level + 1 || 0
         inparam.parentName = parent.userName || 'system'
         inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id.toString()
-        // inparam.userHashPwd = GetHashPwd(inparam.userPwd)
         inparam.createAt = Date.now()
         return next()
     }
@@ -59,12 +58,9 @@ router.post('/agent/update', async (ctx, next) => {
         ctx.body = { err: true, res: '昵称长度不合法' }
     } else if (inparam.gameList && (CheckType(inparam.gameList) != 'array')) {
         ctx.body = { err: true, res: '游戏列表不合法' }
-    } else if (!(agentInfo = await mongodb.findOne('agent', { id: inparam.id }))) {
+    } else if (!(agentInfo = await mongodb.collection('agent').findOne({ id: inparam.id }))) {
         ctx.body = { err: true, res: '代理不存在' }
     } else {
-        if (inparam.userPwd) {
-            inparam.userHashPwd = GetHashPwd(inparam.userPwd)
-        }
         if (inparam.status == 0 || inparam.status == 1) {
             if (token.id != agentInfo.parentId) {
                 return ctx.body = { err: true, res: '不能越级操作' }

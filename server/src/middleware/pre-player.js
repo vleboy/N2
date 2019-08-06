@@ -19,22 +19,21 @@ router.post('/player/create', async (ctx, next) => {
     let agentInfo = ''
     if (!inparam.playerName || !inparam.playerPwd || !inparam.parentId || inparam.playerName.length > 20 || inparam.playerPwd.length > 20 || inparam.playerName.length < 3 || inparam.playerPwd.length < 6) {
         ctx.body = { err: true, res: '请检查入参' }
-    } else if (await mongodb.findOne('player', { playerName: inparam.playerName })) {
+    } else if (await mongodb.collection('player').findOne( { playerName: inparam.playerName })) {
         ctx.body = { err: true, res: '帐号已存在' }
-    } else if (!(agentInfo = await mongodb.findOne('agent', { id: inparam.parentId }))) {
+    } else if (!(agentInfo = await mongodb.collection('agent').findOne( { id: inparam.parentId }))) {
         ctx.body = { err: true, res: '所属代理不存在' }
     } else {
         let flag = true
         while (flag) {
             inparam.id = _.random(10000000, 99999999)
-            if (!await mongodb.findOne('player', { id: inparam.id })) {
+            if (!await mongodb.collection('player').findOne( { id: inparam.id })) {
                 flag = false
             }
         }
         inparam.status = 1
         inparam.parentId = agentInfo.id
         inparam.parentName = agentInfo.userName
-        // inparam.playerHashPwd = GetHashPwd(inparam.playerPwd)
         inparam.role = "player"
         inparam.createAt = Date.now()
         return next()
@@ -51,7 +50,7 @@ router.post('/player/update', async (ctx, next) => {
         ctx.body = { err: true, res: '密码长度不合法' }
     } else if (inparam.playerNick && (inparam.playerNick.length < 3 || inparam.playerNick.length > 20)) {
         ctx.body = { err: true, res: '昵称长度不合法' }
-    } else if (!await mongodb.findOne('player', { id: inparam.id })) {
+    } else if (!await mongodb.collection('player').findOne( { id: inparam.id })) {
         ctx.body = { err: true, res: '玩家不存在' }
     } else {
         return next()

@@ -11,7 +11,7 @@ const router = new Router()
 router.post('/login', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    let player = await mongodb.findOne('player', { playerName: inparam.playerName })
+    let player = await mongodb.collection('player').findOne({ playerName: inparam.playerName })
     if (!player) {
         ctx.body = { err: true, res: '帐号不存在' }
     } else if (!bcrypt.compareSync(player.playerPwd, inparam.playerPwd)) {
