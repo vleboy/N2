@@ -9,7 +9,8 @@ const _ = require('lodash')
 const log = require('tracer').colorConsole({ level: config.log.level })
 
 /**
- * 申请创建一条充值/提现的
+ * 发起一条（充值/提现）的申请单
+ * 由后台管理员审核通过
  */
 router.post('/review/create', async (ctx, next) => {
     const token = ctx.tokenVerify
@@ -41,7 +42,7 @@ router.post('/review/create', async (ctx, next) => {
 
 
 /**
- * 查询充值/提现
+ * 查询所有的（充值/提现）的申请单
  */
 router.get('/review/query', async (ctx, next) => {
     let inparam = ctx.request.query

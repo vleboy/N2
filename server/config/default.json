@@ -21,16 +21,15 @@
         ],
         "role": {
             "admin": [
+                "/xserver/agent/tree",
                 "/xnosql/agent/create",
                 "/xnosql/agent/get/",
                 "/xnosql/agent/query",
                 "/xnosql/agent/update",
-                "/xserver/agent/handlerPoint",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
                 "/xnosql/player/update",
-                "/xserver/player/handlerPoint",
                 "/xnosql/playerBill/query",
                 "/xnosql/agentBill/query",
                 "/xnosql/role/create",
@@ -40,9 +39,11 @@
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
                 "/xnosql/message/query",
-                "/xserver/system/handlerReview"
+                "/xserver/user/handlerReview",
+                "/xserver/user/handlerPoint"
             ],
             "agent": [
+                "/xserver/agent/tree",
                 "/xnosql/agent/get/",
                 "/xnosql/agent/query",
                 "/xnosql/agent/update",
@@ -51,10 +52,8 @@
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
                 "/xnosql/player/update",
-                "/xserver/player/handlerPoint",
                 "/xnosql/playerBill/query",
-                "/xnosql/review/query",
-                "/xserver/system/handlerReview"
+                "/xnosql/review/query"
             ],
             "player": [
                 "/xnosql/player/update",
