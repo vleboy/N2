@@ -35,7 +35,6 @@ router.post('/create', async (ctx, next) => {
  * 管理员可直接对（代理/玩家）进行(充值/提现)操作
  */
 router.post('/handlerPoint', async (ctx, next) => {
-    const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     if (!inparam.id || !inparam.project || !inparam.role || !inparam.amount) {
@@ -81,15 +80,16 @@ router.post('/handlerReview', async (ctx, next) => {
     if (!inparam.id) {
         return ctx.body = { err: true, res: '请检查id' }
     }
-    let reviewInfo = await mongodb.collection('review').findOne({ id: inparam.id })
+    let reviewInfo = await mongodb.collection(CollectionEnum.review).findOne({ id: inparam.id })
     if (!reviewInfo) {
         return ctx.body = { err: true, res: '订单不存在' }
     }
     if (reviewInfo.status == 1) {
         return ctx.body = { err: true, res: '订单已处理' }
     }
+    //检查订单是否
     if (reviewInfo.project == ProjectEnum.addPoint) {
-        if (reviewInfo.role == 'agent') {
+        if (reviewInfo.role == RoleEnum.agent) {
             let agentInfo = await mongodb.collection('agent').findOne({ id: reviewInfo.proposerId })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }

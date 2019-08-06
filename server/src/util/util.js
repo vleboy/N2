@@ -22,6 +22,18 @@ const CollectionEnum = {
     review: 'review',
     subrole: 'subrole'
 }
+//启用/停用枚举
+const StatusEnum = {
+    Enable: 1,
+    Disable: 0
+}
+//审核单转态枚举
+const ReviewEnum = {
+    Process: 0,
+    Agree: 1,
+    Refuse: 2,
+}
+
 
 //检查类型
 function CheckType(o) {
@@ -41,5 +53,7 @@ module.exports = {
     GetHashPwd,
     ProjectEnum,
     RoleEnum,
-    CollectionEnum
+    CollectionEnum,
+    ReviewEnum,
+    StatusEnum
 }
