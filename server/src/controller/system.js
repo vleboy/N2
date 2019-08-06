@@ -4,6 +4,7 @@ const router = new Router()
 
 //工具
 const _ = require('lodash')
+const {ProjectEnum}=require('../util/util')
 
 /**
  * 审核（充值/提现）接口（来源于申请单可以是代理或者玩家）
@@ -22,33 +23,33 @@ router.post('/handlerReview', async (ctx, next) => {
     if (reviewInfo.status == 1) {
         return ctx.body = { err: true, res: '订单已处理' }
     }
-    if (reviewInfo.project == '充值') {
+    if (reviewInfo.project == ProjectEnum.addPoint) {
         if (reviewInfo.role == 'agent') {
             let agentInfo = await mongodb.collection('agent').findOne( { id: reviewInfo.proposerId })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }
             }
-            await mongodb.collection('agentBill').insertOne( { billId: _.random(99999999), project: '加点', amount: Math.abs(reviewInfo.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.collection('agentBill').insertOne( { billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (reviewInfo.role == 'player') {
             let player = await mongodb.collection('player').findOne( { id: reviewInfo.proposerId })
             if (!player) {
                 return ctx.body = { err: true, res: '玩家不存在' }
             }
-            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: '加点', amount: Math.abs(reviewInfo.amount), ownerId: player.id, ownerName: player.userName, createAt: Date.now() })
+            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: player.id, ownerName: player.userName, createAt: Date.now() })
         }
-    } else if (reviewInfo.project == '提现') {
+    } else if (reviewInfo.project == ProjectEnum.reducePoint) {
         if (reviewInfo.role == 'agent') {
             let agentInfo = await mongodb.collection('agent').findOne({ id: reviewInfo.proposerId })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }
             }
-            await mongodb.collection('agentBill').insertOne( { billId: _.random(99999999), project: '减点', amount: Math.abs(reviewInfo.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.collection('agentBill').insertOne( { billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (reviewInfo.role == 'player') {
             let player = await mongodb.collection('player').findOne( { id: reviewInfo.proposerId })
             if (!player) {
                 return ctx.body = { err: true, res: '玩家不存在' }
             }
-            await mongodb.collection('playerBill').insertOne( { billId: _.random(99999999), project: '减点', amount: Math.abs(reviewInfo.amount) * -1, ownerId: player.id, ownerName: player.userName, createAt: Date.now() })
+            await mongodb.collection('playerBill').insertOne( { billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount) * -1, ownerId: player.id, ownerName: player.userName, createAt: Date.now() })
         }
     }
     // 更新审核条件

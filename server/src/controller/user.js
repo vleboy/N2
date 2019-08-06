@@ -4,6 +4,7 @@ const router = new Router()
 
 //工具
 const _ = require('lodash')
+const { ProjectEnum } = require('../util/util')
 
 //创建管理员
 router.post('/create', async (ctx, next) => {
@@ -19,14 +20,14 @@ router.post('/create', async (ctx, next) => {
     let flag = true
     while (flag) {
         inparam.id = _.random(100000, 999999)
-        if (!await mongodb.collection('agent').findOne( { id: inparam.id })) {
+        if (!await mongodb.collection('agent').findOne({ id: inparam.id })) {
             flag = false
         }
     }
     inparam.status = 1
     inparam.role = 'admin'
     inparam.createAt = Date.now()
-    let result = await mongodb.collection('agent').insertOne( inparam)
+    let result = await mongodb.collection('agent').insertOne(inparam)
     ctx.body = { err: false, res: result.insertedId }
 })
 
@@ -40,23 +41,23 @@ router.post('/handlerPoint', async (ctx, next) => {
     if (!inparam.id || !inparam.project || !inparam.role || !inparam.amount) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    if (inparam.project == '充值') {
+    if (inparam.project == ProjectEnum.addPoint) {
         if (inparam.role == 'agent') {
-            let agentInfo = await mongodb.collection('agent').findOne( { id: inparam.id })
+            let agentInfo = await mongodb.collection('agent').findOne({ id: inparam.id })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }
             }
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (inparam.role == 'player') {
-            let player = await mongodb.collection('player').findOne( { id: inparam.id })
+            let player = await mongodb.collection('player').findOne({ id: inparam.id })
             if (!player) {
                 return ctx.body = { err: true, res: '玩家不存在' }
             }
-            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
+            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
         }
-    } else if (inparam.project == '提现') {
+    } else if (inparam.project == ProjectEnum.reducePoint) {
         if (inparam.role == 'agent') {
-            let agentInfo = await mongodb.collection('agent').findOne( { id: inparam.id })
+            let agentInfo = await mongodb.collection('agent').findOne({ id: inparam.id })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }
             }
@@ -64,9 +65,9 @@ router.post('/handlerPoint', async (ctx, next) => {
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '代理余额不足' }
             }
-            await mongodb.collection('agentBill').insertOne( { billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (inparam.role == 'player') {
-            let player = await mongodb.collection('player').findOne( { id: inparam.id })
+            let player = await mongodb.collection('player').findOne({ id: inparam.id })
             if (!player) {
                 return ctx.body = { err: true, res: '玩家不存在' }
             }
@@ -74,7 +75,7 @@ router.post('/handlerPoint', async (ctx, next) => {
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '玩家余额不足' }
             }
-            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
+            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
         }
     }
     ctx.body = { err: false, res: '操作成功' }
@@ -98,23 +99,23 @@ router.post('/handlerReview', async (ctx, next) => {
     if (reviewInfo.status == 1) {
         return ctx.body = { err: true, res: '订单已处理' }
     }
-    if (reviewInfo.project == '充值') {
+    if (reviewInfo.project == ProjectEnum.addPoint) {
         if (reviewInfo.role == 'agent') {
-            let agentInfo = await mongodb.collection('agent').findOne( { id: reviewInfo.proposerId })
+            let agentInfo = await mongodb.collection('agent').findOne({ id: reviewInfo.proposerId })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }
             }
-            await mongodb.collection('agentBill').insertOne( { billId: _.random(99999999), project: '加点', amount: Math.abs(reviewInfo.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (reviewInfo.role == 'player') {
             let player = await mongodb.findOne('player', { id: reviewInfo.proposerId })
             if (!player) {
                 return ctx.body = { err: true, res: '玩家不存在' }
             }
-            await mongodb.collection('playerBill').insertOne( { billId: _.random(99999999), project: '加点', amount: Math.abs(reviewInfo.amount), ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
+            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
         }
-    } else if (reviewInfo.project == '提现') {
+    } else if (reviewInfo.project == ProjectEnum.reducePoint) {
         if (reviewInfo.role == 'agent') {
-            let agentInfo = await mongodb.collection('agent').findOne( { id: reviewInfo.proposerId })
+            let agentInfo = await mongodb.collection('agent').findOne({ id: reviewInfo.proposerId })
             if (!agentInfo) {
                 return ctx.body = { err: true, res: '代理不存在' }
             }
@@ -122,9 +123,9 @@ router.post('/handlerReview', async (ctx, next) => {
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '代理余额不足' }
             }
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '减点', amount: Math.abs(reviewInfo.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
         } else if (reviewInfo.role == 'player') {
-            let player = await mongodb.collection('player').findOne( { id: reviewInfo.proposerId })
+            let player = await mongodb.collection('player').findOne({ id: reviewInfo.proposerId })
             if (!player) {
                 return ctx.body = { err: true, res: '玩家不存在' }
             }
@@ -132,7 +133,7 @@ router.post('/handlerReview', async (ctx, next) => {
             if (balance < inparam.amount) {
                 return ctx.body = { err: true, res: '玩家余额不足' }
             }
-            await mongodb.collection('palyerBill').insertOne( { billId: _.random(99999999), project: '减点', amount: Math.abs(reviewInfo.amount) * -1, ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
+            await mongodb.collection('palyerBill').insertOne({ billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount) * -1, ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
         }
     }
     // 更新审核条件
@@ -142,14 +143,14 @@ router.post('/handlerReview', async (ctx, next) => {
         reviewerName: token.userName,
         reviewAt: Date.now()
     }
-    let result = await mongodb.collection('review').updateOne( { id: inparam.id }, { $set: updateItem })
+    let result = await mongodb.collection('review').updateOne({ id: inparam.id }, { $set: updateItem })
     ctx.body = { err: false, res: result.result.nModified.toString() }
 })
 
 //获取代理的余额
 async function getAgentBalance(agentId) {
     let balance = 0
-    let agentInfo = await mongodb.collection('agent').findOne( { id: agentId })
+    let agentInfo = await mongodb.collection('agent').findOne({ id: agentId })
     if (!agentInfo || agentInfo.status == 0) {
         throw { err: true, res: '代理不存在或被冻结' }
     }
@@ -165,7 +166,7 @@ async function getAgentBalance(agentId) {
 //获取玩家的余额
 async function getPlayerBalance(playerId) {
     let balance = 0
-    let playerInfo = await mongodb.collection('player').findOne( { id: playerId })
+    let playerInfo = await mongodb.collection('player').findOne({ id: playerId })
     if (!playerInfo) {
         throw { err: true, res: '玩家不存在' }
     }

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const captchapng = require('captchapng')
 const _ = require('lodash')
+const { ProjectEnum, RoleEnum, CollectionEnum } = require('../util/util')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -67,62 +68,42 @@ router.post('/handlerPoint', async (ctx, next) => {
     if (!inparam.ownerId || !inparam.amount || !inparam.project || !inparam.role) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    if (inparam.role == 'agent') { //代理给直属下级代理转账
-        let agentInfo = await mongodb.collection('agent').findOne({ id: inparam.ownerId })
-        if (!agentInfo) {
-            return ctx.body = { err: true, res: '代理不存在' }
-        }
-        if (token.id != agentInfo.parentId) {
-            return ctx.body = { err: true, res: '不能越级操作' }
-        }
-        if (inparam.project == '加点') {
-            let balance = await getAgentBalance(token.id)
-            if (balance < inparam.amount) {
-                return ctx.body = { err: true, res: '余额不足' }
-            }
+    // 检查代理或玩家是否可以进行转账操作
+    checkUserHandlerPoint(inparam, token)
+    // 加点操作
+    if (inparam.project == ProjectEnum.addPoint) {
+        // 给代理加点
+        if (inparam.role == RoleEnum.agent) {
             //操作代理减点
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理加点
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
-        } else if (inparam.project == '减点') {
-            let balance = await getAgentBalance(agentInfo.id)
-            if (balance < inparam.amount) {
-                return ctx.body = { err: true, res: '余额不足' }
-            }
-            //操作代理加点
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
-            //请求代理减点
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
         }
-    } else if (inparam.role == 'player') { //代理给玩家转账
-        let player = await mongodb.collection('player').findOne({ id: inparam.ownerId })
-        if (!player) {
-            return ctx.body = { err: true, res: '玩家不存在' }
-        }
-        if (player.parentId != token.id) {
-            return ctx.body = { err: true, res: '不能越级操作' }
-        }
-        if (inparam.project == '加点') {
-            let balance = await getAgentBalance(token.id)
-            if (balance < inparam.amount) {
-                return ctx.body = { err: true, res: '余额不足' }
-            }
+        // 给玩家加点
+        if (inparam.role == RoleEnum.player) {
             //操作代理减点
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求玩家加点
-            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
-        } else if (inparam.project == '减点') {
-            let balance = await getPlayerBalance(player.id)
-            if (balance < inparam.amount) {
-                return ctx.body = { err: true, res: '余额不足' }
-            }
-            //操作代理加点
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: '加点', amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
-            //请求玩家减点
-            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: '减点', amount: Math.abs(inparam.amount) * -1, ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
         }
     }
-
+    // 减点操作
+    if (inparam.project == ProjectEnum.reducePoint) {
+        // 给代理减点
+        if (inparam.role == RoleEnum.agent) {
+            //操作代理加点
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            //请求代理减点
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+        }
+        // 给玩家减点
+        if (inparam.role == RoleEnum.player) {
+            //操作代理加点
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            //请求玩家减点
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+        }
+    }
     ctx.body = { err: false, msg: '操作成功' }
 })
 
@@ -179,14 +160,57 @@ function tree(treeArray, array) {
     }
 }
 
+//检查用户是否可以转账
+function checkUserHandlerPoint(inparam, token) {
+    if (inparam.role == RoleEnum.agent) {
+        let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.ownerId })
+        if (!agentInfo || agentInfo.status == 0) {
+            throw { err: true, res: '代理不存在或被停用' }
+        }
+        if (token.id != agentInfo.parentId) {
+            throw { err: true, res: '不能跨级操作' }
+        }
+        let balance = 0
+        if (inparam.project == ProjectEnum.addPoint) {
+            balance = await getAgentBalance(token.id)
+        } else if (inparam.project == ProjectEnum.reducePoint) {
+            balance = await getAgentBalance(agentInfo.id)
+        } else {
+            throw { err: true, res: '未知操作' }
+        }
+        if (balance < inparam.amount) {
+            throw { err: true, res: '余额不足' }
+        }
+        inparam.ownerName = agentInfo.userName
+    } else if (inparam.role == RoleEnum.player) {
+        let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.ownerId })
+        if (!player || player.status == 0) {
+            return ctx.body = { err: true, res: '玩家不存在或被停用' }
+        }
+        if (player.parentId != token.id) {
+            return ctx.body = { err: true, res: '代理只能操作自己的玩家' }
+        }
+        let balance = 0
+        if (inparam.project == ProjectEnum.addPoint) {
+            balance = await getAgentBalance(token.id)
+        } else if (inparam.project == ProjectEnum.reducePoint) {
+            balance = await getPlayerBalance(player.id)
+        } else {
+            throw { err: true, res: '未知操作' }
+        }
+        if (balance < inparam.amount) {
+            throw { err: true, res: '余额不足' }
+        }
+        inparam.ownerName = player.playerName
+    } else {
+        throw { err: true, res: '非法角色' }
+    }
+}
+
 //获取代理的余额
 async function getAgentBalance(agentId) {
     let balance = 0
-    let agentInfo = await mongodb.collection('agent').findOne({ id: agentId })
-    if (!agentInfo || agentInfo.status == 0) {
-        throw { err: true, res: '代理不存在或被冻结' }
-    }
-    let agentGroupArr = await mongodb.collection('agentBill').aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+    let agentGroupArr = await mongodb.collection(CollectionEnum.agentBill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of agentGroupArr) {
         if (item._id == agentInfo.id) {
             balance = item.count
@@ -198,14 +222,7 @@ async function getAgentBalance(agentId) {
 //获取玩家的余额
 async function getPlayerBalance(playerId) {
     let balance = 0
-    let playerInfo = await mongodb.collection('player').findOne({ id: playerId })
-    if (!playerInfo) {
-        throw { err: true, res: '玩家不存在' }
-    }
-    if (playerInfo.status == 0) {
-        throw { err: true, res: '玩家已被冻结' }
-    }
-    let playerGroupArr = await mongodb.collection('playerBill').aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+    let playerGroupArr = await mongodb.collection(CollectionEnum.playerBill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of playerGroupArr) {
         if (item._id == playerInfo.id) {
             return item.count
