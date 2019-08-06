@@ -136,11 +136,7 @@ async function checkSystemHandlerReview(inparam) {
 //获取代理的余额
 async function getAgentBalance(agentId) {
     let balance = 0
-    let agentInfo = await mongodb.collection('agent').findOne({ id: agentId })
-    if (!agentInfo || agentInfo.status == StatusEnum.Disable) {
-        throw { err: true, res: '代理不存在或被冻结' }
-    }
-    let agentGroupArr = await mongodb.collection('agentBill').aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+    let agentGroupArr = await mongodb.collection(CollectionEnum.agentBill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of agentGroupArr) {
         if (item._id == agentInfo.id) {
             balance = item.count
@@ -152,14 +148,7 @@ async function getAgentBalance(agentId) {
 //获取玩家的余额
 async function getPlayerBalance(playerId) {
     let balance = 0
-    let playerInfo = await mongodb.collection('player').findOne({ id: playerId })
-    if (!playerInfo) {
-        throw { err: true, res: '玩家不存在' }
-    }
-    if (playerInfo.status == StatusEnum.Disable) {
-        throw { err: true, res: '玩家已被冻结' }
-    }
-    let playerGroupArr = await mongodb.collection('playerBill').aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+    let playerGroupArr = await mongodb.collection(CollectionEnum.playerBill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of playerGroupArr) {
         if (item._id == playerInfo.id) {
             return item.count
