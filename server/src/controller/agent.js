@@ -21,7 +21,7 @@ router.post('/login', async (ctx, next) => {
     if (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now()) {
         return ctx.body = { err: true, res: '验证码错误或过期' }
     }
-    let agentInfo = await mongodb.collection('agent').findOne({ userName: inparam.userName })
+    let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ userName: inparam.userName })
     if (!agentInfo) {
         return ctx.body = { err: true, res: '帐号不存在' }
     }
@@ -69,7 +69,7 @@ router.post('/handlerPoint', async (ctx, next) => {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     // 检查代理或玩家是否可以进行转账操作
-    checkUserHandlerPoint(inparam, token)
+    checkAgentHandlerPoint(inparam, token)
     // 加点操作
     if (inparam.project == ProjectEnum.addPoint) {
         // 给代理加点
@@ -122,7 +122,7 @@ router.get('/tree', async (ctx, next) => {
     const token = ctx.tokenVerify
     let mongodb = global.mongodb
     //查出所有代理
-    let agentArr = await mongodb.collection('agent').find({ role: 'agent' }).toArray()
+    let agentArr = await mongodb.collection(CollectionEnum.agent).find({ role: RoleEnum.agent }).toArray()
     if (token.role != 'admin') { //任意层级代理需要过滤代理
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }
@@ -161,7 +161,7 @@ function tree(treeArray, array) {
 }
 
 //检查用户是否可以转账
-function checkUserHandlerPoint(inparam, token) {
+function checkAgentHandlerPoint(inparam, token) {
     if (inparam.role == RoleEnum.agent) {
         let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.ownerId })
         if (!agentInfo || agentInfo.status == 0) {
@@ -185,10 +185,10 @@ function checkUserHandlerPoint(inparam, token) {
     } else if (inparam.role == RoleEnum.player) {
         let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.ownerId })
         if (!player || player.status == 0) {
-            return ctx.body = { err: true, res: '玩家不存在或被停用' }
+            throw { err: true, res: '玩家不存在或被停用' }
         }
         if (player.parentId != token.id) {
-            return ctx.body = { err: true, res: '代理只能操作自己的玩家' }
+            throw { err: true, res: '代理只能操作自己的玩家' }
         }
         let balance = 0
         if (inparam.project == ProjectEnum.addPoint) {

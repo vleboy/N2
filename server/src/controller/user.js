@@ -4,7 +4,7 @@ const router = new Router()
 
 //工具
 const _ = require('lodash')
-const { ProjectEnum } = require('../util/util')
+const { ProjectEnum, RoleEnum, CollectionEnum } = require('../util/util')
 
 //创建管理员
 router.post('/create', async (ctx, next) => {
@@ -41,42 +41,31 @@ router.post('/handlerPoint', async (ctx, next) => {
     if (!inparam.id || !inparam.project || !inparam.role || !inparam.amount) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
+    // 检查代理/玩家是否满足操作条件
+    checkUserHandlerPoint(inparam)
+    // 加点操作
     if (inparam.project == ProjectEnum.addPoint) {
-        if (inparam.role == 'agent') {
-            let agentInfo = await mongodb.collection('agent').findOne({ id: inparam.id })
-            if (!agentInfo) {
-                return ctx.body = { err: true, res: '代理不存在' }
-            }
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
-        } else if (inparam.role == 'player') {
-            let player = await mongodb.collection('player').findOne({ id: inparam.id })
-            if (!player) {
-                return ctx.body = { err: true, res: '玩家不存在' }
-            }
-            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
+        // 给代理加点
+        if (inparam.role == RoleEnum.agent) {
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.id, ownerName: inparam.ownerName, createAt: Date.now() })
         }
-    } else if (inparam.project == ProjectEnum.reducePoint) {
-        if (inparam.role == 'agent') {
-            let agentInfo = await mongodb.collection('agent').findOne({ id: inparam.id })
-            if (!agentInfo) {
-                return ctx.body = { err: true, res: '代理不存在' }
-            }
-            let balance = await getAgentBalance(agentInfo.id)
-            if (balance < inparam.amount) {
-                return ctx.body = { err: true, res: '代理余额不足' }
-            }
-            await mongodb.collection('agentBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: agentInfo.id, ownerName: agentInfo.userName, createAt: Date.now() })
-        } else if (inparam.role == 'player') {
-            let player = await mongodb.collection('player').findOne({ id: inparam.id })
-            if (!player) {
-                return ctx.body = { err: true, res: '玩家不存在' }
-            }
-            let balance = await getPlayerBalance(player.id)
-            if (balance < inparam.amount) {
-                return ctx.body = { err: true, res: '玩家余额不足' }
-            }
-            await mongodb.collection('playerBill').insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
+        // 给玩家加点
+        if (inparam.role == RoleEnum.player) {
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.id, ownerName: inparam.ownerName, createAt: Date.now() })
         }
+    }
+    // 减点操作
+    else if (inparam.project == ProjectEnum.reducePoint) {
+        // 给代理减点
+        if (inparam.role == RoleEnum.agent) {
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.id, ownerName: inparam.ownerName, createAt: Date.now() })
+        }
+        // 给玩家减点
+        if (inparam.role == RoleEnum.player) {
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.id, ownerName: inparam.ownerName, createAt: Date.now() })
+        }
+    } else {
+        return ctx.body = { err: true, res: '未知操作' }
     }
     ctx.body = { err: false, res: '操作成功' }
 })
@@ -135,6 +124,8 @@ router.post('/handlerReview', async (ctx, next) => {
             }
             await mongodb.collection('palyerBill').insertOne({ billId: _.random(99999999), project: reviewInfo.project, amount: Math.abs(reviewInfo.amount) * -1, ownerId: player.id, ownerName: player.playerName, createAt: Date.now() })
         }
+    } else {
+        return ctx.body = { err: true, res: '未知操作' }
     }
     // 更新审核条件
     let updateItem = {
@@ -146,6 +137,38 @@ router.post('/handlerReview', async (ctx, next) => {
     let result = await mongodb.collection('review').updateOne({ id: inparam.id }, { $set: updateItem })
     ctx.body = { err: false, res: result.result.nModified.toString() }
 })
+
+//检查用户是否可以转账
+function checkUserHandlerPoint(inparam) {
+    if (inparam.role == RoleEnum.agent) {
+        let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.id })
+        if (!agentInfo || agentInfo.status == 0) {
+            throw { err: true, res: '代理不存在或被停用' }
+        }
+        if (inparam.project == ProjectEnum.reducePoint) {
+            let balance = await getAgentBalance(agentInfo.id)
+            if (balance < inparam.amount) {
+                throw { err: true, res: '代理余额不足' }
+            }
+        }
+        inparam.ownerName = agentInfo.userName
+    } else if (inparam.role == RoleEnum.player) {
+        let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.id })
+        if (!player || player.status == 0) {
+            throw { err: true, res: '玩家不存在或被停用' }
+        }
+        if (inparam.project == ProjectEnum.reducePoint) {
+            let balance = await getPlayerBalance(player.id)
+            if (balance < inparam.amount) {
+                throw { err: true, res: '玩家余额不足' }
+            }
+        }
+        inparam.ownerName = player.playerName
+    } else {
+        throw { err: true, res: '非法角色' }
+    }
+}
+
 
 //获取代理的余额
 async function getAgentBalance(agentId) {
