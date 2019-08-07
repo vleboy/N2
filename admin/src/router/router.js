@@ -4,7 +4,10 @@ import err404 from '@/pages/404'
 //otherRouter
 import home from '@/pages/Home'
 import playerCenter from '@/pages/player/playerCenter'
+import playerBill from '@/pages/player/playerBill'
 import agentCenter from '@/pages/agent/agentCenter'
+import agentBill from '@/pages/agent/agentBill'
+import auditCenter from '@/pages/audit/auditCenter'
 
 const loginRouter = {
   path: '/login',
@@ -23,12 +26,13 @@ const page404 = {
   },
   component: err404
 }
+
 // 作为main组件的子页面展示但是不在左侧菜单显示的路由写在otherRouter里
 export const otherRouter = {
   path: '/',
   name: 'otherRouter',
-
   title: 'other',
+  redirect: 'home',
   component: main,
   children: [
     { path: 'home', name: 'home', title: '首页', component: home },
@@ -43,7 +47,10 @@ export const appRouter = [
     component: main,
     children: [
       { path: 'playerCenter', title: '玩家中心', name: 'playerCenter', component: playerCenter },
-      { path: 'agentCenter', title: '代理中心', name: 'agentCenter', component: agentCenter }
+      { path: 'agentCenter', title: '代理中心', name: 'agentCenter', component: agentCenter },
+      { path: 'auditCenter', title: '审核中心', name: 'auditCenter', component: auditCenter },
+      { path: 'playerBill', title: '玩家账单', name: 'playerBill', component: playerBill },
+      { path: 'agentBill', title: '代理账单', name: 'agentBill', component: agentBill }
     ]
   },
 ]

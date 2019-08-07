@@ -2,8 +2,20 @@ import { Message } from "iview";
 import { URL, httpType } from "./urlConfig";
 
 const axios = {
-  async get(url) {
+  async get(url, params) {
     return new Promise(async (resolve, reject) => {
+      if (params) {
+        let paramsArray = [];
+        //拼接参数  
+        Object.keys(params).forEach(key => {
+         params[key] && paramsArray.push(key + '=' + params[key])
+        })
+        if (url.search(/\?/) === -1) {
+          url += '?' + paramsArray.join('&')
+        } else {
+          url += '&' + paramsArray.join('&')
+        }
+      }
       try {
         let res = await fetch(httpType + URL() + url, {
           headers: {
@@ -71,8 +83,10 @@ export async function logIn(params) {
   return axios.post("/xserver/agent/login", params);
 }
 
+
+/* 代理中心 */
 //获取代理列表
-export async function getAgentList() {
+export async function queryAgent() {
   return axios.get("/xserver/agent/tree");
 }
 
@@ -81,14 +95,26 @@ export async function createAgent(params) {
   return axios.post("/xnosql/agent/create", params);
 }
 
-//加减点
-export async function setPoints(params) {
-  return axios.post("/xserver/user/handlerPoint", params);
+//停用启用代理
+export async function agentStatus(params) {
+  return axios.post("/xnosql/agent/update", params);
 }
 
+//代理账单
+export async function queryAgentBill(params) {
+  return axios.get("/xnosql/agentBill/query", params);
+}
+
+//加减点
+export async function setPoints(params) {
+  return axios.post("/xserver/system/handlerPoint", params);
+}
+
+
+/* 玩家中心 */
 //获取玩家列表
-export async function getplayerList() {
-  return axios.get("/xnosql/player/query");
+export async function queryPlayer(params) {
+  return axios.get("/xnosql/player/query", params);
 }
 
 //创建玩家
@@ -96,8 +122,28 @@ export async function createPlayer(params) {
   return axios.post("/xnosql/player/create", params);
 }
 
+//停用启用玩家
+export async function playerStatus(params) {
+  return axios.post("/xnosql/player/update", params);
+}
+
+//玩家账单
+export async function queryPlayerBill(params) {
+  return axios.get("/xnosql/playerBill/query", params);
+}
 
 
+/* 审核中心 */
+
+//审核列表
+export async function queryAudit(params) {
+  return axios.get("/xnosql/review/query", params);
+}
+
+//审核操作
+export async function operateAudit(params) {
+  return axios.post("/xserver/system/handlerReview", params);
+}
 
 
 

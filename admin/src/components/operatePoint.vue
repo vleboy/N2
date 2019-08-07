@@ -52,7 +52,7 @@
   </div>
 </template>
 <script>
-import {setPoints} from '../../service/index'
+import {setPoints} from '../service/index'
 export default {
   data() {
     return {
@@ -71,10 +71,10 @@ export default {
   },
   computed: {
     listenshowDraw() {
-      return this.$store.state.agent.pointDrawer;
+      return this.$store.state.admin.pointDrawer;
     },
     userName() {
-      return this.$store.state.agent.info.name;
+      return this.$store.state.admin.pointInfo.userName;
     }
   },
   methods: {
@@ -86,16 +86,16 @@ export default {
     },
     sub() {
       let prarms = {
-        id: this.$store.state.agent.info.id,
+        id: this.$store.state.admin.pointInfo.id,
         project: this.project,
-        role: this.$store.state.agent.info.role,
+        role: this.$store.state.admin.pointInfo.role,
         amount: this.point,
         remark: this.remark
       }
       setPoints(prarms).then(res => {
         this.initData()
         this.$Message.success({content: res.res})
-        this.$parent.getAgents()
+        this.$parent.getList()
       })
     },
     //初始化数据
@@ -103,6 +103,9 @@ export default {
       this.project = '加点'
       this.point = 0
       this.remark = ''
+      this.$store.commit('setPointInfo', {
+        
+      })
       this.$store.commit("showPointDrawer", false);
     }
   },

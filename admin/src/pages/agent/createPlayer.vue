@@ -12,19 +12,19 @@
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家账号:</Col>
           <Col span="18">
-            <Input v-model="userName" style="width: 100%" />
+            <Input v-model="userName" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家密码:</Col>
           <Col span="18">
-            <Input v-model="userPwd"  type="password" style="width: 100%" />
+            <Input v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家昵称:</Col>
           <Col span="18">
-            <Input v-model="userNick" style="width: 100%" />
+            <Input v-model="userNick" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
       </div>
@@ -54,7 +54,7 @@ export default {
   },
   computed: {
     listenshowDraw() {
-      return this.$store.state.agent.createPlayer;
+      return this.$store.state.admin.createPlayer;
     },
   },
   methods: {
@@ -66,10 +66,10 @@ export default {
     },
     sub() {
       let prarms = {
-        parentId: this.$store.state.agent.info.id,
-        userName: this.userName,
-        userPwd: this.userPwd,
-        userNick: this.userNick
+        parentId: this.$store.state.admin.agentInfo.id,
+        playerName: this.userName,
+        playerPwd: this.userPwd,
+        playerNick: this.userNick
       };
       createPlayer(prarms).then(res => {
        
@@ -81,6 +81,12 @@ export default {
       })
     },
     initData() {
+      this.userName = ''
+      this.userPwd = ''
+      this.userNick = ''
+      this.$store.commit('setAgentInfo', {
+        
+      })
       this.$store.commit("showCreatePlayer", false);
     }
   },

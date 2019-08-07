@@ -18,9 +18,21 @@
             <Icon type="md-game-controller-b" />
             <span v-if="unFlodMenu" class="ml">玩家中心</span>
           </MenuItem>
+          <MenuItem name="playerBill" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
+            <Icon type="md-game-controller-b" />
+            <span v-if="unFlodMenu" class="ml">玩家账单</span>
+          </MenuItem>
           <MenuItem name="agentCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
             <Icon type="md-game-controller-b" />
             <span v-if="unFlodMenu" class="ml">代理中心</span>
+          </MenuItem>
+          <MenuItem name="agentBill" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
+            <Icon type="md-game-controller-b" />
+            <span v-if="unFlodMenu" class="ml">代理账单</span>
+          </MenuItem>
+          <MenuItem name="auditCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
+            <Icon type="md-game-controller-b" />
+            <span v-if="unFlodMenu" class="ml">审核中心</span>
           </MenuItem>
         </Menu>
       </transition>

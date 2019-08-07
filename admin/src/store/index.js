@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {login} from './modules/login'
 import {home} from './modules/home'
-import { agent } from './modules/agent'
+import { admin } from './modules/admin'
 Vue.use(Vuex)
 export const store = new Vuex.Store({
   state:{
@@ -14,6 +14,6 @@ export const store = new Vuex.Store({
   modules: {
     login,
     home,
-    agent
+    admin
   }
 })
