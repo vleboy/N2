@@ -40,7 +40,7 @@
                 "/xnosql/message/delete/",
                 "/xnosql/message/query",
                 "/xserver/system/handlerReview",
-                "/xserver/user/handlerPoint"
+                "/xserver/system/handlerPoint"
             ],
             "agent": [
                 "/xserver/agent/tree",
