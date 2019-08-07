@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 //工具相关
 const _ = require('lodash')
+const Util = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -16,6 +17,12 @@ router.get('/playerBill/query', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.query
     let mongodb = global.mongodb
+    if (inparam.ownerId) {
+        inparam.ownerId = +inparam.ownerId
+    }
+    if (token.role == Util.RoleEnum.agent) {
+        inparam.parentId = token.id
+    }
 
     return next()
 })

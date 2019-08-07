@@ -5,7 +5,10 @@ const router = new Router()
 //工具
 const _ = require('lodash')
 const { ProjectEnum, RoleEnum, CollectionEnum, ReviewEnum, StatusEnum, GetUniqueID } = require('../util/util')
-//创建管理员
+
+/**
+ * 创建管理员
+ */
 router.post('/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
@@ -45,22 +48,22 @@ router.post('/handlerPoint', async (ctx, next) => {
     if (inparam.project == ProjectEnum.addPoint) {
         // 给代理加点
         if (inparam.role == RoleEnum.agent) {
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
         // 给玩家加点
         if (inparam.role == RoleEnum.player) {
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
     }
     // 减点操作
     else if (inparam.project == ProjectEnum.reducePoint) {
         // 给代理减点
         if (inparam.role == RoleEnum.agent) {
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
         // 给玩家减点
         if (inparam.role == RoleEnum.player) {
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
     } else {
         return ctx.body = { err: true, res: '未知操作' }
@@ -84,11 +87,11 @@ router.post('/createReview', async (ctx, next) => {
     if (inparam.role == RoleEnum.agent) {
         if (inparam.project == ProjectEnum.addPoint) {
             let agentBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
             await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
         } else if (inparam.project == ProjectEnum.reducePoint) {
             let agentBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
             await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
         } else {
             return ctx.body = { err: true, res: '非法操作' }
@@ -97,11 +100,11 @@ router.post('/createReview', async (ctx, next) => {
     if (inparam.role == RoleEnum.player) {
         if (inparam.project == ProjectEnum.addPoint) {
             let playerBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
             await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
         } else if (inparam.project == ProjectEnum.reducePoint) {
             let playerBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
             await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
         } else {
             return ctx.body = { err: true, res: '非法操作' }
@@ -161,6 +164,7 @@ async function checkUserHandlerPoint(inparam) {
         }
         inparam.ownerName = agentInfo.userName
         inparam.ownerNick = agentInfo.userNick
+        inparam.parentId = agentInfo.parentId
     } else if (inparam.role == RoleEnum.player) {
         let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.id })
         if (!player || player.status == 0) {
@@ -174,6 +178,7 @@ async function checkUserHandlerPoint(inparam) {
         }
         inparam.ownerName = player.playerName
         inparam.ownerNick = player.playerNick
+        inparam.parentId = player.parentId
     } else {
         throw { err: true, res: '非法角色' }
     }
@@ -194,6 +199,7 @@ async function checkCreateReview(inparam) {
         }
         inparam.proposerName = agentInfo.userName
         inparam.proposerNick = agentInfo.userNick
+        inparam.parentId = agentInfo.parentId
     } else if (inparam.role == RoleEnum.player) {
         let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.proposerId })
         if (!player || player.status == StatusEnum.Disable) {
@@ -207,6 +213,7 @@ async function checkCreateReview(inparam) {
         }
         inparam.proposerName = player.playerName
         inparam.proposerNick = player.playerNick
+        inparam.parentId = player.parentId
     } else {
         throw { err: true, res: '非法角色' }
     }

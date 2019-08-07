@@ -34,6 +34,7 @@ router.post('/login', async (ctx, next) => {
         role: agentInfo.role,
         userName: agentInfo.userName,
         userNick: agentInfo.userNick,
+        parentId: agentInfo.parentId,
         level: agentInfo.level
     }, config.auth.secret)
     ctx.body = { id: agentInfo.id, userNick: agentInfo.userNick, token }
@@ -75,16 +76,16 @@ router.post('/handlerPoint', async (ctx, next) => {
         // 给代理加点
         if (inparam.role == RoleEnum.agent) {
             //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
             //请求代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName,ownerNick:inparam.ownerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
         // 给玩家加点
         if (inparam.role == RoleEnum.player) {
             //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
             //请求玩家加点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick:inparam.ownerNick,createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
     }
     // 减点操作
@@ -92,16 +93,16 @@ router.post('/handlerPoint', async (ctx, next) => {
         // 给代理减点
         if (inparam.role == RoleEnum.agent) {
             //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
             //请求代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick:inparam.ownerNick,createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
         // 给玩家减点
         if (inparam.role == RoleEnum.player) {
             //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
             //请求玩家减点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName,ownerNick:inparam.ownerNick, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         }
     }
     ctx.body = { err: false, msg: '操作成功' }
@@ -183,6 +184,7 @@ async function checkAgentHandlerPoint(inparam, token) {
         }
         inparam.ownerName = agentInfo.userName
         inparam.ownerNick = agentInfo.userNick
+        inparam.parentId = agentInfo.parentId
     } else if (inparam.role == RoleEnum.player) {
         let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.ownerId })
         if (!player || player.status == 0) {
@@ -204,6 +206,7 @@ async function checkAgentHandlerPoint(inparam, token) {
         }
         inparam.ownerName = player.playerName
         inparam.ownerNick = player.playerNick
+        inparam.parentId = player.parentId
     } else {
         throw { err: true, res: '非法角色' }
     }
