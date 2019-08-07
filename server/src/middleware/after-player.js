@@ -7,6 +7,7 @@ const Router = require('koa-router')
 const router = new Router()
 // 工具
 const _ = require('lodash')
+const Util = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
