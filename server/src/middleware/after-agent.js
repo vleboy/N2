@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 // 工具相关
 const _ = require('lodash')
+const Util = require('../util/util')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -20,10 +21,15 @@ router.post('/agent/create', async (ctx, next) => {
  * 查询代理
  */
 router.get('/agent/query', async (ctx, next) => {
-    let res = _.orderBy(ctx.body.res, 'createAt', 'desc')
+    const token = ctx.tokenVerify
+    let agentArr = ctx.body.res
+    if (token.role == Util.RoleEnum.agent) {
+        agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
+    }
+    let res = _.orderBy(agentArr, 'createAt', 'desc')
     let agentList = []
     for (let item of res) {
-        agentList.push(_.pick(item, ['userName', 'userNick', 'gameList', 'id', 'status', 'createAt']))
+        agentList.push(_.pick(item, ['id', 'userName', 'userNick', 'gameList', 'status', 'role', 'createAt']))
     }
     ctx.body = agentList
 })

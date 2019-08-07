@@ -85,9 +85,12 @@ router.post('/agent/update', async (ctx, next) => {
  * 查询代理
  */
 router.get('/agent/query', async (ctx, next) => {
+    const token = ctx.tokenVerify
     let inparam = ctx.request.query
     let mongodb = global.mongodb
-
+    if (inparam.id) {
+        inparam.id = +inparam.id
+    }
     return next()
 })
 
