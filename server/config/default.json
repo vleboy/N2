@@ -39,8 +39,8 @@
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
                 "/xnosql/message/query",
-                "/xserver/user/handlerReview",
-                "/xserver/user/handlerPoint"
+                "/xserver/system/handlerReview",
+                "/xserver/system/handlerPoint"
             ],
             "agent": [
                 "/xserver/agent/tree",
@@ -53,13 +53,12 @@
                 "/xnosql/player/query",
                 "/xnosql/player/update",
                 "/xnosql/playerBill/query",
-                "/xnosql/review/query"
+                "/xserver/system/createReview"
             ],
             "player": [
                 "/xnosql/player/update",
                 "/xnosql/playerBill/query",
-                "/xnosql/review/create",
-                "/xnosql/review/query"
+                "/xserver/system/createReview"
             ]
         },
         "cors": true,
