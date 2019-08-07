@@ -36,7 +36,7 @@ const ReviewEnum = {
 
 //获取一个唯一的ID值
 function GetUniqueID() {
-    let num = `${Date.now()}${_.random(1000, 9999)}`
+    let num = `${Date.now()}${_.random(10, 99)}`
     return +num
 }
 

@@ -110,7 +110,7 @@ async function checkCreateReview(inparam) {
                 throw { err: true, res: '余额不足' }
             }
         }
-        inparam.proposerName = playerInfo.playerName
+        inparam.proposerName = player.playerName
     } else {
         throw { err: true, res: '非法角色' }
     }
