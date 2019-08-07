@@ -24,11 +24,11 @@ router.post('/player/create', async (ctx, next) => {
  */
 router.get('/player/query', async (ctx, next) => {
     let res = _.orderBy(ctx.body.res, 'createAt', 'desc')
-    let playerList = []
-    for (let item of res) {
-        playerList.push(_.pick(item, ['playerId', 'playerName', 'playerNick', 'id', 'status', 'createAt']))
-    }
-    ctx.body = playerList
+    // let playerList = []
+    // for (let item of res) {
+    //     playerList.push(_.pick(item, ['playerId', 'playerName', 'playerNick', 'id', 'status', 'createAt']))
+    // }
+    ctx.body = res
 })
 
 module.exports = router

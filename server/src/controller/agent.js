@@ -212,7 +212,7 @@ async function getAgentBalance(agentId) {
     let balance = 0
     let agentGroupArr = await mongodb.collection(CollectionEnum.agentBill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of agentGroupArr) {
-        if (item._id == agentInfo.id) {
+        if (item._id == agentId) {
             balance = item.count
             return balance
         }
@@ -224,7 +224,7 @@ async function getPlayerBalance(playerId) {
     let balance = 0
     let playerGroupArr = await mongodb.collection(CollectionEnum.playerBill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of playerGroupArr) {
-        if (item._id == playerInfo.id) {
+        if (item._id ==playerId) {
             return item.count
         }
     }
