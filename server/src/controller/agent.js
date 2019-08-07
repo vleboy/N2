@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const captchapng = require('captchapng')
 const _ = require('lodash')
-const { ProjectEnum, RoleEnum, CollectionEnum,GetUniqueID } = require('../util/util')
+const { ProjectEnum, RoleEnum, CollectionEnum, GetUniqueID } = require('../util/util')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -75,16 +75,16 @@ router.post('/handlerPoint', async (ctx, next) => {
         // 给代理加点
         if (inparam.role == RoleEnum.agent) {
             //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
             //请求代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName,ownerNick:inparam.ownerNick, createAt: Date.now() })
         }
         // 给玩家加点
         if (inparam.role == RoleEnum.player) {
             //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
             //请求玩家加点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick:inparam.ownerNick,createAt: Date.now() })
         }
     }
     // 减点操作
@@ -92,16 +92,16 @@ router.post('/handlerPoint', async (ctx, next) => {
         // 给代理减点
         if (inparam.role == RoleEnum.agent) {
             //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
             //请求代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick:inparam.ownerNick,createAt: Date.now() })
         }
         // 给玩家减点
         if (inparam.role == RoleEnum.player) {
             //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, createAt: Date.now() })
             //请求玩家减点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName,ownerNick:inparam.ownerNick, createAt: Date.now() })
         }
     }
     ctx.body = { err: false, msg: '操作成功' }
@@ -182,6 +182,7 @@ async function checkAgentHandlerPoint(inparam, token) {
             throw { err: true, res: '余额不足' }
         }
         inparam.ownerName = agentInfo.userName
+        inparam.ownerNick = agentInfo.userNick
     } else if (inparam.role == RoleEnum.player) {
         let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.ownerId })
         if (!player || player.status == 0) {
@@ -202,6 +203,7 @@ async function checkAgentHandlerPoint(inparam, token) {
             throw { err: true, res: '余额不足' }
         }
         inparam.ownerName = player.playerName
+        inparam.ownerNick = player.playerNick
     } else {
         throw { err: true, res: '非法角色' }
     }
@@ -224,7 +226,7 @@ async function getPlayerBalance(playerId) {
     let balance = 0
     let playerGroupArr = await mongodb.collection(CollectionEnum.playerBill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
     for (let item of playerGroupArr) {
-        if (item._id ==playerId) {
+        if (item._id == playerId) {
             return item.count
         }
     }
