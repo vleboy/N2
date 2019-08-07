@@ -34,6 +34,11 @@ const ReviewEnum = {
     Refuse: 2,
 }
 
+//获取一个唯一的ID值
+function GetUniqueID() {
+    let num = `${Date.now()}${_.random(1000, 9999)}`
+    return +num
+}
 
 //检查类型
 function CheckType(o) {
@@ -55,5 +60,6 @@ module.exports = {
     RoleEnum,
     CollectionEnum,
     ReviewEnum,
-    StatusEnum
+    StatusEnum,
+    GetUniqueID
 }

@@ -16,11 +16,17 @@ router.post('/role/create', async (ctx, next) => {
     let mongodb = global.mongodb
     if (!inparam.roleName || !inparam.permission) {
         ctx.body = { err: true, res: '请检查入参' }
-    } else if (await mongodb.collection('role').findOne( { name: inparam.roleName })) {
+    } else if (await mongodb.collection('role').findOne({ name: inparam.roleName })) {
         ctx.body = { err: true, res: '角色已存在' }
     } else {
+        let flag = true
+        while (flag) {
+            inparam.id = _.random(1000, 9999)
+            if (!await mongodb.collection('role').findOne({ id: inparam.id })) {
+                flag = false
+            }
+        }
         inparam.createAt = Date.now()
-        inparam.id = _.random(9999999999)
         return next()
     }
 })

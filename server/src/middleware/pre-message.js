@@ -18,7 +18,7 @@ router.post('/message/create', async (ctx, next) => {
         ctx.body = { err: true, res: '请检查入参' }
     } else {
         inparam.createAt = Date.now()
-        inparam.id = _.random(9999999999)
+        inparam.id = GetUniqueID()
         return next()
     }
 })

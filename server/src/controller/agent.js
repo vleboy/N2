@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const captchapng = require('captchapng')
 const _ = require('lodash')
-const { ProjectEnum, RoleEnum, CollectionEnum } = require('../util/util')
+const { ProjectEnum, RoleEnum, CollectionEnum,GetUniqueID } = require('../util/util')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -75,16 +75,16 @@ router.post('/handlerPoint', async (ctx, next) => {
         // 给代理加点
         if (inparam.role == RoleEnum.agent) {
             //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
         }
         // 给玩家加点
         if (inparam.role == RoleEnum.player) {
             //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求玩家加点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
         }
     }
     // 减点操作
@@ -92,16 +92,16 @@ router.post('/handlerPoint', async (ctx, next) => {
         // 给代理减点
         if (inparam.role == RoleEnum.agent) {
             //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
         }
         // 给玩家减点
         if (inparam.role == RoleEnum.player) {
             //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.agentBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, createAt: Date.now() })
             //请求玩家减点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: _.random(99999999), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
+            await mongodb.collection(CollectionEnum.playerBill).insertOne({ billId: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, createAt: Date.now() })
         }
     }
     ctx.body = { err: false, msg: '操作成功' }
