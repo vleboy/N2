@@ -17,7 +17,8 @@
         "pass": [
             "/xserver/agent/captcha",
             "/xserver/agent/login",
-            "/xserver/player/login"
+            "/xserver/player/login",
+            "/xserver/system/create"
         ],
         "role": {
             "admin": [
