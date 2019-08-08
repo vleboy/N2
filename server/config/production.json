@@ -36,6 +36,9 @@
         "controllerRoot": "/xserver",
         "middlewareDir": "/src/middleware/",
         "controllerDir": "/src/controller/",
-        "mongodbUrl": "mongodb://localhost:27017/n2"
+        "mongodbUrl": "mongodb://mongo0:27017/n2",
+        "mongoOption": {
+            "replicaSet": "rs"
+        }
     }
 }
