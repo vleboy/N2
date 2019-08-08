@@ -15,14 +15,50 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/poker/calcTexas",
-            "/player/create",
-            "/login",
-            "/room/query"
+            "/xserver/agent/captcha",
+            "/xserver/agent/login",
+            "/xserver/player/login"
         ],
         "role": {
+            "admin": [
+                "/xserver/agent/tree",
+                "/xnosql/agent/create",
+                "/xnosql/agent/get/",
+                "/xnosql/agent/query",
+                "/xnosql/agent/update",
+                "/xnosql/player/create",
+                "/xnosql/player/get/",
+                "/xnosql/player/query",
+                "/xnosql/player/update",
+                "/xnosql/playerBill/query",
+                "/xnosql/agentBill/query",
+                "/xnosql/role/create",
+                "/xnosql/role/query",
+                "/xnosql/role/delete/",
+                "/xnosql/review/query",
+                "/xnosql/message/create",
+                "/xnosql/message/delete/",
+                "/xnosql/message/query",
+                "/xserver/system/handlerReview",
+                "/xserver/system/handlerPoint"
+            ],
+            "agent": [
+                "/xserver/agent/tree",
+                "/xnosql/agent/get/",
+                "/xnosql/agent/query",
+                "/xnosql/agent/update",
+                "/xserver/agent/handlerPoint",
+                "/xnosql/player/create",
+                "/xnosql/player/get/",
+                "/xnosql/player/query",
+                "/xnosql/player/update",
+                "/xnosql/playerBill/query",
+                "/xserver/system/createReview"
+            ],
             "player": [
-                ".*"
+                "/xnosql/player/update",
+                "/xnosql/playerBill/query",
+                "/xserver/system/createReview"
             ]
         },
         "cors": true,
