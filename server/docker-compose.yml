@@ -11,7 +11,7 @@ services:
       - 'NODE_ENV=production'
       - 'TZ=Asia/Shanghai'
     depends_on:
-       - mongo0
+       - mongo2
     # deploy:
     #   replicas: 1
     #   placement:
@@ -22,6 +22,8 @@ services:
     image: mongo:latest
     volumes:
         - ./_db/mongo0:/data/db #host_db:container_db
+    expose:
+     - 27017
     ports:
       - 27017:27017
     restart: always
@@ -34,6 +36,10 @@ services:
     image: mongo:latest
     volumes:
         - ./_db/mongo1:/data/db
+    depends_on:
+       - mongo0
+    expose:
+     - 27017
     ports:
       - 27018:27017
     restart: always
@@ -46,6 +52,10 @@ services:
     image: mongo:latest
     volumes:
         - ./_db/mongo2:/data/db
+    depends_on:
+       - mongo1
+    expose:
+     - 27017
     ports:
       - 27019:27017
     restart: always

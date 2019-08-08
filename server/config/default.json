@@ -17,7 +17,8 @@
         "pass": [
             "/xserver/agent/captcha",
             "/xserver/agent/login",
-            "/xserver/player/login"
+            "/xserver/player/login",
+            "/xserver/bill/transaction"
         ],
         "role": {
             "admin": [
@@ -72,7 +73,7 @@
         "controllerRoot": "/xserver",
         "middlewareDir": "/src/middleware/",
         "controllerDir": "/src/controller/",
-        "mongodbUrl": "mongodb://mongo0:27017/n2",
+        "mongodbUrl": "mongodb://mongo0:27017,mongo1:27017,mongo2:27017/n2",
         "mongoOption": {
             "replicaSet": "rs"
         }
