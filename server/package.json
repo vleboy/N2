@@ -32,7 +32,7 @@
     "koa-xcontroller": "^1.2.0",
     "koa-xerror": "^1.2.0",
     "koa-xlog": "^1.2.0",
-    "koa-xnosql": "^2.9.1",
+    "koa-xnosql": "^2.9.2",
     "lodash": "^4.17.15"
   }
 }
