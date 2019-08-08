@@ -75,34 +75,74 @@ router.post('/handlerPoint', async (ctx, next) => {
     if (inparam.project == ProjectEnum.addPoint) {
         // 给代理加点
         if (inparam.role == RoleEnum.agent) {
-            //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
-            //请求代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+            const session = await global.getMongoSession()
+            try {
+                //操作代理减点
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() }, { session })
+                //请求代理加点
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                await session.commitTransaction()
+            } catch (error) {
+                console.error(error)
+                await session.abortTransaction()
+                return ctx.body = { err: true, res: '操作失败，请稍后再试' }
+            } finally {
+                await session.endSession()
+            }
         }
         // 给玩家加点
         if (inparam.role == RoleEnum.player) {
-            //操作代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
-            //请求玩家加点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+            const session = await global.getMongoSession()
+            try {
+                //操作代理减点
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() }, { session })
+                //请求玩家加点
+                await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                await session.commitTransaction()
+            } catch (error) {
+                console.error(error)
+                await session.abortTransaction()
+                return ctx.body = { err: true, res: '操作失败，请稍后再试' }
+            } finally {
+                await session.endSession()
+            }
         }
     }
     // 减点操作
     if (inparam.project == ProjectEnum.reducePoint) {
         // 给代理减点
         if (inparam.role == RoleEnum.agent) {
-            //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
-            //请求代理减点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+            const session = await global.getMongoSession()
+            try {
+                //操作代理加点
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() }, { session })
+                //请求代理减点
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                await session.commitTransaction()
+            } catch (error) {
+                console.error(error)
+                await session.abortTransaction()
+                return ctx.body = { err: true, res: '操作失败，请稍后再试' }
+            } finally {
+                await session.endSession()
+            }
         }
         // 给玩家减点
         if (inparam.role == RoleEnum.player) {
-            //操作代理加点
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() })
-            //请求玩家减点
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+            const session = await global.getMongoSession()
+            try {
+                //操作代理加点
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() }, { session })
+                //请求玩家减点
+                await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                await session.commitTransaction()
+            } catch (error) {
+                console.error(error)
+                await session.abortTransaction()
+                return ctx.body = { err: true, res: '操作失败，请稍后再试' }
+            } finally {
+                await session.endSession()
+            }
         }
     }
     ctx.body = { err: false, msg: '操作成功' }
