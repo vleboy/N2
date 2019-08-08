@@ -14,7 +14,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 router.post('/role/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (!inparam.roleName || !inparam.permission) {
+    if (!inparam.roleName || !inparam.permissions) {
         ctx.body = { err: true, res: '请检查入参' }
     } else if (await mongodb.collection('role').findOne({ name: inparam.roleName })) {
         ctx.body = { err: true, res: '角色已存在' }
