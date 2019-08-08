@@ -93,6 +93,7 @@ router.post('/createReview', async (ctx, next) => {
                 let agentBillId = GetUniqueID()
                 await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
                 await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
+                await session.commitTransaction()
             } catch (error) {
                 console.error(error)
                 await session.abortTransaction()
@@ -113,6 +114,7 @@ router.post('/createReview', async (ctx, next) => {
                 let playerBillId = GetUniqueID()
                 await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
                 await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
+                await session.commitTransaction()
             } catch (error) {
                 console.error(error)
                 await session.abortTransaction()
@@ -162,6 +164,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 }
                 //更新请求单为拒绝状态
                 await mongodb.collection(CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: ReviewEnum.Refuse, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
+                await session.commitTransaction()
             } catch (error) {
                 console.error(error)
                 await session.abortTransaction()
@@ -178,11 +181,12 @@ router.post('/handlerReview', async (ctx, next) => {
             try {
                 let billId = GetUniqueID()
                 if (reviewInfo.role == RoleEnum.agent) {
-                    await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: billId, project: reviewInfo.project, amount: Math.abs(inparam.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
+                    await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: billId, project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
                 } else if (reviewInfo.role == RoleEnum.player) {
-                    await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: billId, project: reviewInfo.project, amount: Math.abs(inparam.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
+                    await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: billId, project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
                 }
-                await mongodb.collection(CollectionEnum.review).update({ id: inparam.id }, { $set: { billId, status: ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
+                await mongodb.collection(CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
+                await session.commitTransaction()
             } catch (error) {
                 console.error(error)
                 await session.abortTransaction()
