@@ -86,9 +86,24 @@ router.post('/createReview', async (ctx, next) => {
     await checkCreateReview(inparam)
     if (inparam.role == RoleEnum.agent) {
         if (inparam.project == ProjectEnum.addPoint) {
-            let agentBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
-            await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
+
+            const session = await global.getMongoSession()
+            try {
+                let agentBillId = GetUniqueID()
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                if (Math.random() > 0.5) {
+                    await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() }, { session })
+                } else {
+                    throw '异常发生'
+                }
+                await session.commitTransaction()
+            } catch (error) {
+                console.error(error)
+                await session.abortTransaction()
+            } finally {
+                await session.endSession()
+            }
+
         } else if (inparam.project == ProjectEnum.reducePoint) {
             let agentBillId = GetUniqueID()
             await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })

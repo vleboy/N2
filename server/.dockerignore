@@ -6,7 +6,7 @@ stack-compose.yml
 client.js
 *Dockerfile*
 *docker-compose*
-node_modules
+# node_modules
 grpc_modules
 sh
 mq

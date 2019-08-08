@@ -7,6 +7,6 @@ WORKDIR /usr/node/server
 # 复制所有文件到工作目录
 COPY . /usr/node/server
 # 编译运行node项目
-RUN npm install
+# RUN npm install
 # 运行命令
 CMD ["npm", "start"]
