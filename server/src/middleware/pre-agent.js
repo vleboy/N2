@@ -41,6 +41,8 @@ router.post('/agent/create', async (ctx, next) => {
     inparam.level = parent.level + 1 || 0
     inparam.parentName = parent.userName || 'system'
     inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id.toString()
+    inparam.lastBalanceTime=0
+    inparam.lastBalance=0
     inparam.createAt = Date.now()
     return next()
 

@@ -52,6 +52,19 @@ function GetHashPwd(pwd) {
     return hash
 }
 
+//获取玩家余额
+function getPlayerBalance(mongodb, playerId) {
+    // 查询玩家
+
+    // 根据时间查询流水
+
+    // 汇总余额
+
+}
+//获取代理余额
+function getAgentBalance(mongodb, agentId) {
+
+}
 
 module.exports = {
     CheckType,
@@ -61,5 +74,7 @@ module.exports = {
     CollectionEnum,
     ReviewEnum,
     StatusEnum,
-    GetUniqueID
+    GetUniqueID,
+    getPlayerBalance,
+    getAgentBalance
 }
