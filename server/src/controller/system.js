@@ -182,7 +182,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 } else if (reviewInfo.role == RoleEnum.player) {
                     await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: billId, project: reviewInfo.project, amount: Math.abs(inparam.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
                 }
-                await mongodb.collection(CollectionEnum.review).update({ id: inparam.id }, { $set: { billId, status: ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
+                await mongodb.collection(CollectionEnum.review).update({ id: inparam.id }, { $set: { billId, status: ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
             } catch (error) {
                 console.error(error)
                 await session.abortTransaction()
