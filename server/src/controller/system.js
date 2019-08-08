@@ -73,7 +73,7 @@ router.post('/handlerPoint', async (ctx, next) => {
 
 
 /**
- * 创建一条 (充值/提现) 请求单
+ * 创建一条 (充值/提现) 申请单
  * 代理或玩家可申请
  */
 router.post('/createReview', async (ctx, next) => {
@@ -86,41 +86,40 @@ router.post('/createReview', async (ctx, next) => {
     await checkCreateReview(inparam)
     if (inparam.role == RoleEnum.agent) {
         if (inparam.project == ProjectEnum.addPoint) {
-
+            await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
+        } else if (inparam.project == ProjectEnum.reducePoint) {
             const session = await global.getMongoSession()
             try {
                 let agentBillId = GetUniqueID()
-                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
-                if (Math.random() > 0.5) {
-                    await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() }, { session })
-                } else {
-                    throw '异常发生'
-                }
-                await session.commitTransaction()
+                await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() }, { session })
             } catch (error) {
                 console.error(error)
                 await session.abortTransaction()
+                return ctx.body = { err: true, res: '操作失败，请稍后再试' }
             } finally {
                 await session.endSession()
             }
-
-        } else if (inparam.project == ProjectEnum.reducePoint) {
-            let agentBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.agentBill).insertOne({ id: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
-            await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
         } else {
             return ctx.body = { err: true, res: '非法操作' }
         }
     }
     if (inparam.role == RoleEnum.player) {
         if (inparam.project == ProjectEnum.addPoint) {
-            let playerBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
-            await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
+            await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
         } else if (inparam.project == ProjectEnum.reducePoint) {
-            let playerBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() })
-            await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() })
+            const session = await global.getMongoSession()
+            try {
+                let playerBillId = GetUniqueID()
+                await mongodb.collection(CollectionEnum.playerBill).insertOne({ id: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: playerBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, status: 0, createdAt: Date.now() }, { session })
+            } catch (error) {
+                console.error(error)
+                await session.abortTransaction()
+                return ctx.body = { err: true, res: '操作失败，请稍后再试' }
+            } finally {
+                await session.endSession()
+            }
         } else {
             return ctx.body = { err: true, res: '非法操作' }
         }
