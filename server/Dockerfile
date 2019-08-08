@@ -1,5 +1,5 @@
 # FROM node
-FROM node:slim
+FROM node:current-alpine
 # 创建应用目录
 RUN mkdir -p /usr/node/server
 # 设置工作目录
