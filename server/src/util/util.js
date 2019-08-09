@@ -58,32 +58,30 @@ async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
     let userInfo = '', balance = 0
     if (!lastBalanceTime) {
         if (role == RoleEnum.agent) {
-            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { 'lastBalanceTime': 1, 'lastBalance': 1, _id: 0 })
+            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }).project({ lastBalanceTime: 1, lastBalance: 1, _id: 0 })
         } else if (role == RoleEnum.player) {
-            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { 'lastBalanceTime': 1, 'lastBalance': 1, _id: 0 })
+            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }).project({ lastBalanceTime: 1, lastBalance: 1, _id: 0 })
         } else {
             throw { err: true, msg: '非法角色' }
         }
         lastBalanceTime = userInfo.lastBalanceTime
         lastBalance = userInfo.lastBalance
     }
-    console.log(userInfo)
     // 根据时间查询流水
-    let ceArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id }).toArray()
-    console.log(ceArr)
-    console.log({ ownerId: id, "createAt": { $gt: lastBalanceTime } }, { 'amount': 1, 'createAt': 1, _id: 0 })
-    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, "createAt": { $gt: lastBalanceTime } }, { 'amount': 1, 'createAt': 1, _id: 0 }).sort({ 'createAt': 1 }).toArray()
+    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, createAt: { $gt: lastBalanceTime } }).project({ amount: 1, createAt: 1, _id: 0 }).sort({ 'createAt': 1 }).toArray()
     console.log(billArr)
     // 汇总余额
     for (let item of billArr) {
         balance = NP.plus(balance, item.amount)
     }
     balance = NP.plus(balance, lastBalance)
-    // 更新用户信息
-    if (role == RoleEnum.agent) {
-        mongodb.collection(CollectionEnum.agent).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
-    } else if (role == RoleEnum.player) {
-        mongodb.collection(CollectionEnum.player).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
+    if (billArr.length > 0) {
+        // 更新用户信息
+        if (role == RoleEnum.agent) {
+            mongodb.collection(CollectionEnum.agent).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
+        } else if (role == RoleEnum.player) {
+            mongodb.collection(CollectionEnum.player).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
+        }
     }
     return balance
 }
