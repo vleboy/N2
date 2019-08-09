@@ -61,8 +61,6 @@ const axios = {
   }
 }
 
-
-
 //业务逻辑
 export function httpRequest(method, url, params) {
   switch (method) {
@@ -83,11 +81,10 @@ export async function logIn(params) {
   return axios.post("/xserver/agent/login", params);
 }
 
-
 /* 代理中心 */
 //获取代理列表
-export async function queryAgent() {
-  return axios.get("/xserver/agent/tree");
+export async function queryAgent(params) {
+  return axios.get("/xserver/agent/tree", params);
 }
 
 //创建代理
@@ -98,11 +95,6 @@ export async function createAgent(params) {
 //停用启用代理
 export async function agentStatus(params) {
   return axios.post("/xnosql/agent/update", params);
-}
-
-//代理账单
-export async function queryAgentBill(params) {
-  return axios.get("/xnosql/agentBill/query", params);
 }
 
 //加减点
@@ -127,9 +119,9 @@ export async function playerStatus(params) {
   return axios.post("/xnosql/player/update", params);
 }
 
-//玩家账单
-export async function queryPlayerBill(params) {
-  return axios.get("/xnosql/playerBill/query", params);
+/* 账单查询 */
+export async function queryBill(params) {
+  return axios.get("/xnosql/bill/query", params);
 }
 
 
@@ -146,5 +138,44 @@ export async function operateAudit(params) {
 }
 
 
+/* 管理员中心 */
 
+//创建管理员角色
+export async function createRole(params) {
+  return axios.post("/xnosql/subrole/create", params);
+}
 
+//查询管理员角色
+export async function queryRole(params) {
+  return axios.get("/xnosql/subrole/query", params);
+}
+
+//修改管理员角色
+export async function updateRole(params) {
+  return axios.post("/xnosql/subrole/update", params);
+}
+
+//删除管理员角色
+export async function deleteRole(params) {
+  return axios.post(`/xnosql/subrole/delete/${params.id}`, params);
+}
+
+//查询管理员列表
+export async function queryAdmin(params) {
+  return axios.get("/xnosql/agent/query", params);
+}
+
+//创建管理员
+export async function createAdmin(params) {
+  return axios.post("/xserver/system/create", params);
+}
+
+//修改管理员
+export async function updateAdmin(params) {
+  return axios.post("/xnosql/agent/update", params);
+}
+
+//删除管理员
+export async function deleteAdmin(params) {
+  return axios.post(`/xnosql/agent/delete/${params.id}`, params);
+}

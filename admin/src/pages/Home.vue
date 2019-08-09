@@ -1,7 +1,7 @@
 <template>
     <div class="home-main">
         <div class="contentBox">
-            <span class="test">欢迎使用NA商户后台</span>
+            <span class="test">欢迎使用NA后台</span>
         </div>
     </div>
 </template>

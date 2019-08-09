@@ -1,10 +1,6 @@
 <template>
   <div class="main">
-    <div>
-      <keep-alive>
-        <router-view />
-      </keep-alive>
-    </div>
+      <router-view></router-view>
     <div class="tabbar">
       <van-tabbar v-model="active" active-color="#20a0ff" inactive-color="#A2A2A2" fixed :z-index="99" route>
         <van-tabbar-item to="/home">
@@ -56,3 +52,9 @@ export default {
   }
 }
 </script>
+
+<style lang="less" scoped>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+</style>

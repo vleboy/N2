@@ -8,6 +8,8 @@ import playerBill from '@/pages/player/playerBill'
 import agentCenter from '@/pages/agent/agentCenter'
 import agentBill from '@/pages/agent/agentBill'
 import auditCenter from '@/pages/audit/auditCenter'
+import adminList from '@/pages/admin/adminList'
+import adminRole from '@/pages/admin/adminRole'
 
 const loginRouter = {
   path: '/login',
@@ -50,7 +52,9 @@ export const appRouter = [
       { path: 'agentCenter', title: '代理中心', name: 'agentCenter', component: agentCenter },
       { path: 'auditCenter', title: '审核中心', name: 'auditCenter', component: auditCenter },
       { path: 'playerBill', title: '玩家账单', name: 'playerBill', component: playerBill },
-      { path: 'agentBill', title: '代理账单', name: 'agentBill', component: agentBill }
+      { path: 'agentBill', title: '代理账单', name: 'agentBill', component: agentBill },
+      { path: 'adminList', title: '管理员列表', name: 'adminList', component: adminList },
+      { path: 'adminRole', title: '角色列表', name: 'adminRole', component: adminRole },
     ]
   },
 ]

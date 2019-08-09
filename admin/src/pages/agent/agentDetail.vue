@@ -11,13 +11,13 @@
       <div>
         <Row class-name="content">
           <Col span="6" class-name="tc">代理账号:</Col>
-          <Col span="18">
+          <Col span="16" push="2">
             <span>{{agentInfo.userName}}</span>
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">代理密码:</Col>
-          <Col span="18">
+          <Col span="16" push="2">
             <span v-if="showPwd">{{agentInfo.userPwd}}</span>
             <span v-else>******</span>
             <span style="margin-left:5px" @click="pwdShow">{{showPwd ? '隐藏' : '显示'}}</span>
@@ -25,25 +25,31 @@
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">代理昵称:</Col>
-          <Col span="18">
+          <Col span="16" push="2">
             <span>{{agentInfo.userNick}}</span>
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">上级代理:</Col>
-          <Col span="18">
+          <Col span="16" push="2">
             <span>{{agentInfo.parentName}}</span>
           </Col>
         </Row>
+        <Row>
+          <Col span="6" class-name="tc">下级代理数量</Col>
+          <Col span="16" push="2">
+            {{agentInfo.agentCount}}
+          </Col>
+        </Row> 
         <Row class-name="content">
           <Col span="6" class-name="tc">余额:</Col>
-          <Col span="18">
+          <Col span="16" push="2">
             <span>{{agentInfo.balance || 0}}</span>
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">创建时间:</Col>
-          <Col span="18">
+          <Col span="16" push="2">
             <span>{{createAtConfig(agentInfo.createAt)}}</span>
           </Col>
         </Row>
@@ -77,7 +83,7 @@ export default {
   },
   methods: {
     createAtConfig(val) {
-      return dayjs(val).format('YYYY-MM-DD')
+      return dayjs(val).format('YY-MM-DD')
     },
     pwdShow() {
       this.showPwd = !this.showPwd

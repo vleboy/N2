@@ -22,7 +22,7 @@
         <Button @click="reset" size="small">重置</Button>
       </div>
     </div>
-    <div>
+    <div class="tableForm">
       <Table :columns="columns" :data="billList" size="small">
         <template #createAt="row">{{createAtConfig(row)}}</template>
       </Table>
@@ -36,7 +36,7 @@
 
 <script>
 import dayjs from "dayjs";
-import { queryAgentBill } from "../../service/index";
+import { queryBill } from "../../service/index";
 export default {
   data() {
     return {
@@ -46,14 +46,14 @@ export default {
       ownerNick: "",
       columns: [
         {
-          title: "代理ID",
-          align: "center",
-          key: "ownerId"
-        },
-        {
           title: "代理账号",
           align: "center",
           key: "ownerName"
+        },
+        {
+          title: "代理ID",
+          align: "center",
+          key: "ownerId"
         },
         {
           title: "代理昵称",
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     createAtConfig(row) {
-      return dayjs(row.createAt).format("YYYY-MM-DD");
+      return dayjs(row.createAt).format("YY-MM-DD");
     },
     search() {
       this.getBill();
@@ -99,10 +99,11 @@ export default {
       let params = {
         ownerId: this.ownerId,
         ownerName: this.ownerName,
-        ownerNick: this.ownerNick
+        ownerNick: this.ownerNick,
+        role: 'agent'
       };
       this.spinShow = true;
-      queryAgentBill(params).then(res => {
+      queryBill(params).then(res => {
         this.billList = res;
         this.spinShow = false;
       });
@@ -125,6 +126,14 @@ export default {
       .search {
         margin-right: 5px;
       }
+    }
+  }
+  .tableForm {
+    /deep/.ivu-table-small th {
+      height: 26px;
+    }
+    /deep/.ivu-table-small td {
+      height: 26px;
     }
   }
 }

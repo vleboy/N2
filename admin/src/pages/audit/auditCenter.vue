@@ -1,5 +1,27 @@
 <template>
   <div class="auditCenter">
+     <div class="content">
+        <div class="fl">
+          <Input v-model="proposerId" size="small">
+            <span slot="prepend">申请人ID</span>
+          </Input>
+        </div>
+        <div class="fl">
+          <Input v-model="proposerName" size="small">
+            <span slot="prepend">申请人账号</span>
+          </Input>
+        </div>
+        <div class="fl">
+          <Input v-model="proposerNick" size="small">
+            <span slot="prepend">申请人昵称</span>
+          </Input>
+        </div>
+
+        <div class="fl">
+          <Button type="primary" @click="search" size="small" class="search">搜索</Button>
+          <Button @click="reset" size="small">重置</Button>
+        </div>
+      </div>
     <div class="auditform">
       <Table :columns="columns" :data="auditList" size="small">
          <template #createAt="row">
@@ -30,21 +52,18 @@ import {queryAudit, operateAudit} from '../../service/index'
 export default {
   data() {
     return {
+      proposerId: '',
+      proposerName: '',
+      proposerNick: '',
       columns: [
         {
-          title: '审核ID',
-          key: 'id',
-          align: "center",
-          minWidth: 30
+          title: '申请人账号',
+          key: 'proposerName',
+          align: "center"
         },
         {
           title: '申请人ID',
           key: 'proposerId',
-          align: "center"
-        },
-        {
-          title: '申请人账号',
-          key: 'proposerName',
           align: "center"
         },
         {
@@ -101,16 +120,24 @@ export default {
   },
   methods: {
     createAtConfig(row) {
-      return dayjs(row.createAt).format('YYYY-MM-DD')
+      return dayjs(row.createAt).format('YY-MM-DD')
     },
     search() {
       this.getAudit()
     },
     reset() {
+      this.proposerId = '',
+      this.proposerName = '',
+      this.proposerNick = '',
       this.getAudit()
     },
     getAudit() {
-      queryAudit().then(res => {
+      let params = {
+        proposerId: this.proposerId,
+        proposerName: this.proposerName,
+        proposerNick: this.proposerNick,
+      }
+      queryAudit(params).then(res => {
         this.auditList = res
       })
     },
@@ -139,6 +166,32 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    .fl {
+      margin-right: 20px;
+      > p {
+        margin-left: 10px;
+      }
+      .search {
+        margin-right: 5px;
+      }
+    }
+  }
+  /deep/.ivu-table-small th {
+      height: 26px;
+    }
+    /deep/.ivu-table-small td {
+      height: 26px;
+    }
+  .ivu-table-small th {
+    height: 26px;
+  }
+  .ivu-table-small td {
+    height: 26px;
+  }
   .demo-spin-icon-load {
     animation: ani-demo-spin 1s linear infinite;
   }

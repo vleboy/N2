@@ -12,19 +12,19 @@
         <Row class-name="content">
           <Col span="6" class-name="tc">代理账号:</Col>
           <Col span="18">
-            <Input v-model="userName" placeholder="3-20位" style="width: 100%" />
+            <Input :maxlength="max20" v-model="userName" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">代理密码:</Col>
           <Col span="18">
-            <Input v-model="userPwd" type="password" placeholder="6-20位" style="width: 100%" />
+            <Input :maxlength="max20" v-model="userPwd" type="password" placeholder="6-20位" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">代理昵称:</Col>
           <Col span="18">
-            <Input v-model="userNick" placeholder="3-20位" style="width: 100%" />
+            <Input :maxlength="max20" v-model="userNick" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
       </div>
@@ -40,6 +40,7 @@ import { createAgent } from "../../service/index";
 export default {
   data() {
     return {
+      max20: 20,
       showDraw: false,
       userName: '',
       userPwd: '',

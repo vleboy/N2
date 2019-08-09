@@ -12,19 +12,19 @@
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家账号:</Col>
           <Col span="18">
-            <Input v-model="userName" placeholder="3-20位" style="width: 100%" />
+            <Input :maxlength="max20" v-model="userName" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家密码:</Col>
           <Col span="18">
-            <Input v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
+            <Input :maxlength="max20" v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家昵称:</Col>
           <Col span="18">
-            <Input v-model="userNick" placeholder="3-20位" style="width: 100%" />
+            <Input :maxlength="max20" v-model="userNick" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
       </div>
@@ -40,6 +40,7 @@ import { createPlayer } from "../../service/index";
 export default {
   data() {
     return {
+      max20: 20,
       showDraw: false,
       userName: '',
       userPwd: '',
@@ -75,7 +76,7 @@ export default {
        
         this.initData()
         this.$Message.success({content: '创建成功'})
-        this.$parent.getAgents()
+        this.$parent.getList()
       }).catch(err => {
         this.initData()
       })

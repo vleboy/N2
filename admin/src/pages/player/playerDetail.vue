@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     createAtConfig(val) {
-      return dayjs(val).format('YYYY-MM-DD')
+      return dayjs(val).format('YY-MM-DD')
     },
     pwdShow() {
       this.showPwd = !this.showPwd

@@ -9,7 +9,7 @@
 
     <div class="page-wrapper">
       <div class="login-left">
-        <p class="title-big">NA商户后台</p>
+        <p class="title-big">NA后台</p>
       </div>
       <div class="login-center"></div>
       <div class="login-right">

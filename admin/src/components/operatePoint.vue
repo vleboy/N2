@@ -74,7 +74,7 @@ export default {
       return this.$store.state.admin.pointDrawer;
     },
     userName() {
-      return this.$store.state.admin.pointInfo.userName;
+      return this.$store.state.admin.pointInfo.name;
     }
   },
   methods: {

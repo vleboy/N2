@@ -1,8 +1,29 @@
 <template>
   <div>
-    <Button size="small" type="info" ghost style="margin:0 0 10px 0" @click="createNewAgent()">创建直属代理</Button>
+    <Button size="small" type="info" ghost style="margin:0 0 10px 0" @click="createNewAgent()">创建一级代理</Button>
+    <div class="content">
+        <div class="fl">
+          <Input v-model="id" size="small">
+            <span slot="prepend">代理ID</span>
+          </Input>
+        </div>
+        <div class="fl">
+          <Input v-model="userName" size="small">
+            <span slot="prepend">代理账号</span>
+          </Input>
+        </div>
+        <div class="fl">
+          <Input v-model="userNick" size="small">
+            <span slot="prepend">代理昵称</span>
+          </Input>
+        </div>
+
+        <div class="fl">
+          <Button type="primary" @click="search" size="small" class="search">搜索</Button>
+          <Button @click="reset" size="small">重置</Button>
+        </div>
+      </div>
     <tree-table
-      show-index
       expand-key="userName"
       :expand-type="false"
       :selectable="false"
@@ -17,7 +38,7 @@
         <span ref="nico" @click="setPoint">{{createAtConfig(row)}}</span>
       </template>
       <template #status="{row}">
-        <Tag type="border" :color="row.status == 0 ? 'error' : 'primary'">{{row.status == 0 ? '已停用' : '已启用'}}</Tag>
+        <Tag type="border" :color="row.status == 0 ? 'error' : 'success'">{{row.status == 0 ? '已停用' : '已启用'}}</Tag>
       </template>
       <template #operate="{row}">
         <Button size="small" :type="row.status == 0 ? 'info' : 'error'" ghost style="margin-right:5px" @click="operateSatus(row)">{{row.status == 0 ? '启用' : '停用'}}</Button>
@@ -57,11 +78,21 @@ export default {
   },
   data() {
     return {
+      id: '',
+      userName: '',
+      userNick: '',
       columns: [
         {
           title: "代理账号",
           key: "userName",
-          minWidth: "auto"
+          minWidth: "250"
+        },
+        {
+          title: "代理ID",
+          key: "id",
+          minWidth: "auto",
+          align: 'center',
+          headerAlign: 'center'
         },
         {
           title: "代理昵称",
@@ -70,26 +101,6 @@ export default {
           type: "template",
           template: "userNick",
           align: 'center',
-          headerAlign: 'center'
-        },
-        {
-          title: "上级代理",
-          key: "parentName",
-          minWidth: "auto",
-          align: 'center',
-          headerAlign: 'center'
-        },
-        /* {
-          title: "代理游戏",
-          key: "gameList",
-          minWidth: "auto",
-          align: 'center',
-          headerAlign: 'center'
-        }, */
-        {
-          title: "下级代理数量",
-          key: "agentCount",
-          minWidth: "auto",
           headerAlign: 'center'
         },
         {
@@ -105,15 +116,6 @@ export default {
           headerAlign: 'center'
         },
         {
-          title: "创建时间",
-          slot: "createAt",
-          minWidth: "auto",
-          type: "template",
-          template: "createAt",
-          align: 'center',
-          headerAlign: 'center'
-        },
-        {
           title: "状态",
           slot: "status",
           align: 'center',
@@ -122,6 +124,15 @@ export default {
           type: "template",
           template: "status",
         },
+        {
+          title: "创建时间",
+          slot: "createAt",
+          minWidth: "auto",
+          type: "template",
+          template: "createAt",
+          align: 'center',
+          headerAlign: 'center'
+        },  
         {
           title: "操作",
           slot: "operate",
@@ -137,25 +148,43 @@ export default {
     };
   },
   mounted() {
-    this.getList()
+    this.search()
   },
   methods: {
     createAtConfig(row) {
-      return dayjs(row.createdAt).format('YYYY-MM-DD')
+      return dayjs(row.createdAt).format('YY-MM-DD')
     },
-
+    search() {
+      this.getList()
+    },
+    reset() {
+      this.id = ''
+      this.userName = ''
+      this.userNick = ''
+      this.search()
+    },
     //获取代理列表
     getList() {
+      let params = {
+        id:this.id,
+        userName:this.userName,
+        userNick:this.userNick
+      }
       this.spinShow = true
-      queryAgent().then(res => {
+      queryAgent(params).then(res => {
         this.data = res
         this.spinShow = false
       })
     },
     //加点减点
     setPoint(row) {
+      let params = {
+        name: row.userName,
+        id: row.id,
+        role: row.role
+      }
       this.$store.commit('showPointDrawer', true)
-      this.$store.commit('setPointInfo', row)
+      this.$store.commit('setPointInfo', params)
     },
     //创建直属代理
     createNewAgent() {
@@ -202,6 +231,20 @@ export default {
 </script>
     
 <style lang="less" scoped>
+.content {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    .fl {
+      margin-right: 20px;
+      > p {
+        margin-left: 10px;
+      }
+      .search {
+        margin-right: 5px;
+      }
+    }
+  }
   .demo-spin-icon-load {
     animation: ani-demo-spin 1s linear infinite;
   }

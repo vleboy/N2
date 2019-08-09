@@ -38,7 +38,7 @@
 
 <script>
 import dayjs from 'dayjs'
-import {queryPlayerBill} from '../../service/index'
+import {queryBill} from '../../service/index'
 export default {
   data() {
     return {
@@ -48,14 +48,14 @@ export default {
       ownerNick: '',
       columns: [
         {
-          title: '玩家ID',
-          align: 'center',
-          key: 'ownerId'
-        },
-        {
           title: '玩家账号',
           align: 'center',
           key: 'ownerName'
+        },
+        {
+          title: '玩家ID',
+          align: 'center',
+          key: 'ownerId'
         },
         {
           title: '玩家昵称',
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     createAtConfig(row) {
-      return dayjs(row.createAt).format('YYYY-MM-DD')
+      return dayjs(row.createAt).format('YY-MM-DD')
     },
     search() {
       this.getBill()
@@ -101,10 +101,11 @@ export default {
       let params = {
         ownerId: this.ownerId,
         ownerName: this.ownerName,
-        ownerNick: this.ownerNick
+        ownerNick: this.ownerNick,
+        role: 'player'
       };
       this.spinShow = true
-      queryPlayerBill(params).then(res => {
+      queryBill(params).then(res => {
         this.billList = res
         this.spinShow = false
       })
@@ -128,6 +129,12 @@ export default {
           margin-right: 5px;
         }
       }
+    }
+    /deep/.ivu-table-small th {
+      height: 26px;
+    }
+    /deep/.ivu-table-small td {
+      height: 26px;
     }
   }
   .demo-spin-icon-load {
