@@ -18,43 +18,27 @@ router.post('/transfer', async (ctx, next) => {
     }
     // 检查代理或玩家是否可以进行转账操作
     await checkAgentHandlerPoint(inparam, token)
-    // 目标人加点操作
-    if (inparam.project == ProjectEnum.addPoint) {
-        const session = await global.getMongoSession()
-        try {
-            await mongodb.collection(CollectionEnum.bill).insertMany([
-                { id: GetUniqueID(), role: RoleEnum.agent, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() },
-                { id: GetUniqueID(), role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() },
-                { session }
-            ])
-            await session.commitTransaction()
-        } catch (error) {
-            console.error(error)
-            await session.abortTransaction()
-            return ctx.body = { err: true, res: '操作失败，请稍后再试' }
-        } finally {
-            await session.endSession()
-        }
+    let ownerAmount = Math.abs(inparam.amount)
+    let targetAmout = Math.abs(inparam.amount)
+    let createAt = Date.now()
+    let project = inparam.project
+    project == ProjectEnum.addPoint ? ownerAmount *= -1 : targetAmout *= -1
+    const session = await global.getMongoSession()
+    try {
+        await mongodb.collection(CollectionEnum.bill).insertMany([
+            { id: GetUniqueID(), role: RoleEnum.agent, project, amount: ownerAmount, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt },
+            { id: GetUniqueID(), role: inparam.role, project, amount: targetAmout, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt },
+            { session }
+        ])
+        await session.commitTransaction()
+    } catch (error) {
+        console.error(error)
+        await session.abortTransaction()
+        return ctx.body = { err: true, res: '操作失败，请稍后再试' }
+    } finally {
+        await session.endSession()
     }
-    // 目标人减点操作
-    if (inparam.project == ProjectEnum.reducePoint) {
-        const session = await global.getMongoSession()
-        try {
-            await mongodb.collection(CollectionEnum.bill).insertMany([
-                { id: GetUniqueID(), role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() },
-                { id: GetUniqueID(), role: RoleEnum.agent, project: inparam.project, amount: Math.abs(inparam.amount), ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt: Date.now() },
-                { session }
-            ])
-            await session.commitTransaction()
-        } catch (error) {
-            console.error(error)
-            await session.abortTransaction()
-            return ctx.body = { err: true, res: '操作失败，请稍后再试' }
-        } finally {
-            await session.endSession()
-        }
 
-    }
     ctx.body = { err: false, msg: '操作成功' }
 })
 
