@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const Router = require('koa-router')
 const router = new Router()
 
-const { ProjectEnum, RoleEnum, CollectionEnum, GetUniqueID } = require('../util/util')
+const { ProjectEnum, RoleEnum, CollectionEnum, GetUniqueID ,getBalanceById} = require('../util/util')
 
 /**
  * 代理之间的转账接口
@@ -54,9 +54,9 @@ async function checkAgentHandlerPoint(inparam, token) {
         }
         let balance = 0
         if (inparam.project == ProjectEnum.addPoint) {
-            balance = await getAgentBalance(token.id)
+            balance = await getBalanceById(mongodb,token.id,inparam.role)
         } else if (inparam.project == ProjectEnum.reducePoint) {
-            balance = await getAgentBalance(agentInfo.id)
+            balance = await getBalanceById(mongodb,agentInfo.id,inparam.role)
         } else {
             throw { err: true, res: '未知操作' }
         }
@@ -76,9 +76,9 @@ async function checkAgentHandlerPoint(inparam, token) {
         }
         let balance = 0
         if (inparam.project == ProjectEnum.addPoint) {
-            balance = await getAgentBalance(token.id)
+            balance = await getBalanceById(mongodb,token.id,inparam.role)
         } else if (inparam.project == ProjectEnum.reducePoint) {
-            balance = await getPlayerBalance(player.id)
+            balance = await getBalanceById(mongodb,player.id,inparam.role)
         } else {
             throw { err: true, res: '未知操作' }
         }
@@ -93,28 +93,28 @@ async function checkAgentHandlerPoint(inparam, token) {
     }
 }
 
-//获取代理的余额
-async function getAgentBalance(agentId) {
-    let balance = 0
-    let agentGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-    for (let item of agentGroupArr) {
-        if (item._id == agentId) {
-            balance = item.count
-            return balance
-        }
-    }
-    return balance
-}
-//获取玩家的余额
-async function getPlayerBalance(playerId) {
-    let balance = 0
-    let playerGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-    for (let item of playerGroupArr) {
-        if (item._id == playerId) {
-            return item.count
-        }
-    }
-    return balance
-}
+// //获取代理的余额
+// async function getAgentBalance(agentId) {
+//     let balance = 0
+//     let agentGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+//     for (let item of agentGroupArr) {
+//         if (item._id == agentId) {
+//             balance = item.count
+//             return balance
+//         }
+//     }
+//     return balance
+// }
+// //获取玩家的余额
+// async function getPlayerBalance(playerId) {
+//     let balance = 0
+//     let playerGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+//     for (let item of playerGroupArr) {
+//         if (item._id == playerId) {
+//             return item.count
+//         }
+//     }
+//     return balance
+// }
 
 module.exports = router

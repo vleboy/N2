@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
+const NP = require('number-precision')
 
 //加减点枚举
 const ProjectEnum = {
@@ -51,19 +52,37 @@ function GetHashPwd(pwd) {
     return hash
 }
 
-//获取玩家余额
-function getPlayerBalance(mongodb, playerId) {
-    // 查询玩家
-
+//获取余额
+async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
+    // 查询用户信息
+    let userInfo = '', balance = 0
+    if (!lastBalanceTime) {
+        if (role == RoleEnum.agent) {
+            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { lastBalanceTime: 1, lastBalance: 1, _id: 0 })
+        } else if (role == RoleEnum.player) {
+            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { lastBalanceTime: 1, lastBalance: 1, _id: 0 })
+        } else {
+            throw { err: true, msg: '非法角色' }
+        }
+        lastBalanceTime = userInfo.lastBalanceTime
+        lastBalance = userInfo.lastBalance
+    }
     // 根据时间查询流水
-
+    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, "createAt": { $gt: lastBalanceTime } }, { amount: 1, createAt: 1, _id: 0 }).sort({ createAt: 1 }).toArray()
     // 汇总余额
-
+    for (let item of billArr) {
+        balance = NP.plus(balance, item.amount)
+    }
+    balance = NP.plus(balance + lastBalance)
+    // 更新用户信息
+    if (role == RoleEnum.agent) {
+        mongodb.collection(CollectionEnum.agent).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
+    } else if (role == RoleEnum.player) {
+        mongodb.collection(CollectionEnum.player).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
+    }
+    return balance
 }
-//获取代理余额
-function getAgentBalance(mongodb, agentId) {
 
-}
 
 module.exports = {
     CheckType,
@@ -74,6 +93,5 @@ module.exports = {
     ReviewEnum,
     StatusEnum,
     GetUniqueID,
-    getPlayerBalance,
-    getAgentBalance
+    getBalanceById
 }

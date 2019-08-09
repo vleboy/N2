@@ -4,7 +4,7 @@ const router = new Router()
 
 //工具
 const _ = require('lodash')
-const { ProjectEnum, RoleEnum, CollectionEnum, ReviewEnum, StatusEnum, GetUniqueID } = require('../util/util')
+const { ProjectEnum, RoleEnum, CollectionEnum, ReviewEnum, StatusEnum, GetUniqueID, getBalanceById } = require('../util/util')
 
 /**
  * 创建管理员
@@ -94,7 +94,7 @@ router.post('/handlerReview', async (ctx, next) => {
     if (!inparam.id || !(inparam.status == ReviewEnum.Agree || inparam.status == ReviewEnum.Refuse)) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    let reviewInfo = await mongodb.collection('review').findOne({ id: inparam.id })
+    let reviewInfo = await mongodb.collection(CollectionEnum.review).findOne({ id: inparam.id })
     if (!reviewInfo) {
         return ctx.body = { err: true, res: '订单不存在' }
     }
@@ -155,7 +155,7 @@ async function checkUserHandlerPoint(inparam) {
             throw { err: true, res: '代理不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getAgentBalance(agentInfo.id)
+            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role)
             if (balance < inparam.amount) {
                 throw { err: true, res: '代理余额不足' }
             }
@@ -169,7 +169,7 @@ async function checkUserHandlerPoint(inparam) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getPlayerBalance(player.id)
+            let balance = await getBalanceById(mongodb,player.id,inparam.role)
             if (balance < inparam.amount) {
                 throw { err: true, res: '玩家余额不足' }
             }
@@ -190,7 +190,7 @@ async function checkCreateReview(inparam) {
             throw { err: true, res: '代理不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getAgentBalance(agentInfo.id)
+            let balance = await getBalanceById(mongodb,agentInfo.id,inparam.role)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }
@@ -204,7 +204,7 @@ async function checkCreateReview(inparam) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getPlayerBalance(player.id)
+            let balance = await getBalanceById(mongodb,player.id,inparam.role)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }
@@ -234,28 +234,28 @@ async function checkSystemHandlerReview(inparam) {
     }
 }
 
-//获取代理的余额
-async function getAgentBalance(agentId) {
-    let balance = 0
-    let agentGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-    for (let item of agentGroupArr) {
-        if (item._id == agentId) {
-            balance = item.count
-            return balance
-        }
-    }
-    return balance
-}
-//获取玩家的余额
-async function getPlayerBalance(playerId) {
-    let balance = 0
-    let playerGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-    for (let item of playerGroupArr) {
-        if (item._id == playerId) {
-            return item.count
-        }
-    }
-    return balance
-}
+// //获取代理的余额
+// async function getAgentBalance(agentId) {
+//     let balance = 0
+//     let agentGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+//     for (let item of agentGroupArr) {
+//         if (item._id == agentId) {
+//             balance = item.count
+//             return balance
+//         }
+//     }
+//     return balance
+// }
+// //获取玩家的余额
+// async function getPlayerBalance(playerId) {
+//     let balance = 0
+//     let playerGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+//     for (let item of playerGroupArr) {
+//         if (item._id == playerId) {
+//             return item.count
+//         }
+//     }
+//     return balance
+// }
 
 module.exports = router
