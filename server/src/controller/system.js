@@ -155,7 +155,7 @@ async function checkUserHandlerPoint(inparam) {
             throw { err: true, res: '代理不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role)
+            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '代理余额不足' }
             }
@@ -169,7 +169,7 @@ async function checkUserHandlerPoint(inparam) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, player.id, inparam.role)
+            let balance = await getBalanceById(mongodb, player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '玩家余额不足' }
             }
@@ -190,7 +190,7 @@ async function checkCreateReview(inparam) {
             throw { err: true, res: '代理不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role)
+            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }
@@ -204,7 +204,7 @@ async function checkCreateReview(inparam) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, player.id, inparam.role)
+            let balance = await getBalanceById(mongodb, player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }

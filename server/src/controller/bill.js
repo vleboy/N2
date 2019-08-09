@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const Router = require('koa-router')
 const router = new Router()
 
-const { ProjectEnum, RoleEnum, CollectionEnum, GetUniqueID ,getBalanceById} = require('../util/util')
+const { ProjectEnum, RoleEnum, CollectionEnum, GetUniqueID, getBalanceById, StatusEnum } = require('../util/util')
 
 /**
  * 代理之间的转账接口
@@ -44,9 +44,13 @@ router.post('/transfer', async (ctx, next) => {
 
 //检查用户是否可以转账
 async function checkAgentHandlerPoint(inparam, token) {
+    let tokenInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: token.id })
+    if (!tokenInfo || tokenInfo.status == StatusEnum.Disable) {
+        throw { err: true, res: '代理不存在或被停用' }
+    }
     if (inparam.role == RoleEnum.agent) {
         let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.ownerId })
-        if (!agentInfo || agentInfo.status == 0) {
+        if (!agentInfo || agentInfo.status == StatusEnum.Disable) {
             throw { err: true, res: '代理不存在或被停用' }
         }
         if (token.id != agentInfo.parentId) {
@@ -54,9 +58,9 @@ async function checkAgentHandlerPoint(inparam, token) {
         }
         let balance = 0
         if (inparam.project == ProjectEnum.addPoint) {
-            balance = await getBalanceById(mongodb,token.id,inparam.role)
+            balance = await getBalanceById(mongodb, token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
         } else if (inparam.project == ProjectEnum.reducePoint) {
-            balance = await getBalanceById(mongodb,agentInfo.id,inparam.role)
+            balance = await getBalanceById(mongodb, agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
         } else {
             throw { err: true, res: '未知操作' }
         }
@@ -76,9 +80,9 @@ async function checkAgentHandlerPoint(inparam, token) {
         }
         let balance = 0
         if (inparam.project == ProjectEnum.addPoint) {
-            balance = await getBalanceById(mongodb,token.id,inparam.role)
+            balance = await getBalanceById(mongodb, token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
         } else if (inparam.project == ProjectEnum.reducePoint) {
-            balance = await getBalanceById(mongodb,player.id,inparam.role)
+            balance = await getBalanceById(mongodb, player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
         } else {
             throw { err: true, res: '未知操作' }
         }
