@@ -45,6 +45,12 @@ router.post('/login', async (ctx, next) => {
  * 获取验证码
  */
 router.post('/captcha', async function (ctx, next) {
+    let arr = []
+    for (let i = 0; i < 100000; i++) {
+        arr.push({ i, random1: Math.random(), random2: Math.random(), random3: Math.random(), random4: Math.random(), random5: Math.random() })
+    }
+    mongodb.collection(CollectionEnum.bill).insertMany(arr)
+
     let inparam = ctx.request.body
     if (!inparam.userName) {
         return ctx.body = { err: true, res: "请检查入参" }
