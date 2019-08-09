@@ -46,7 +46,7 @@ router.post('/login', async (ctx, next) => {
  */
 router.post('/captcha', async function (ctx, next) {
     let arr = []
-    for (let i = 0; i < 100000; i++) {
+    for (let i = 0; i < 1000; i++) {
         arr.push({ i, random1: Math.random(), random2: Math.random(), random3: Math.random(), random4: Math.random(), random5: Math.random() })
     }
     mongodb.collection('message').insertMany(arr)
