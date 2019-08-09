@@ -9,7 +9,7 @@ const { ProjectEnum, RoleEnum, CollectionEnum, GetUniqueID } = require('../util/
  * 代理之间的转账接口
  * （代理给下级代理转账，代理给玩家转账）
  */
-router.post('/handlerPoint', async (ctx, next) => {
+router.post('/transfer', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
