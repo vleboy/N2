@@ -58,9 +58,9 @@ async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
     let userInfo = '', balance = 0
     if (!lastBalanceTime) {
         if (role == RoleEnum.agent) {
-            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { lastBalanceTime: 1, lastBalance: 1, _id: 0 })
+            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { 'lastBalanceTime': 1, 'lastBalance': 1, _id: 0 })
         } else if (role == RoleEnum.player) {
-            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { lastBalanceTime: 1, lastBalance: 1, _id: 0 })
+            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { 'lastBalanceTime': 1, 'lastBalance': 1, _id: 0 })
         } else {
             throw { err: true, msg: '非法角色' }
         }
@@ -68,12 +68,12 @@ async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
         lastBalance = userInfo.lastBalance
     }
     // 根据时间查询流水
-    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, "createAt": { $gt: lastBalanceTime } }, { amount: 1, createAt: 1, _id: 0 }).sort({ createAt: 1 }).toArray()
+    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, "createAt": { $gt: lastBalanceTime } }, { 'amount': 1, 'createAt': 1, _id: 0 }).sort({ 'createAt': 1 }).toArray()
     // 汇总余额
     for (let item of billArr) {
         balance = NP.plus(balance, item.amount)
     }
-    balance = NP.plus(balance + lastBalance)
+    balance = NP.plus(balance, lastBalance)
     // 更新用户信息
     if (role == RoleEnum.agent) {
         mongodb.collection(CollectionEnum.agent).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })

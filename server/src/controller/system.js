@@ -13,23 +13,23 @@ router.post('/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     // 入参检查
-    if (!inparam.userName || !inparam.userPwd || !inparam.userNick) {
-        ctx.body = { err: true, res: '请检查入参' }
+    if (!inparam.userName || !inparam.userPwd || !inparam.userNick || !inparam.subrole) {
+        return ctx.body = { err: true, res: '请检查入参' }
     }
-    if (await mongodb.collection('agent').findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
-        ctx.body = { err: true, res: '帐号/昵称已存在' }
+    if (await mongodb.collection(CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
+        return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
     let flag = true
     while (flag) {
         inparam.id = _.random(100000, 999999)
-        if (!await mongodb.collection('agent').findOne({ id: inparam.id })) {
+        if (!await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.id })) {
             flag = false
         }
     }
     inparam.status = 1
     inparam.role = 'admin'
     inparam.createAt = Date.now()
-    let result = await mongodb.collection('agent').insertOne(inparam)
+    let result = await mongodb.collection(CollectionEnum.agent).insertOne(inparam)
     ctx.body = { err: false, res: result.insertedId }
 })
 
@@ -169,7 +169,7 @@ async function checkUserHandlerPoint(inparam) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb,player.id,inparam.role)
+            let balance = await getBalanceById(mongodb, player.id, inparam.role)
             if (balance < inparam.amount) {
                 throw { err: true, res: '玩家余额不足' }
             }
@@ -190,7 +190,7 @@ async function checkCreateReview(inparam) {
             throw { err: true, res: '代理不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb,agentInfo.id,inparam.role)
+            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }
@@ -204,7 +204,7 @@ async function checkCreateReview(inparam) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
         if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb,player.id,inparam.role)
+            let balance = await getBalanceById(mongodb, player.id, inparam.role)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }
