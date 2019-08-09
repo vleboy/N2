@@ -40,6 +40,10 @@
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
                 "/xnosql/message/query",
+                "/xnosql/admin/create",
+                "/xnosql/admin/query",
+                "/xnosql/admin/update",
+                "/xnosql/admin/delete/",
                 "/xserver/system/handlerReview",
                 "/xserver/system/handlerPoint"
             ],
