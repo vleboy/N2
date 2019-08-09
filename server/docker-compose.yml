@@ -17,13 +17,10 @@ services:
     #   placement:
     #     constraints: [node.role == manager]
   mongo0:
-    # hostname: mongo0
     container_name: mongo0
     image: mongo:latest
     volumes:
         - ./_db/mongo0:/data/db #host_db:container_db
-    expose:
-     - 27017
     ports:
       - 27017:27017
     restart: always
@@ -31,15 +28,12 @@ services:
     networks:
       - n2_overlay
   mongo1:
-    # hostname: mongo1
     container_name: mongo1
     image: mongo:latest
     volumes:
         - ./_db/mongo1:/data/db
     depends_on:
        - mongo0
-    expose:
-     - 27017
     ports:
       - 27018:27017
     restart: always
@@ -47,15 +41,12 @@ services:
     networks:
       - n2_overlay
   mongo2:
-    # hostname: mongo2
     container_name: mongo2
     image: mongo:latest
     volumes:
         - ./_db/mongo2:/data/db
     depends_on:
        - mongo1
-    expose:
-     - 27017
     ports:
       - 27019:27017
     restart: always
