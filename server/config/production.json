@@ -31,8 +31,7 @@
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
                 "/xnosql/player/update",
-                "/xnosql/playerBill/query",
-                "/xnosql/agentBill/query",
+                "/xnosql/bill/query",
                 "/xnosql/role/create",
                 "/xnosql/role/query",
                 "/xnosql/role/delete/",
@@ -48,17 +47,17 @@
                 "/xnosql/agent/get/",
                 "/xnosql/agent/query",
                 "/xnosql/agent/update",
-                "/xserver/agent/handlerPoint",
+                "/xserver/bill/transfer",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
                 "/xnosql/player/update",
-                "/xnosql/playerBill/query",
+                "/xnosql/bill/query",
                 "/xserver/system/createReview"
             ],
             "player": [
                 "/xnosql/player/update",
-                "/xnosql/playerBill/query",
+                "/xnosql/bill/query",
                 "/xserver/system/createReview"
             ]
         },
