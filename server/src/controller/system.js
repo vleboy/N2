@@ -147,7 +147,7 @@ router.post('/handlerReview', async (ctx, next) => {
     ctx.body = { err: false, res: '操作成功' }
 })
 
-//检查用户是否可以转账
+//检查用户是否可以变更点数
 async function checkUserHandlerPoint(inparam) {
     if (inparam.role == RoleEnum.agent) {
         let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.id })
