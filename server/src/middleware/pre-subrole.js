@@ -35,7 +35,7 @@ router.post('/subrole/create', async (ctx, next) => {
 /**
  * 查询角色
  */
-router.get('/role/query', async (ctx, next) => {
+router.get('/subrole/query', async (ctx, next) => {
     let inparam = ctx.request.query
     let mongodb = global.mongodb
 
