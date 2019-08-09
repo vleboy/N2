@@ -27,6 +27,7 @@
                 "/xnosql/agent/get/",
                 "/xnosql/agent/query",
                 "/xnosql/agent/update",
+                "/xnosql/agent/delete/",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
