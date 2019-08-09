@@ -34,6 +34,7 @@
                 "/xnosql/bill/query",
                 "/xnosql/role/create",
                 "/xnosql/role/query",
+                "/xnosql/role/update",
                 "/xnosql/role/delete/",
                 "/xnosql/review/query",
                 "/xnosql/message/create",
