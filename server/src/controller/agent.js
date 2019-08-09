@@ -73,12 +73,10 @@ router.get('/tree', async (ctx, next) => {
     agentArr = _.sortBy(agentArr, ['level'])
     let promiseArr = []
     for (let item of agentArr) {
-        let p = new Promise(async (resolve, reject) => {
-            let balance = await getBalanceById(mongodb, item.id, item.role, item.lastBalanceTime, item.lastBalance)
-            item.balance = balance
-            resolve('ok')
-        })
-        promiseArr.push(p)
+        promiseArr.push(new Promise(async (resolve, reject) => {
+            item.balance = await getBalanceById(mongodb, item.id, item.role, item.lastBalanceTime, item.lastBalance)
+            resolve()
+        }))
     }
     await Promise.all(promiseArr)
     let data = []
