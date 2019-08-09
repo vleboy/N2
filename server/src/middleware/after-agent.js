@@ -29,7 +29,7 @@ router.get('/agent/query', async (ctx, next) => {
     let res = _.orderBy(agentArr, 'createAt', 'desc')
     let agentList = []
     for (let item of res) {
-        agentList.push(_.pick(item, ['id', 'userName', 'userNick', 'gameList', 'status', 'role', 'createAt']))
+        agentList.push(_.pick(item, ['id', 'userName', 'userNick', 'gameList', 'status', 'subrole', 'role', 'createAt']))
     }
     ctx.body = agentList
 })

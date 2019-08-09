@@ -16,7 +16,9 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 router.get('/review/query', async (ctx, next) => {
     let inparam = ctx.request.query
     let mongodb = global.mongodb
-
+    if(inparam.proposerId){
+        inparam.proposerId=+inparam.proposerId
+    }
     return next()
 })
 

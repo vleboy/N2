@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const bcrypt = require('bcryptjs')
+const NP = require('number-precision')
 
 //加减点枚举
 const ProjectEnum = {
@@ -15,12 +16,11 @@ const RoleEnum = {
 //数据库集合枚举
 const CollectionEnum = {
     agent: 'agent',
-    agentBill: 'agentBill',
     message: 'message',
     player: 'player',
-    playerBill: 'playerBill',
     review: 'review',
-    subrole: 'subrole'
+    subrole: 'subrole',
+    bill: 'bill'
 }
 //启用/停用枚举
 const StatusEnum = {
@@ -52,6 +52,39 @@ function GetHashPwd(pwd) {
     return hash
 }
 
+//获取余额
+async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
+    // 查询用户信息
+    let userInfo = '', balance = 0
+    if (!lastBalanceTime) {
+        if (role == RoleEnum.agent) {
+            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { projection: { lastBalanceTime: 1, lastBalance: 1, _id: 0 } })
+        } else if (role == RoleEnum.player) {
+            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { projection: { lastBalanceTime: 1, lastBalance: 1, _id: 0 } })
+        } else {
+            throw { err: true, msg: '非法角色' }
+        }
+        lastBalanceTime = userInfo.lastBalanceTime
+        lastBalance = userInfo.lastBalance
+    }
+    // 根据时间查询流水
+    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, createAt: { $gt: lastBalanceTime } }, { projection: { amount: 1, createAt: 1, _id: 0 } }).sort({ 'createAt': 1 }).toArray()
+    // 汇总余额
+    for (let item of billArr) {
+        balance = NP.plus(balance, item.amount)
+    }
+    balance = NP.plus(balance, lastBalance)
+    if (billArr.length > 0) {
+        // 更新用户信息
+        if (role == RoleEnum.agent) {
+            mongodb.collection(CollectionEnum.agent).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
+        } else if (role == RoleEnum.player) {
+            mongodb.collection(CollectionEnum.player).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
+        }
+    }
+    return balance
+}
+
 
 module.exports = {
     CheckType,
@@ -61,5 +94,6 @@ module.exports = {
     CollectionEnum,
     ReviewEnum,
     StatusEnum,
-    GetUniqueID
+    GetUniqueID,
+    getBalanceById
 }

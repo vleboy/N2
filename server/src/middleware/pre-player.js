@@ -40,6 +40,8 @@ router.post('/player/create', async (ctx, next) => {
     inparam.parentId = agentInfo.id
     inparam.parentName = agentInfo.userName
     inparam.role = Util.RoleEnum.player
+    inparam.lastBalanceTime = 0
+    inparam.lastBalance = 0
     inparam.createAt = Date.now()
     return next()
 })

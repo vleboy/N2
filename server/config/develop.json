@@ -15,14 +15,53 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/poker/calcTexas",
-            "/player/create",
-            "/login",
-            "/room/query"
+            "/xserver/agent/captcha",
+            "/xserver/agent/login",
+            "/xserver/player/login",
+            "/xserver/system/create"
         ],
         "role": {
+            "admin": [
+                "/xserver/agent/tree",
+                "/xnosql/agent/create",
+                "/xnosql/agent/get/",
+                "/xnosql/agent/query",
+                "/xnosql/agent/update",
+                "/xnosql/agent/delete/",
+                "/xnosql/player/create",
+                "/xnosql/player/get/",
+                "/xnosql/player/query",
+                "/xnosql/player/update",
+                "/xnosql/bill/query",
+                "/xnosql/subrole/create",
+                "/xnosql/subrole/query",
+                "/xnosql/subrole/update",
+                "/xnosql/subrole/delete/",
+                "/xnosql/review/query",
+                "/xnosql/message/create",
+                "/xnosql/message/delete/",
+                "/xnosql/message/query",
+                "/xserver/system/create",
+                "/xserver/system/handlerReview",
+                "/xserver/system/handlerPoint"
+            ],
+            "agent": [
+                "/xserver/agent/tree",
+                "/xnosql/agent/get/",
+                "/xnosql/agent/query",
+                "/xnosql/agent/update",
+                "/xserver/bill/transfer",
+                "/xnosql/player/create",
+                "/xnosql/player/get/",
+                "/xnosql/player/query",
+                "/xnosql/player/update",
+                "/xnosql/bill/query",
+                "/xserver/system/createReview"
+            ],
             "player": [
-                ".*"
+                "/xnosql/player/update",
+                "/xnosql/bill/query",
+                "/xserver/system/createReview"
             ]
         },
         "cors": true,
@@ -36,6 +75,9 @@
         "controllerRoot": "/xserver",
         "middlewareDir": "/src/middleware/",
         "controllerDir": "/src/controller/",
-        "mongodbUrl": "mongodb://localhost:27017/n2"
+        "mongodbUrl": "mongodb://mongo0:27017,mongo1:27017,mongo2:27017/n2",
+        "mongoOption": {
+            "replicaSet": "rs"
+        }
     }
 }
