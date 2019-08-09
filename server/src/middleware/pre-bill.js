@@ -11,9 +11,9 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 
 
 /**
- * 查询玩家流水
+ * 查询账单流水
  */
-router.get('/playerBill/query', async (ctx, next) => {
+router.get('/bill/query', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.query
     let mongodb = global.mongodb
@@ -23,10 +23,7 @@ router.get('/playerBill/query', async (ctx, next) => {
     if (token.role == Util.RoleEnum.agent) {
         inparam.parentId = token.id
     }
-
     return next()
 })
-
-
 
 module.exports = router

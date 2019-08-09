@@ -15,12 +15,11 @@ const RoleEnum = {
 //数据库集合枚举
 const CollectionEnum = {
     agent: 'agent',
-    agentBill: 'agentBill',
     message: 'message',
     player: 'player',
-    playerBill: 'playerBill',
     review: 'review',
-    subrole: 'subrole'
+    subrole: 'subrole',
+    bill: 'bill'
 }
 //启用/停用枚举
 const StatusEnum = {
