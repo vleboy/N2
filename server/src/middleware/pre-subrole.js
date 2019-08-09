@@ -11,7 +11,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 /**
  * 创建角色
  */
-router.post('/role/create', async (ctx, next) => {
+router.post('/subrole/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     if (!inparam.roleName || !inparam.permissions) {

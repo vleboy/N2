@@ -11,7 +11,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 /**
  * 创建角色
  */
-router.post('/role/create', async (ctx, next) => {
+router.post('/subrole/create', async (ctx, next) => {
     let inparam = ctx.request.body
     ctx.body = { id: inparam.id, createAt: inparam.createAt }
 })
@@ -20,7 +20,7 @@ router.post('/role/create', async (ctx, next) => {
 /**
  * 查询角色
  */
-router.get('/role/query', async (ctx, next) => {
+router.get('/subrole/query', async (ctx, next) => {
     ctx.body = _.orderBy(ctx.body.res, 'createAt', 'desc')
 })
 
