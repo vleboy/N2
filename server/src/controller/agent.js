@@ -92,6 +92,7 @@ function tree(treeArray, array) {
             // 找到父亲，加入父亲节点，并从剩余节点删除
             if (item.parentId == id) {
                 children.push(item)
+                treeNode.agentCount += 1
                 array.splice(j, 1)
                 j--
             }
