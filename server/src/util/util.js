@@ -69,7 +69,6 @@ async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
     }
     // 根据时间查询流水
     let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, createAt: { $gt: lastBalanceTime } }, { projection: { amount: 1, createAt: 1, _id: 0 } }).sort({ 'createAt': 1 }).toArray()
-    console.log(billArr)
     // 汇总余额
     for (let item of billArr) {
         balance = NP.plus(balance, item.amount)

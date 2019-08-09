@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const captchapng = require('captchapng')
 const _ = require('lodash')
-const { RoleEnum, CollectionEnum } = require('../util/util')
+const { RoleEnum, CollectionEnum, getBalanceById } = require('../util/util')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -71,6 +71,16 @@ router.get('/tree', async (ctx, next) => {
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }
     agentArr = _.sortBy(agentArr, ['level'])
+    let promiseArr = []
+    for (let item of agentArr) {
+        let p = new Promise(async (resolve, reject) => {
+            let balance = await getBalanceById(mongodb, item.id, item.role, item.lastBalanceTime, item.lastBalance)
+            item.balance = balance
+            resolve('ok')
+        })
+        promiseArr.push(p)
+    }
+    await Promise.all(promiseArr)
     let data = []
     if (token.role == 'admin') {
         data.push({ id: 0, userNick: token.userNick, userName: token.userName, children: [] })
