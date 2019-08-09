@@ -69,6 +69,9 @@ async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
     }
     console.log(userInfo)
     // 根据时间查询流水
+    let ceArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id }).toArray()
+    console.log(ceArr)
+    console.log({ ownerId: id, "createAt": { $gt: lastBalanceTime } }, { 'amount': 1, 'createAt': 1, _id: 0 })
     let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, "createAt": { $gt: lastBalanceTime } }, { 'amount': 1, 'createAt': 1, _id: 0 }).sort({ 'createAt': 1 }).toArray()
     console.log(billArr)
     // 汇总余额
