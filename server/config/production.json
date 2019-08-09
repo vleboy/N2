@@ -27,6 +27,7 @@
                 "/xnosql/agent/get/",
                 "/xnosql/agent/query",
                 "/xnosql/agent/update",
+                "/xnosql/agent/delete/",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
@@ -40,6 +41,7 @@
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
                 "/xnosql/message/query",
+                "/xserver/system/create",
                 "/xserver/system/handlerReview",
                 "/xserver/system/handlerPoint"
             ],
