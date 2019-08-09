@@ -58,9 +58,9 @@ async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
     let userInfo = '', balance = 0
     if (!lastBalanceTime) {
         if (role == RoleEnum.agent) {
-            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }).project({ lastBalanceTime: 1, lastBalance: 1, _id: 0 })
+            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { projection: { lastBalanceTime: 1, lastBalance: 1, _id: 0 } })
         } else if (role == RoleEnum.player) {
-            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }).project({ lastBalanceTime: 1, lastBalance: 1, _id: 0 })
+            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { projection: { lastBalanceTime: 1, lastBalance: 1, _id: 0 } })
         } else {
             throw { err: true, msg: '非法角色' }
         }
