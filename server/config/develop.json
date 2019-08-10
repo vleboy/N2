@@ -32,7 +32,7 @@
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
                 "/xnosql/player/update",
-                "/xnosql/bill/query",
+                "/xnosql/bill/page",
                 "/xnosql/subrole/create",
                 "/xnosql/subrole/query",
                 "/xnosql/subrole/update",
@@ -55,12 +55,12 @@
                 "/xnosql/player/get/",
                 "/xnosql/player/query",
                 "/xnosql/player/update",
-                "/xnosql/bill/query",
+                "/xnosql/bill/page",
                 "/xserver/system/createReview"
             ],
             "player": [
                 "/xnosql/player/update",
-                "/xnosql/bill/query",
+                "/xnosql/bill/page",
                 "/xserver/system/createReview"
             ]
         },

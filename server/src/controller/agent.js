@@ -18,16 +18,16 @@ router.post('/login', async (ctx, next) => {
     if (!inparam.userName || !inparam.userPwd || !inparam.code) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    if (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now()) {
-        return ctx.body = { err: true, res: '验证码错误或过期' }
-    }
+    // if (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now()) {
+    //     return ctx.body = { err: true, res: '验证码错误或过期' }
+    // }
     let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ userName: inparam.userName })
     if (!agentInfo) {
         return ctx.body = { err: true, res: '帐号不存在' }
     }
-    if (!bcrypt.compareSync(agentInfo.userPwd, inparam.userPwd)) {
-        return ctx.body = { err: true, res: '密码不正确' }
-    }
+    // if (!bcrypt.compareSync(agentInfo.userPwd, inparam.userPwd)) {
+    //     return ctx.body = { err: true, res: '密码不正确' }
+    // }
     delete VerifyCode[inparam.userName]
     let token = jwt.sign({
         id: agentInfo.id,
