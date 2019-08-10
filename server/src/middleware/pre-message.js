@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 //工具相关
 const _ = require('lodash')
+const Util = require('../util/util.js')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -18,7 +19,7 @@ router.post('/message/create', async (ctx, next) => {
         ctx.body = { err: true, res: '请检查入参' }
     } else {
         inparam.createAt = Date.now()
-        inparam.id = GetUniqueID()
+        inparam.id = await Util.getSeq('messageSeq')
         return next()
     }
 })

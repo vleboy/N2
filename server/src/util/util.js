@@ -35,12 +35,6 @@ const ReviewEnum = {
     Refuse: 2,
 }
 
-//获取一个唯一的ID值
-function GetUniqueID() {
-    let num = `${Date.now()}${_.random(10, 99)}`
-    return +num
-}
-
 //检查类型
 function CheckType(o) {
     let s = Object.prototype.toString.call(o)
@@ -105,7 +99,6 @@ module.exports = {
     CollectionEnum,
     ReviewEnum,
     StatusEnum,
-    GetUniqueID,
     getBalanceById,
     getSeq
 }
