@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const moment = require('moment')
 const bcrypt = require('bcryptjs')
 const NP = require('number-precision')
 
@@ -85,6 +86,15 @@ async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
     return balance
 }
 
+// 获取自增键
+async function getSeq(seqName) {
+    const res = await global.mongodb.collection('_seq').findOneAndUpdate(
+        { seqName },
+        { $inc: { seqValue: 1 } },
+        { returnOriginal: false, projection: { seqValue: 1, _id: 0 } }
+    )
+    return +`${moment().utcOffset(8).format('YYMMDD')}${_.padStart(res.value.seqValue.toString(), 10, '0')}`
+}
 
 module.exports = {
     CheckType,
@@ -95,5 +105,6 @@ module.exports = {
     ReviewEnum,
     StatusEnum,
     GetUniqueID,
-    getBalanceById
+    getBalanceById,
+    getSeq
 }

@@ -14,10 +14,10 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 /**
  * 查询账单流水
  */
-router.get('/bill/query', async (ctx, next) => {
+router.get('/bill/page', async (ctx, next) => {
     const token = ctx.tokenVerify
-    let res = _.orderBy(ctx.body.res, ['createAt'], ['desc'])
-    ctx.body = res
+    // let res = _.orderBy(ctx.body.res, ['createAt'], ['desc'])
+    // ctx.body = res
 })
 
 module.exports = router

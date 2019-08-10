@@ -5,6 +5,7 @@ const router = new Router()
 //工具
 const _ = require('lodash')
 const { ProjectEnum, RoleEnum, CollectionEnum, ReviewEnum, StatusEnum, GetUniqueID, getBalanceById } = require('../util/util')
+const Util = require('../util/util.js')
 
 /**
  * 创建管理员
@@ -45,7 +46,7 @@ router.post('/handlerPoint', async (ctx, next) => {
     // 检查代理/玩家是否满足操作条件
     await checkUserHandlerPoint(inparam)
     let amount = inparam.project == ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
-    await mongodb.collection(CollectionEnum.bill).insertOne({ id: GetUniqueID(), role: inparam.role, project: inparam.project, amount, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+    await mongodb.collection(CollectionEnum.bill).insertOne({ id: await Util.getSeq('billSeq'), role: inparam.role, project: inparam.project, amount, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
     ctx.body = { err: false, res: '操作成功' }
 })
 
@@ -233,29 +234,5 @@ async function checkSystemHandlerReview(inparam) {
         throw { err: true, res: '非法角色' }
     }
 }
-
-// //获取代理的余额
-// async function getAgentBalance(agentId) {
-//     let balance = 0
-//     let agentGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-//     for (let item of agentGroupArr) {
-//         if (item._id == agentId) {
-//             balance = item.count
-//             return balance
-//         }
-//     }
-//     return balance
-// }
-// //获取玩家的余额
-// async function getPlayerBalance(playerId) {
-//     let balance = 0
-//     let playerGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-//     for (let item of playerGroupArr) {
-//         if (item._id == playerId) {
-//             return item.count
-//         }
-//     }
-//     return balance
-// }
 
 module.exports = router

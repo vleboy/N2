@@ -13,7 +13,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 /**
  * 查询账单流水
  */
-router.get('/bill/query', async (ctx, next) => {
+router.get('/bill/page', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.query
     let mongodb = global.mongodb
@@ -22,6 +22,13 @@ router.get('/bill/query', async (ctx, next) => {
     }
     if (token.role == Util.RoleEnum.agent) {
         inparam.parentId = token.id
+    }
+    // 设置分页参数
+    inparam.limit = 100
+    inparam.sortBy = 'id'
+    inparam.sortOrder = -1
+    if (inparam.startKey) {
+        inparam.startKey = +inparam.startKey
     }
     return next()
 })
