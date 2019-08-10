@@ -54,7 +54,8 @@ function GetHashPwd(pwd) {
 }
 
 //获取余额
-async function getBalanceById(mongodb, id, role, lastBalanceTime, lastBalance) {
+async function getBalanceById(id, role, lastBalanceTime, lastBalance) {
+    let mongodb = global.mongodb
     // 查询用户信息
     let userInfo = '', balance = 0
     if (!lastBalanceTime) {

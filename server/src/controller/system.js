@@ -4,7 +4,6 @@ const router = new Router()
 
 //工具
 const _ = require('lodash')
-const { ProjectEnum, RoleEnum, CollectionEnum, ReviewEnum, StatusEnum, GetUniqueID, getBalanceById } = require('../util/util')
 const Util = require('../util/util.js')
 
 /**
@@ -17,20 +16,20 @@ router.post('/create', async (ctx, next) => {
     if (!inparam.userName || !inparam.userPwd || !inparam.userNick || !inparam.subrole) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    if (await mongodb.collection(CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
+    if (await mongodb.collection(Util.CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
     let flag = true
     while (flag) {
         inparam.id = _.random(100000, 999999)
-        if (!await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.id })) {
+        if (!await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id })) {
             flag = false
         }
     }
     inparam.status = 1
     inparam.role = 'admin'
     inparam.createAt = Date.now()
-    let result = await mongodb.collection(CollectionEnum.agent).insertOne(inparam)
+    let result = await mongodb.collection(Util.CollectionEnum.agent).insertOne(inparam)
     ctx.body = { err: false, res: result.insertedId }
 })
 
@@ -45,8 +44,8 @@ router.post('/handlerPoint', async (ctx, next) => {
     }
     // 检查代理/玩家是否满足操作条件
     await checkUserHandlerPoint(inparam)
-    let amount = inparam.project == ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
-    await mongodb.collection(CollectionEnum.bill).insertOne({ id: await Util.getSeq('billSeq'), role: inparam.role, project: inparam.project, amount, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+    let amount = inparam.project == Util.ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
+    await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: await Util.getSeq('billSeq'), role: inparam.role, project: inparam.project, amount, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
     ctx.body = { err: false, res: '操作成功' }
 })
 
@@ -62,14 +61,14 @@ router.post('/createReview', async (ctx, next) => {
     }
     // 检查请求单是否允许
     await checkCreateReview(inparam)
-    if (inparam.project == ProjectEnum.addPoint) {
-        await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() })
-    } else if (inparam.project == ProjectEnum.reducePoint) {
+    if (inparam.project == Util.ProjectEnum.addPoint) {
+        await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() })
+    } else if (inparam.project == Util.ProjectEnum.reducePoint) {
         const session = await global.getMongoSession()
         try {
-            let agentBillId = GetUniqueID()
-            await mongodb.collection(CollectionEnum.bill).insertOne({ id: agentBillId, role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
-            await mongodb.collection(CollectionEnum.review).insertOne({ id: GetUniqueID(), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
+            let agentBillId = await Util.getSeq('billSeq')
+            await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: agentBillId, role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+            await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
             await session.commitTransaction()
         } catch (error) {
             console.error(error)
@@ -92,29 +91,29 @@ router.post('/handlerReview', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (!inparam.id || !(inparam.status == ReviewEnum.Agree || inparam.status == ReviewEnum.Refuse)) {
+    if (!inparam.id || !(inparam.status == Util.ReviewEnum.Agree || inparam.status == Util.ReviewEnum.Refuse)) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    let reviewInfo = await mongodb.collection(CollectionEnum.review).findOne({ id: inparam.id })
+    let reviewInfo = await mongodb.collection(Util.CollectionEnum.review).findOne({ id: inparam.id })
     if (!reviewInfo) {
         return ctx.body = { err: true, res: '订单不存在' }
     }
-    if (reviewInfo.status != ReviewEnum.Process) {
+    if (reviewInfo.status != Util.ReviewEnum.Process) {
         return ctx.body = { err: true, res: '订单已处理' }
     }
     //检查代理或玩家是否正常
     await checkSystemHandlerReview(reviewInfo)
     //拒绝该订单
-    if (inparam.status == ReviewEnum.Refuse) {
-        if (reviewInfo.project == ProjectEnum.addPoint) {
-            await mongodb.collection(CollectionEnum.review).update({ id: inparam.id }, { $set: { status: ReviewEnum.Refuse, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
-        } else if (reviewInfo.project == ProjectEnum.reducePoint) {
+    if (inparam.status == Util.ReviewEnum.Refuse) {
+        if (reviewInfo.project == Util.ProjectEnum.addPoint) {
+            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: Util.ReviewEnum.Refuse, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
+        } else if (reviewInfo.project == Util.ProjectEnum.reducePoint) {
             const session = await global.getMongoSession()
             try {
                 //删除流水
-                await mongodb.collection(CollectionEnum.bill).remove({ id: reviewInfo.billId }, { session })
+                await mongodb.collection(Util.CollectionEnum.bill).remove({ id: reviewInfo.billId }, { session })
                 //更新请求单为拒绝状态
-                await mongodb.collection(CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: ReviewEnum.Refuse, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
+                await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: Util.ReviewEnum.Refuse, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
                 await session.commitTransaction()
             } catch (error) {
                 console.error(error)
@@ -127,12 +126,12 @@ router.post('/handlerReview', async (ctx, next) => {
     }
     //通过该订单
     else {
-        if (reviewInfo.project == ProjectEnum.addPoint) {
+        if (reviewInfo.project == Util.ProjectEnum.addPoint) {
             const session = await global.getMongoSession()
             try {
-                let billId = GetUniqueID()
-                await mongodb.collection(CollectionEnum.bill).insertOne({ id: billId, role: reviewInfo.role, project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
-                await mongodb.collection(CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
+                let billId = await Util.getSeq('billSeq')
+                await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: reviewInfo.role, project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
+                await mongodb.collection(Util.CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: Util.ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
                 await session.commitTransaction()
             } catch (error) {
                 console.error(error)
@@ -141,8 +140,8 @@ router.post('/handlerReview', async (ctx, next) => {
             } finally {
                 await session.endSession()
             }
-        } else if (reviewInfo.project == ProjectEnum.reducePoint) {
-            await mongodb.collection(CollectionEnum.review).update({ id: inparam.id }, { $set: { status: ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
+        } else if (reviewInfo.project == Util.ProjectEnum.reducePoint) {
+            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: Util.ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
         }
     }
     ctx.body = { err: false, res: '操作成功' }
@@ -150,13 +149,13 @@ router.post('/handlerReview', async (ctx, next) => {
 
 //检查用户是否可以变更点数
 async function checkUserHandlerPoint(inparam) {
-    if (inparam.role == RoleEnum.agent) {
-        let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.id })
+    if (inparam.role == Util.RoleEnum.agent) {
+        let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id })
         if (!agentInfo || agentInfo.status == 0) {
             throw { err: true, res: '代理不存在或被停用' }
         }
-        if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
+        if (inparam.project == Util.ProjectEnum.reducePoint) {
+            let balance = await Util.getBalanceById(agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '代理余额不足' }
             }
@@ -164,13 +163,13 @@ async function checkUserHandlerPoint(inparam) {
         inparam.ownerName = agentInfo.userName
         inparam.ownerNick = agentInfo.userNick
         inparam.parentId = agentInfo.parentId
-    } else if (inparam.role == RoleEnum.player) {
-        let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.id })
+    } else if (inparam.role == Util.RoleEnum.player) {
+        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id })
         if (!player || player.status == 0) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
-        if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
+        if (inparam.project == Util.ProjectEnum.reducePoint) {
+            let balance = await Util.getBalanceById(player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '玩家余额不足' }
             }
@@ -185,13 +184,13 @@ async function checkUserHandlerPoint(inparam) {
 
 // 检查请求单是否合法
 async function checkCreateReview(inparam) {
-    if (inparam.role == RoleEnum.agent) {
-        let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.proposerId })
-        if (!agentInfo || agentInfo.status == StatusEnum.Disable) {
+    if (inparam.role == Util.RoleEnum.agent) {
+        let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.proposerId })
+        if (!agentInfo || agentInfo.status == Util.StatusEnum.Disable) {
             throw { err: true, res: '代理不存在或被停用' }
         }
-        if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
+        if (inparam.project == Util.ProjectEnum.reducePoint) {
+            let balance = await Util.getBalanceById(agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }
@@ -199,13 +198,13 @@ async function checkCreateReview(inparam) {
         inparam.proposerName = agentInfo.userName
         inparam.proposerNick = agentInfo.userNick
         inparam.parentId = agentInfo.parentId
-    } else if (inparam.role == RoleEnum.player) {
-        let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.proposerId })
-        if (!player || player.status == StatusEnum.Disable) {
+    } else if (inparam.role == Util.RoleEnum.player) {
+        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.proposerId })
+        if (!player || player.status == Util.StatusEnum.Disable) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
-        if (inparam.project == ProjectEnum.reducePoint) {
-            let balance = await getBalanceById(mongodb, player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
+        if (inparam.project == Util.ProjectEnum.reducePoint) {
+            let balance = await Util.getBalanceById(player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
             if (balance < inparam.amount) {
                 throw { err: true, res: '余额不足' }
             }
@@ -220,14 +219,14 @@ async function checkCreateReview(inparam) {
 
 // 检查审核请求单是否可操作
 async function checkSystemHandlerReview(inparam) {
-    if (inparam.role == RoleEnum.agent) {
-        let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.proposerId })
-        if (!agentInfo || agentInfo.status == StatusEnum.Disable) {
+    if (inparam.role == Util.RoleEnum.agent) {
+        let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.proposerId })
+        if (!agentInfo || agentInfo.status == Util.StatusEnum.Disable) {
             throw { err: true, res: '代理不存在或被停用' }
         }
-    } else if (inparam.role == RoleEnum.player) {
-        let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.proposerId })
-        if (!player || player.status == StatusEnum.Disable) {
+    } else if (inparam.role == Util.RoleEnum.player) {
+        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.proposerId })
+        if (!player || player.status == Util.StatusEnum.Disable) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
     } else {
