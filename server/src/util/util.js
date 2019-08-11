@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const moment = require('moment')
-const bcrypt = require('bcryptjs')
 const NP = require('number-precision')
 
 //加减点枚举
@@ -16,6 +15,7 @@ const RoleEnum = {
 }
 //数据库集合枚举
 const CollectionEnum = {
+    _seq: '_seq',
     agent: 'agent',
     message: 'message',
     player: 'player',
@@ -36,15 +36,9 @@ const ReviewEnum = {
 }
 
 //检查类型
-function CheckType(o) {
+function checkType(o) {
     let s = Object.prototype.toString.call(o)
     return s.match(/\[object (.*?)\]/)[1].toLowerCase()
-}
-//加密
-function GetHashPwd(pwd) {
-    let salt = bcrypt.genSaltSync(10)
-    let hash = bcrypt.hashSync(pwd, salt)
-    return hash
 }
 
 //获取余额
@@ -83,7 +77,7 @@ async function getBalanceById(id, role, lastBalanceTime, lastBalance) {
 
 // 获取自增键
 async function getSeq(seqName) {
-    const res = await global.mongodb.collection('_seq').findOneAndUpdate(
+    const res = await global.mongodb.collection(CollectionEnum._seq).findOneAndUpdate(
         { seqName },
         { $inc: { seqValue: 1 } },
         { returnOriginal: false, projection: { seqValue: 1, _id: 0 } }
@@ -92,13 +86,12 @@ async function getSeq(seqName) {
 }
 
 module.exports = {
-    CheckType,
-    GetHashPwd,
     ProjectEnum,
     RoleEnum,
     CollectionEnum,
     ReviewEnum,
     StatusEnum,
+    checkType,
     getBalanceById,
     getSeq
 }

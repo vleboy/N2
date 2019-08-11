@@ -71,7 +71,7 @@ router.post('/agent/update', async (ctx, next) => {
         ctx.body = { err: true, res: '密码长度不合法' }
     } else if (inparam.userNick && (inparam.userNick.length < 3 || inparam.userNick.length > 20)) {
         ctx.body = { err: true, res: '昵称长度不合法' }
-    } else if (inparam.gameList && (Util.CheckType(inparam.gameList) != 'array')) {
+    } else if (inparam.gameList && (Util.checkType(inparam.gameList) != 'array')) {
         ctx.body = { err: true, res: '游戏列表不合法' }
     } else if (!(agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id }))) {
         ctx.body = { err: true, res: '代理不存在' }
