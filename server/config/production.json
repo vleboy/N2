@@ -37,10 +37,10 @@
                 "/xnosql/subrole/query",
                 "/xnosql/subrole/update",
                 "/xnosql/subrole/delete/",
-                "/xnosql/review/query",
+                "/xnosql/review/page",
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
-                "/xnosql/message/query",
+                "/xnosql/message/page",
                 "/xserver/system/create",
                 "/xserver/system/handlerReview",
                 "/xserver/system/handlerPoint"
