@@ -4,6 +4,20 @@ const _ = require('lodash')
 const Util = require('../util/util.js')
 
 /**
+ * 系统初始化
+ */
+router.post('/init', async (ctx, next) => {
+    let mongodb = global.mongodb
+    if (!await mongodb.collection(Util.CollectionEnum.agent).findOne({ userName: 'admin' })) {
+        await mongodb.collection(Util.CollectionEnum._seq).insertMany([{ seqName: 'billSeq', seqValue: 0 }, { seqName: 'reviewSeq', seqValue: 0 }, { seqName: 'messageSeq', seqValue: 0 }])
+        await mongodb.collection(Util.CollectionEnum.agent).insertOne({ id: _.random(100000, 999999), userName: 'admin', userPwd: '123456', userNick: '超级管理员', subrole: '超级管理员', status: 1, createAt: Date.now() })
+    } else {
+        console.error('系统已初始')
+    }
+})
+
+
+/**
  * 创建管理员
  */
 router.post('/create', async (ctx, next) => {

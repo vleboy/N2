@@ -15,10 +15,10 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
+            "/xserver/system/init",
             "/xserver/agent/captcha",
             "/xserver/agent/login",
-            "/xserver/player/login",
-            "/xserver/system/create"
+            "/xserver/player/login"
         ],
         "role": {
             "admin": [
