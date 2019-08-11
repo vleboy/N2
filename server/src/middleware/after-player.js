@@ -1,7 +1,5 @@
 // 系统配置参数
 const config = require('config')
-// 身份令牌相关
-const jwt = require('jsonwebtoken')
 // 路由相关
 const Router = require('koa-router')
 const router = new Router()

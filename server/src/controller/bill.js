@@ -1,5 +1,3 @@
-const config = require('config')
-const jwt = require('jsonwebtoken')
 const Router = require('koa-router')
 const router = new Router()
 const Util = require('../util/util.js')

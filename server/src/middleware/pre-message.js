@@ -28,15 +28,17 @@ router.post('/message/create', async (ctx, next) => {
 /**
  * 查询消息
  */
-router.get('/message/query', async (ctx, next) => {
+router.get('/message/page', async (ctx, next) => {
     let inparam = ctx.request.query
-    let mongodb = global.mongodb
-
+    // let mongodb = global.mongodb
+    // 设置分页参数
+    inparam.limit = 100
+    inparam.sortBy = 'id'
+    inparam.sortOrder = -1
+    if (inparam.startKey) {
+        inparam.startKey = +inparam.startKey
+    }
     return next()
 })
-
-/**
- * 删除消息
- */
 
 module.exports = router

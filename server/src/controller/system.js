@@ -1,8 +1,5 @@
-//路由相关
 const Router = require('koa-router')
 const router = new Router()
-
-//工具
 const _ = require('lodash')
 const Util = require('../util/util.js')
 
