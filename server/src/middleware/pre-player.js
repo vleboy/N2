@@ -81,11 +81,18 @@ router.post('/player/update', async (ctx, next) => {
 /**
  * 查询玩家
  */
-router.get('/player/query', async (ctx, next) => {
+router.get('/player/page', async (ctx, next) => {
     let inparam = ctx.request.query
     let mongodb = global.mongodb
     if (inparam.id) {
         inparam.id = +inparam.id
+    }
+    // 设置分页参数
+    inparam.limit = 6
+    inparam.sortBy = 'createAt'
+    inparam.sortOrder = -1
+    if (inparam.startKey) {
+        inparam.startKey = +inparam.startKey
     }
     return next()
 })
