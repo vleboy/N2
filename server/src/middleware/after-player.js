@@ -24,7 +24,15 @@ router.post('/player/create', async (ctx, next) => {
  */
 router.get('/player/page', async (ctx, next) => {
     const token = ctx.tokenVerify
-    // let playerArr = ctx.body.res.res
+    let playerArr = ctx.body.res.res
+    let promiseArr = []
+    for (let item of playerArr) {
+        promiseArr.push(new Promise(async (resolve, reject) => {
+            item.balance = await Util.getBalanceById(item.id, item.role, item.lastBalanceTime, item.lastBalance)
+            resolve()
+        }))
+    }
+    await Promise.all(promiseArr)
     // if (token.role == Util.RoleEnum.agent) {
     //     playerArr = _.filter(playerArr, (o) => { return o.parentId == token.id })
     // }
