@@ -42,35 +42,31 @@ function checkType(o) {
 }
 
 //获取余额
-async function getBalanceById(id, role, lastBalanceTime, lastBalance) {
+async function getBalanceById(id, role, lastBalanceId, lastBalance) {
     let mongodb = global.mongodb
     // 查询用户信息
     let userInfo = '', balance = 0
-    if (!lastBalanceTime) {
+    if (!lastBalanceId) {
         if (role == RoleEnum.agent) {
-            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { projection: { lastBalanceTime: 1, lastBalance: 1, _id: 0 } })
+            userInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id }, { projection: { lastBalanceId: 1, lastBalance: 1, _id: 0 } })
         } else if (role == RoleEnum.player) {
-            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { projection: { lastBalanceTime: 1, lastBalance: 1, _id: 0 } })
+            userInfo = await mongodb.collection(CollectionEnum.player).findOne({ id }, { projection: { lastBalanceId: 1, lastBalance: 1, _id: 0 } })
         } else {
             throw { err: true, msg: '非法角色' }
         }
-        lastBalanceTime = userInfo.lastBalanceTime
+        lastBalanceId = userInfo.lastBalanceId
         lastBalance = userInfo.lastBalance
     }
     // 根据时间查询流水
-    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, createAt: { $gt: lastBalanceTime } }, { projection: { amount: 1, createAt: 1, _id: 0 } }).sort({ 'createAt': 1 }).toArray()
+    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: id, id: { $gt: lastBalanceId } }, { projection: { id: 1, amount: 1, _id: 0 } }).sort({ id: 1 }).toArray()
     // 汇总余额
     for (let item of billArr) {
         balance = NP.plus(balance, item.amount)
     }
     balance = NP.plus(balance, lastBalance)
+    // 更新用户信息
     if (billArr.length > 0) {
-        // 更新用户信息
-        if (role == RoleEnum.agent) {
-            mongodb.collection(CollectionEnum.agent).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
-        } else if (role == RoleEnum.player) {
-            mongodb.collection(CollectionEnum.player).update({ id }, { $set: { lastBalanceTime: billArr[billArr.length - 1].createAt, lastBalance: balance } })
-        }
+        mongodb.collection(CollectionEnum.agent).update({ id }, { $set: { lastBalanceId: billArr[billArr.length - 1].id, lastBalance: balance } })
     }
     return balance
 }

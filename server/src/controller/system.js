@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const router = new Router()
 const _ = require('lodash')
+const NP = require('number-precision')
 const Util = require('../util/util.js')
 
 /**
@@ -26,7 +27,6 @@ router.post('/init', async (ctx, next) => {
         ctx.body = 'N'
     }
 })
-
 
 /**
  * 创建管理员
@@ -65,9 +65,11 @@ router.post('/handlerPoint', async (ctx, next) => {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     // 检查代理/玩家是否满足操作条件
-    await checkUserHandlerPoint(inparam)
+    let id = await Util.getSeq('billSeq')
+    let preBalance = await checkHandlerPoint(inparam, id)
     let amount = inparam.project == Util.ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
-    await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: await Util.getSeq('billSeq'), role: inparam.role, project: inparam.project, amount, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+    let balance = NP.plus(preBalance, amount)
+    await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id, role: inparam.role, project: inparam.project, preBalance, amount, balance, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
     ctx.body = { err: false, res: '操作成功' }
 })
 
@@ -170,38 +172,40 @@ router.post('/handlerReview', async (ctx, next) => {
 })
 
 //检查用户是否可以变更点数
-async function checkUserHandlerPoint(inparam) {
+async function checkHandlerPoint(inparam, balanceId) {
+    let user = null
     if (inparam.role == Util.RoleEnum.agent) {
-        let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id })
-        if (!agentInfo || agentInfo.status == 0) {
+        user = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id })
+        if (!user || user.status == 0) {
             throw { err: true, res: '代理不存在或被停用' }
         }
-        if (inparam.project == Util.ProjectEnum.reducePoint) {
-            let balance = await Util.getBalanceById(agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
-            if (balance < inparam.amount) {
-                throw { err: true, res: '代理余额不足' }
-            }
-        }
-        inparam.ownerName = agentInfo.userName
-        inparam.ownerNick = agentInfo.userNick
-        inparam.parentId = agentInfo.parentId
+        inparam.ownerName = user.userName
+        inparam.ownerNick = user.userNick
+        inparam.parentId = user.parentId
     } else if (inparam.role == Util.RoleEnum.player) {
-        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id })
-        if (!player || player.status == 0) {
+        user = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id })
+        if (!user || user.status == 0) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
-        if (inparam.project == Util.ProjectEnum.reducePoint) {
-            let balance = await Util.getBalanceById(player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
-            if (balance < inparam.amount) {
-                throw { err: true, res: '玩家余额不足' }
-            }
-        }
-        inparam.ownerName = player.playerName
-        inparam.ownerNick = player.playerNick
-        inparam.parentId = player.parentId
+        inparam.ownerName = user.playerName
+        inparam.ownerNick = user.playerNick
+        inparam.parentId = user.parentId
     } else {
         throw { err: true, res: '非法角色' }
     }
+    // 获取前置余额
+    let lastBalanceId = user.lastBalanceId
+    let preBalance = user.lastBalance
+    let billArr = await mongodb.collection(CollectionEnum.bill).find({ ownerId: inparam.id, id: { $gt: lastBalanceId, $lt: balanceId } }, { projection: { id: 1, amount: 1, _id: 0 } }).sort({ id: 1 }).toArray()
+    for (let item of billArr) {
+        preBalance = NP.plus(preBalance, item.amount)
+    }
+    if (inparam.project == Util.ProjectEnum.reducePoint) {
+        if (preBalance < Math.abs(inparam.amount)) {
+            throw { err: true, res: '余额不足' }
+        }
+    }
+    return preBalance
 }
 
 // 检查请求单是否合法

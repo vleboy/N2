@@ -35,7 +35,7 @@ router.post('/player/create', async (ctx, next) => {
     inparam.parentName = parent.userName
     inparam.parentNick = parent.nickName
     inparam.role = Util.RoleEnum.player
-    inparam.lastBalanceTime = 0
+    inparam.lastBalanceId = 0
     inparam.lastBalance = 0
     inparam.createAt = Date.now()
     return next()

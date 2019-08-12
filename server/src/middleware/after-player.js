@@ -28,7 +28,7 @@ router.get('/player/page', async (ctx, next) => {
     let promiseArr = []
     for (let item of playerArr) {
         promiseArr.push(new Promise(async (resolve, reject) => {
-            item.balance = await Util.getBalanceById(item.id, item.role, item.lastBalanceTime, item.lastBalance)
+            item.balance = await Util.getBalanceById(item.id, item.role, item.lastBalanceId, item.lastBalance)
             resolve()
         }))
     }
