@@ -24,7 +24,7 @@ router.post('/player/create', async (ctx, next) => {
  */
 router.get('/player/page', async (ctx, next) => {
     const token = ctx.tokenVerify
-    let playerArr = ctx.body.res.res
+    let playerArr = ctx.body.res
     let promiseArr = []
     for (let item of playerArr) {
         promiseArr.push(new Promise(async (resolve, reject) => {
