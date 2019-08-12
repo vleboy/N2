@@ -16,6 +16,7 @@ router.post('/agent/create', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
+    inparam.id = _.random(100000, 999999)
     // 入参检查
     if (!inparam.userName || !inparam.userPwd || !inparam.userNick) {
         return ctx.body = { err: true, res: '请检查入参' }
@@ -23,18 +24,11 @@ router.post('/agent/create', async (ctx, next) => {
     if (inparam.userName.length < 3 || inparam.userName.length > 20 || inparam.userPwd.length < 6 || inparam.userPwd.length > 20 || inparam.userNick.length < 3 || inparam.userNick.length > 20) {
         return ctx.body = { err: true, res: '参数不合法' }
     }
-    if (await mongodb.collection(Util.CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] })) {
+    if (await mongodb.collection(Util.CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }, { id: inparam.id }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
     // 查询上级代理
     let parent = inparam.parentId ? await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.parentId }) : {}
-    let flag = true
-    while (flag) {
-        inparam.id = _.random(100000, 999999)
-        if (!await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id })) {
-            flag = false
-        }
-    }
     inparam.status = Util.StatusEnum.Enable
     inparam.role = Util.RoleEnum.agent
     inparam.parentId = parent.id || 0

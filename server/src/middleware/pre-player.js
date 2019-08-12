@@ -16,29 +16,23 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 router.post('/player/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    let agentInfo = ''
+    let parent = {}
+    inparam.id = _.random(10000000, 99999999)
     if (!inparam.playerName || !inparam.playerPwd || !inparam.parentId || !inparam.playerNick) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     if (inparam.playerName.length < 3 || inparam.playerName.length > 20 || inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20 || inparam.playerNick.length < 3 || inparam.playerNick.length > 20) {
         return ctx.body = { err: true, res: '参数不合法' }
     }
-    if (await mongodb.collection(Util.CollectionEnum.player).findOne({ $or: [{ playerName: inparam.playerName }, { playerNick: inparam.playerNick }] })) {
+    if (await mongodb.collection(Util.CollectionEnum.player).findOne({ $or: [{ playerName: inparam.playerName }, { playerNick: inparam.playerNick }, { id: inparam.id }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
-    if (!(agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.parentId }))) {
+    if (!(parent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.parentId }))) {
         return ctx.body = { err: true, res: '所属代理不存在' }
     }
-    let flag = true
-    while (flag) {
-        inparam.id = _.random(10000000, 99999999)
-        if (!await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id })) {
-            flag = false
-        }
-    }
     inparam.status = Util.StatusEnum.Enable
-    inparam.parentId = agentInfo.id
-    inparam.parentName = agentInfo.userName
+    inparam.parentId = parent.id
+    inparam.parentName = parent.userName
     inparam.role = Util.RoleEnum.player
     inparam.lastBalanceTime = 0
     inparam.lastBalance = 0
@@ -88,7 +82,7 @@ router.get('/player/page', async (ctx, next) => {
         inparam.id = +inparam.id
     }
     // 设置分页参数
-    inparam.limit = 200
+    inparam.limit = 6
     inparam.sortBy = 'createAt'
     inparam.sortOrder = -1
     if (inparam.startKey) {
