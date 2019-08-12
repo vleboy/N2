@@ -32,7 +32,7 @@ router.post('/create', async (ctx, next) => {
 })
 
 /**
- * 管理员可直接对（代理/玩家）进行(充值/提现)操作
+ * 管理员直接对（代理/玩家）进行(充值/提现)操作
  */
 router.post('/handlerPoint', async (ctx, next) => {
     const inparam = ctx.request.body
@@ -86,8 +86,7 @@ router.post('/handlerPoint', async (ctx, next) => {
 })
 
 /**
- * 创建一条 (充值/提现) 申请单
- * 代理或玩家可申请
+ * 创建(充值/提现) 申请单
  */
 router.post('/createReview', async (ctx, next) => {
     const inparam = ctx.request.body
@@ -178,7 +177,6 @@ router.post('/createReview', async (ctx, next) => {
 
 /**
  * 审核（充值/提现）申请单
- * （来源于申请单可以是代理或者玩家）
  */
 router.post('/handlerReview', async (ctx, next) => {
     const token = ctx.tokenVerify
