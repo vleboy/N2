@@ -30,7 +30,7 @@
                 "/xnosql/agent/delete/",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
-                "/xnosql/player/query",
+                "/xnosql/player/page",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
                 "/xnosql/subrole/create",
@@ -53,7 +53,7 @@
                 "/xserver/bill/transfer",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
-                "/xnosql/player/query",
+                "/xnosql/player/page",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
                 "/xserver/system/createReview"
