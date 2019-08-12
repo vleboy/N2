@@ -9,6 +9,16 @@ const Util = require('../util/util.js')
 router.post('/init', async (ctx, next) => {
     let mongodb = global.mongodb
     if (!await mongodb.collection(Util.CollectionEnum.agent).findOne({ userName: 'admin' })) {
+        // 创建集合
+        for (let key in Util.CollectionEnum) {
+            await mongodb.collection(Util.CollectionEnum[key]).drop()
+            await mongodb.createCollection(Util.CollectionEnum[key])
+        }
+        // 创建索引
+        await mongodb.collection(Util.CollectionEnum.bill).createIndex({ id: -1 })
+        await mongodb.collection(Util.CollectionEnum.review).createIndex({ id: -1 })
+        await mongodb.collection(Util.CollectionEnum.message).createIndex({ id: -1 })
+        // 预置数据
         await mongodb.collection(Util.CollectionEnum._seq).insertMany([{ seqName: 'billSeq', seqValue: 0 }, { seqName: 'reviewSeq', seqValue: 0 }, { seqName: 'messageSeq', seqValue: 0 }])
         await mongodb.collection(Util.CollectionEnum.agent).insertOne({ id: 100000, userName: 'admin', userPwd: '123456', userNick: '超级管理员', subrole: '超级管理员', status: 1, createAt: Date.now() })
         ctx.body = 'Y'
