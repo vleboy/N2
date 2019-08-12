@@ -242,7 +242,7 @@ router.post('/handlerReview', async (ctx, next) => {
                     id: billId,
                     role: reviewInfo.role,
                     project: Util.ProjectEnum.addPoint,
-                    preBalance: NP.minus(res.value.balance, amount),
+                    preBalance: NP.minus(res.value.balance, reviewInfo.amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,
                     ownerId: owner.id,
