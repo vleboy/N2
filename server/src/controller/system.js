@@ -53,14 +53,14 @@ router.post('/handlerPoint', async (ctx, next) => {
     const session = await global.getMongoSession()
     try {
         // 变更余额
-        const res = await global.mongodb.collection(collectionName).findOneAndUpdate(queryBalance, { $inc: { balance: amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 } }, { session })
+        const res = await global.mongodb.collection(collectionName).findOneAndUpdate(queryBalance, { $inc: { balance: amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
         // 写入流水
         if (res.value) {
             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                 id: await Util.getSeq('billSeq'),
                 role: inparam.role,
                 project: inparam.project,
-                preBalance: NP.minus(balance, amount),
+                preBalance: NP.minus(res.value.balance, amount),
                 amount,
                 balance: res.value.balance,
                 ownerId: owner.id,
@@ -126,7 +126,7 @@ router.post('/createReview', async (ctx, next) => {
         const session = await global.getMongoSession()
         try {
             // 变更余额
-            const res = await global.mongodb.collection(collectionName).findOneAndUpdate(queryBalance, { $inc: { balance: amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 } }, { session })
+            const res = await global.mongodb.collection(collectionName).findOneAndUpdate(queryBalance, { $inc: { balance: amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
             // 写入流水，创建提现单
             if (res.value) {
                 const billId = await Util.getSeq('billSeq')
@@ -134,7 +134,7 @@ router.post('/createReview', async (ctx, next) => {
                     id: billId,
                     role: inparam.role,
                     project: inparam.project,
-                    preBalance: NP.minus(balance, amount),
+                    preBalance: NP.minus(res.value.balance, amount),
                     amount,
                     balance: res.value.balance,
                     ownerId: owner.id,
@@ -200,14 +200,14 @@ router.post('/handlerReview', async (ctx, next) => {
             const session = await global.getMongoSession()
             try {
                 // 变更余额
-                const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 } }, { session })
+                const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 // 写入流水，更新请求单为拒绝状态
                 let billId = await Util.getSeq('billSeq')
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                     id: billId,
                     role: inparam.role,
                     project: Util.ProjectEnum.addPoint,
-                    preBalance: NP.minus(balance, reviewInfo.amount),
+                    preBalance: NP.minus(res.value.balance, reviewInfo.amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,
                     ownerId: owner.id,
@@ -235,14 +235,14 @@ router.post('/handlerReview', async (ctx, next) => {
             const session = await global.getMongoSession()
             try {
                 // 变更余额
-                const res = await global.mongodb.collection(inparam.collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 } }, { session })
+                const res = await global.mongodb.collection(inparam.collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 // 写入流水，更新请求单为同意状态
                 const billId = await Util.getSeq('billSeq')
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                     id: billId,
                     role: reviewInfo.role,
                     project: Util.ProjectEnum.addPoint,
-                    preBalance: NP.minus(balance, amount),
+                    preBalance: NP.minus(res.value.balance, amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,
                     ownerId: owner.id,
@@ -277,8 +277,8 @@ async function checkHandlerPoint(inparam) {
         throw { err: true, res: '帐号不存在或被停用' }
     }
     const id = user.id
-    const ownerName = user.userName
-    const ownerNick = user.userNick
+    let ownerName = user.userName
+    let ownerNick = user.userNick
     const parentId = user.parentId
     const parentName = user.parentName
     const parentNick = user.parentNick

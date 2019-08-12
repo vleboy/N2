@@ -94,28 +94,4 @@ async function checkAgentHandlerPoint(inparam, token) {
     }
 }
 
-// //获取代理的余额
-// async function getAgentBalance(agentId) {
-//     let balance = 0
-//     let agentGroupArr = await mongodb.collection(Util.CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-//     for (let item of agentGroupArr) {
-//         if (item._id == agentId) {
-//             balance = item.count
-//             return balance
-//         }
-//     }
-//     return balance
-// }
-// //获取玩家的余额
-// async function getPlayerBalance(playerId) {
-//     let balance = 0
-//     let playerGroupArr = await mongodb.collection(Util.CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
-//     for (let item of playerGroupArr) {
-//         if (item._id == playerId) {
-//             return item.count
-//         }
-//     }
-//     return balance
-// }
-
 module.exports = router
