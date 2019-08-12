@@ -22,7 +22,7 @@ router.post('/player/create', async (ctx, next) => {
 /**
  * 查询玩家
  */
-router.get('/player/query', async (ctx, next) => {
+router.get('/player/page', async (ctx, next) => {
     const token = ctx.tokenVerify
     let playerArr = ctx.body.res
     if (token.role == Util.RoleEnum.agent) {
