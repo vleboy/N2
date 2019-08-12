@@ -65,23 +65,25 @@ router.post('/handlerPoint', async (ctx, next) => {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     inparam.collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
-    let amount = inparam.project == Util.ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
+    const amount = inparam.project == Util.ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
     // 检查代理/玩家是否满足操作条件
     await checkHandlerPoint(inparam)
-    let id = await Util.getSeq('billSeq')
+    const billId = await Util.getSeq('billSeq')
     // 点数处理事务
     const session = await global.getMongoSession()
     try {
+        // 变更玩家余额
         let query = inparam.project == Util.ProjectEnum.addPoint ? { id: inparam.id } : { id: inparam.id, balance: { $gte: Math.abs(amount) } }
         const res = await global.mongodb.collection(inparam.collectionName).findOneAndUpdate(
             query,
             { $inc: { balance: amount } },
             { returnOriginal: false, projection: { balance: 1, _id: 0 } }
         )
+        // 写入流水
         if (res.value) {
             let balance = res.value.balance
             let preBalance = NP.minus(balance, amount)
-            await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id, role: inparam.role, project: inparam.project, preBalance, amount, balance, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
+            await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: inparam.role, project: inparam.project, preBalance, amount, balance, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() })
         } else {
             return ctx.body = { err: true, res: '余额不足' }
         }
@@ -103,17 +105,16 @@ router.post('/handlerPoint', async (ctx, next) => {
 router.post('/createReview', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (!inparam.proposerId || !inparam.project || !inparam.amount || !inparam.role) {
+    if (!inparam.id || !inparam.project || !inparam.amount || !inparam.role) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     inparam.collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
-    let amount = inparam.project == Util.ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
+    const amount = inparam.project == Util.ProjectEnum.addPoint ? Math.abs(inparam.amount) : Math.abs(inparam.amount) * -1
     // 检查代理/玩家是否满足操作条件
-    inparam.id = inparam.proposerId
     await checkHandlerPoint(inparam)
     // 根据充值/提现判断
     if (inparam.project == Util.ProjectEnum.addPoint) {
-        await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() })
+        await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.id, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() })
     } else if (inparam.project == Util.ProjectEnum.reducePoint) {
         let billId = await Util.getSeq('billSeq')
         // 点数处理事务
@@ -128,8 +129,8 @@ router.post('/createReview', async (ctx, next) => {
             if (res.value) {
                 let balance = res.value.balance
                 let preBalance = NP.minus(balance, amount)
-                await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: inparam.role, project: inparam.project, preBalance, amount, balance, ownerId: inparam.proposerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
-                await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), billId, project: inparam.project, amount, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.ownerName, proposerNick: inparam.ownerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
+                await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: inparam.role, project: inparam.project, preBalance, amount, balance, ownerId: inparam.id, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), billId, project: inparam.project, amount: Math.abs(amount), role: inparam.role, proposerId: inparam.id, proposerName: inparam.ownerName, proposerNick: inparam.ownerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
             } else {
                 return ctx.body = { err: true, res: '余额不足' }
             }
@@ -182,8 +183,8 @@ router.post('/handlerReview', async (ctx, next) => {
                     { returnOriginal: false, projection: { balance: 1, _id: 0 } }
                 )
                 let balance = res.value.balance
-                let preBalance = NP.minus(balance, amount)
-                await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: inparam.role, project: inparam.project, preBalance, amount, balance, ownerId: inparam.proposerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+                let preBalance = NP.minus(balance, reviewInfo.amount)
+                await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: inparam.role, project: Util.ProjectEnum.addPoint, preBalance, amount: reviewInfo.amount, balance, ownerId: reviewInfo.proposerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
                 // 更新请求单为拒绝状态
                 await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: Util.ReviewEnum.Refuse, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
                 await session.commitTransaction()
@@ -210,8 +211,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 )
                 let balance = res.value.balance
                 let preBalance = NP.minus(balance, amount)
-
-                await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: reviewInfo.role, project: reviewInfo.project, amount: Math.abs(reviewInfo.amount), ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
+                await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: reviewInfo.role, project: reviewInfo.project, preBalance, amount: reviewInfo.amount, balance, ownerId: reviewInfo.proposerId, ownerName: reviewInfo.proposerName, ownerNick: reviewInfo.proposerNick, parentId: reviewInfo.parentId, createAt: Date.now() }, { session })
                 await mongodb.collection(Util.CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: Util.ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
                 await session.commitTransaction()
             } catch (error) {
