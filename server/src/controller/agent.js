@@ -77,14 +77,6 @@ router.get('/tree', async (ctx, next) => {
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }
     agentArr = _.sortBy(agentArr, ['level'])
-    let promiseArr = []
-    for (let item of agentArr) {
-        promiseArr.push(new Promise(async (resolve, reject) => {
-            item.balance = await Util.getBalanceById(item.id, item.role, item.lastBalanceId, item.lastBalance)
-            resolve()
-        }))
-    }
-    await Promise.all(promiseArr)
     let data = []
     if (token.role == 'admin') {
         data.push({ id: 0, userName: token.userName, userNick: token.userNick, statue: 1, role: token.role, children: [] })
