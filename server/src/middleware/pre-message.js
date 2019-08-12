@@ -32,7 +32,7 @@ router.get('/message/page', async (ctx, next) => {
     let inparam = ctx.request.query
     // let mongodb = global.mongodb
     // 设置分页参数
-    inparam.limit = 100
+    inparam.limit = 200
     inparam.sortBy = 'id'
     inparam.sortOrder = -1
     if (inparam.startKey) {

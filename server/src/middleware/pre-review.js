@@ -18,7 +18,7 @@ router.get('/review/page', async (ctx, next) => {
         inparam.proposerId = +inparam.proposerId
     }
     // 设置分页参数
-    inparam.limit = 100
+    inparam.limit = 200
     inparam.sortBy = 'id'
     inparam.sortOrder = -1
     if (inparam.startKey) {
