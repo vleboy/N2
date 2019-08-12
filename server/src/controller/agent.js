@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const captchapng = require('captchapng')
 const _ = require('lodash')
-const { RoleEnum, CollectionEnum, getBalanceById } = require('../util/util')
+const Util = require('../util/util.js')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -21,7 +21,7 @@ router.post('/login', async (ctx, next) => {
     if (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now()) {
         return ctx.body = { err: true, res: '验证码错误或过期' }
     }
-    let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ userName: inparam.userName })
+    let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ userName: inparam.userName })
     if (!agentInfo) {
         return ctx.body = { err: true, res: '帐号不存在' }
     }
@@ -72,22 +72,14 @@ router.get('/tree', async (ctx, next) => {
     const token = ctx.tokenVerify
     let mongodb = global.mongodb
     //查出所有代理
-    let agentArr = await mongodb.collection(CollectionEnum.agent).find({ role: RoleEnum.agent }).toArray()
+    let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { userPwd: 0, _id: 0 } }).toArray()
     if (token.role != 'admin') { //任意层级代理需要过滤代理
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }
     agentArr = _.sortBy(agentArr, ['level'])
-    let promiseArr = []
-    for (let item of agentArr) {
-        promiseArr.push(new Promise(async (resolve, reject) => {
-            item.balance = await getBalanceById(mongodb, item.id, item.role, item.lastBalanceTime, item.lastBalance)
-            resolve()
-        }))
-    }
-    await Promise.all(promiseArr)
     let data = []
     if (token.role == 'admin') {
-        data.push({ id: 0, userNick: token.userNick, userName: token.userName, children: [] })
+        data.push({ id: 0, userName: token.userName, userNick: token.userNick, statue: 1, role: token.role, children: [] })
     } else {
         data.push({ ...agentArr.shift(), children: [] })
     }

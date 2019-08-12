@@ -20,8 +20,7 @@ router.post('/message/create', async (ctx, next) => {
 /**
  * 查询消息
  */
-router.get('/message/query', async (ctx, next) => {
-    ctx.body = _.orderBy(ctx.body.res, 'createAt', 'desc')
+router.get('/message/page', async (ctx, next) => {
 })
 
 module.exports = router

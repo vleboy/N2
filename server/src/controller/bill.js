@@ -1,9 +1,6 @@
-const config = require('config')
-const jwt = require('jsonwebtoken')
 const Router = require('koa-router')
 const router = new Router()
-
-const { ProjectEnum, RoleEnum, CollectionEnum, GetUniqueID, getBalanceById, StatusEnum } = require('../util/util')
+const Util = require('../util/util.js')
 
 /**
  * 代理之间的转账接口
@@ -22,12 +19,12 @@ router.post('/transfer', async (ctx, next) => {
     let targetAmout = Math.abs(inparam.amount)
     let createAt = Date.now()
     let project = inparam.project
-    project == ProjectEnum.addPoint ? ownerAmount *= -1 : targetAmout *= -1
+    project == Util.ProjectEnum.addPoint ? ownerAmount *= -1 : targetAmout *= -1
     const session = await global.getMongoSession()
     try {
-        await mongodb.collection(CollectionEnum.bill).insertMany([
-            { id: GetUniqueID(), role: RoleEnum.agent, project, amount: ownerAmount, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt },
-            { id: GetUniqueID(), role: inparam.role, project, amount: targetAmout, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt },
+        await mongodb.collection(Util.CollectionEnum.bill).insertMany([
+            { id: await Util.getSeq('billSeq'), role: Util.RoleEnum.agent, project, amount: ownerAmount, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt },
+            { id: await Util.getSeq('billSeq'), role: inparam.role, project, amount: targetAmout, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt },
             { session }
         ])
         await session.commitTransaction()
@@ -44,23 +41,23 @@ router.post('/transfer', async (ctx, next) => {
 
 //检查用户是否可以转账
 async function checkAgentHandlerPoint(inparam, token) {
-    let tokenInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: token.id })
-    if (!tokenInfo || tokenInfo.status == StatusEnum.Disable) {
+    let tokenInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id })
+    if (!tokenInfo || tokenInfo.status == Util.StatusEnum.Disable) {
         throw { err: true, res: '代理不存在或被停用' }
     }
-    if (inparam.role == RoleEnum.agent) {
-        let agentInfo = await mongodb.collection(CollectionEnum.agent).findOne({ id: inparam.ownerId })
-        if (!agentInfo || agentInfo.status == StatusEnum.Disable) {
+    if (inparam.role == Util.RoleEnum.agent) {
+        let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.ownerId })
+        if (!agentInfo || agentInfo.status == Util.StatusEnum.Disable) {
             throw { err: true, res: '代理不存在或被停用' }
         }
         if (token.id != agentInfo.parentId) {
             throw { err: true, res: '不能跨级操作' }
         }
         let balance = 0
-        if (inparam.project == ProjectEnum.addPoint) {
-            balance = await getBalanceById(mongodb, token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
-        } else if (inparam.project == ProjectEnum.reducePoint) {
-            balance = await getBalanceById(mongodb, agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
+        if (inparam.project == Util.ProjectEnum.addPoint) {
+            balance = await Util.getBalanceById(token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
+        } else if (inparam.project == Util.ProjectEnum.reducePoint) {
+            balance = await Util.getBalanceById(agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
         } else {
             throw { err: true, res: '未知操作' }
         }
@@ -70,8 +67,8 @@ async function checkAgentHandlerPoint(inparam, token) {
         inparam.ownerName = agentInfo.userName
         inparam.ownerNick = agentInfo.userNick
         inparam.parentId = agentInfo.parentId
-    } else if (inparam.role == RoleEnum.player) {
-        let player = await mongodb.collection(CollectionEnum.player).findOne({ id: inparam.ownerId })
+    } else if (inparam.role == Util.RoleEnum.player) {
+        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.ownerId })
         if (!player || player.status == 0) {
             throw { err: true, res: '玩家不存在或被停用' }
         }
@@ -79,10 +76,10 @@ async function checkAgentHandlerPoint(inparam, token) {
             throw { err: true, res: '代理只能操作自己的玩家' }
         }
         let balance = 0
-        if (inparam.project == ProjectEnum.addPoint) {
-            balance = await getBalanceById(mongodb, token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
-        } else if (inparam.project == ProjectEnum.reducePoint) {
-            balance = await getBalanceById(mongodb, player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
+        if (inparam.project == Util.ProjectEnum.addPoint) {
+            balance = await Util.getBalanceById(token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
+        } else if (inparam.project == Util.ProjectEnum.reducePoint) {
+            balance = await Util.getBalanceById(player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
         } else {
             throw { err: true, res: '未知操作' }
         }
@@ -100,7 +97,7 @@ async function checkAgentHandlerPoint(inparam, token) {
 // //获取代理的余额
 // async function getAgentBalance(agentId) {
 //     let balance = 0
-//     let agentGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+//     let agentGroupArr = await mongodb.collection(Util.CollectionEnum.bill).aggregate([{ $match: { ownerId: agentId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
 //     for (let item of agentGroupArr) {
 //         if (item._id == agentId) {
 //             balance = item.count
@@ -112,7 +109,7 @@ async function checkAgentHandlerPoint(inparam, token) {
 // //获取玩家的余额
 // async function getPlayerBalance(playerId) {
 //     let balance = 0
-//     let playerGroupArr = await mongodb.collection(CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
+//     let playerGroupArr = await mongodb.collection(Util.CollectionEnum.bill).aggregate([{ $match: { ownerId: playerId } }, { $group: { _id: "$ownerId", count: { $sum: "$amount" } } }]).toArray()
 //     for (let item of playerGroupArr) {
 //         if (item._id == playerId) {
 //             return item.count

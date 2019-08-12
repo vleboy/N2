@@ -8,17 +8,23 @@ const _ = require('lodash')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
-
-
 /**
  * 查询所有的（充值/提现）的申请单
  */
-router.get('/review/query', async (ctx, next) => {
+router.get('/review/page', async (ctx, next) => {
     let inparam = ctx.request.query
     let mongodb = global.mongodb
-    if(inparam.proposerId){
-        inparam.proposerId=+inparam.proposerId
+    if (inparam.proposerId) {
+        inparam.proposerId = +inparam.proposerId
     }
+    // 设置分页参数
+    inparam.limit = 6
+    inparam.sortBy = 'id'
+    inparam.sortOrder = -1
+    if (inparam.startKey) {
+        inparam.startKey = +inparam.startKey
+    }
+    inparam.findOption = { projection: { _id: 0 } }
     return next()
 })
 

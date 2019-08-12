@@ -5,7 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 //工具相关
 const _ = require('lodash')
-const Util = require('../util/util')
+const Util = require('../util/util.js')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -16,32 +16,26 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 router.post('/player/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    let agentInfo = ''
+    let parent = {}
+    inparam.id = _.random(10000000, 99999999)
     if (!inparam.playerName || !inparam.playerPwd || !inparam.parentId || !inparam.playerNick) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     if (inparam.playerName.length < 3 || inparam.playerName.length > 20 || inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20 || inparam.playerNick.length < 3 || inparam.playerNick.length > 20) {
         return ctx.body = { err: true, res: '参数不合法' }
     }
-    if (await mongodb.collection(Util.CollectionEnum.player).findOne({ $or: [{ playerName: inparam.playerName }, { playerNick: inparam.playerNick }] })) {
+    if (await mongodb.collection(Util.CollectionEnum.player).findOne({ $or: [{ playerName: inparam.playerName }, { playerNick: inparam.playerNick }, { id: inparam.id }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
-    if (!(agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.parentId }))) {
+    if (!(parent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.parentId }))) {
         return ctx.body = { err: true, res: '所属代理不存在' }
     }
-    let flag = true
-    while (flag) {
-        inparam.id = _.random(10000000, 99999999)
-        if (!await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id })) {
-            flag = false
-        }
-    }
     inparam.status = Util.StatusEnum.Enable
-    inparam.parentId = agentInfo.id
-    inparam.parentName = agentInfo.userName
+    inparam.parentId = parent.id
+    inparam.parentName = parent.userName
+    inparam.parentNick = parent.nickName
     inparam.role = Util.RoleEnum.player
-    inparam.lastBalanceTime = 0
-    inparam.lastBalance = 0
+    inparam.balance = 0
     inparam.createAt = Date.now()
     return next()
 })
@@ -81,12 +75,20 @@ router.post('/player/update', async (ctx, next) => {
 /**
  * 查询玩家
  */
-router.get('/player/query', async (ctx, next) => {
+router.get('/player/page', async (ctx, next) => {
     let inparam = ctx.request.query
     let mongodb = global.mongodb
     if (inparam.id) {
         inparam.id = +inparam.id
     }
+    // 设置分页参数
+    inparam.limit = 6
+    inparam.sortBy = 'createAt'
+    inparam.sortOrder = -1
+    if (inparam.startKey) {
+        inparam.startKey = +inparam.startKey
+    }
+    inparam.findOption = { projection: { playerPwd: 0, _id: 0 } }
     return next()
 })
 

@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 //工具相关
 const _ = require('lodash')
+const Util = require('../util/util.js')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -18,7 +19,7 @@ router.post('/message/create', async (ctx, next) => {
         ctx.body = { err: true, res: '请检查入参' }
     } else {
         inparam.createAt = Date.now()
-        inparam.id = GetUniqueID()
+        inparam.id = await Util.getSeq('messageSeq')
         return next()
     }
 })
@@ -27,15 +28,18 @@ router.post('/message/create', async (ctx, next) => {
 /**
  * 查询消息
  */
-router.get('/message/query', async (ctx, next) => {
+router.get('/message/page', async (ctx, next) => {
     let inparam = ctx.request.query
-    let mongodb = global.mongodb
-
+    // let mongodb = global.mongodb
+    // 设置分页参数
+    inparam.limit = 200
+    inparam.sortBy = 'id'
+    inparam.sortOrder = -1
+    if (inparam.startKey) {
+        inparam.startKey = +inparam.startKey
+    }
+    inparam.findOption = { projection: { _id: 0 } }
     return next()
 })
-
-/**
- * 删除消息
- */
 
 module.exports = router

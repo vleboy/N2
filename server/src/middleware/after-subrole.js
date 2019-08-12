@@ -21,7 +21,7 @@ router.post('/subrole/create', async (ctx, next) => {
  * 查询角色
  */
 router.get('/subrole/query', async (ctx, next) => {
-    ctx.body = _.orderBy(ctx.body.res, 'createAt', 'desc')
+    ctx.body = _.orderBy(ctx.body.res, (o) => o.permissions.length, 'desc')
 })
 
 module.exports = router

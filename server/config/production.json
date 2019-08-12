@@ -15,10 +15,10 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
+            "/xserver/system/init",
             "/xserver/agent/captcha",
             "/xserver/agent/login",
-            "/xserver/player/login",
-            "/xserver/system/create"
+            "/xserver/player/login"
         ],
         "role": {
             "admin": [
@@ -30,17 +30,17 @@
                 "/xnosql/agent/delete/",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
-                "/xnosql/player/query",
+                "/xnosql/player/page",
                 "/xnosql/player/update",
-                "/xnosql/bill/query",
+                "/xnosql/bill/page",
                 "/xnosql/subrole/create",
                 "/xnosql/subrole/query",
                 "/xnosql/subrole/update",
                 "/xnosql/subrole/delete/",
-                "/xnosql/review/query",
+                "/xnosql/review/page",
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
-                "/xnosql/message/query",
+                "/xnosql/message/page",
                 "/xserver/system/create",
                 "/xserver/system/handlerReview",
                 "/xserver/system/handlerPoint"
@@ -53,14 +53,14 @@
                 "/xserver/bill/transfer",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",
-                "/xnosql/player/query",
+                "/xnosql/player/page",
                 "/xnosql/player/update",
-                "/xnosql/bill/query",
+                "/xnosql/bill/page",
                 "/xserver/system/createReview"
             ],
             "player": [
                 "/xnosql/player/update",
-                "/xnosql/bill/query",
+                "/xnosql/bill/page",
                 "/xserver/system/createReview"
             ]
         },

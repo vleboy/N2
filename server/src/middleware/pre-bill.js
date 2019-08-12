@@ -5,7 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 //工具相关
 const _ = require('lodash')
-const Util = require('../util/util')
+const Util = require('../util/util.js')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -13,7 +13,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 /**
  * 查询账单流水
  */
-router.get('/bill/query', async (ctx, next) => {
+router.get('/bill/page', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.query
     let mongodb = global.mongodb
@@ -23,6 +23,14 @@ router.get('/bill/query', async (ctx, next) => {
     if (token.role == Util.RoleEnum.agent) {
         inparam.parentId = token.id
     }
+    // 设置分页参数
+    inparam.limit = 6
+    inparam.sortBy = 'id'
+    inparam.sortOrder = -1
+    if (inparam.startKey) {
+        inparam.startKey = +inparam.startKey
+    }
+    inparam.findOption = { projection: { _id: 0 } }
     return next()
 })
 
