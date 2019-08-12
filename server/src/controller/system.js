@@ -210,12 +210,12 @@ router.post('/handlerReview', async (ctx, next) => {
                     preBalance: NP.minus(balance, reviewInfo.amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,
-                    ownerId: reviewInfo.proposerId,
-                    ownerName: reviewInfo.proposerName,
-                    ownerNick: reviewInfo.proposerNick,
-                    parentId: reviewInfo.parentId,
-                    parentName: reviewInfo.parentName,
-                    parentNick: reviewInfo.parentNick,
+                    ownerId: owner.id,
+                    ownerName: owner.ownerName,
+                    ownerNick: owner.ownerNick,
+                    parentId: owner.parentId,
+                    parentName: owner.parentName,
+                    parentNick: owner.parentNick,
                     createAt: Date.now()
                 }, { session })
                 await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
@@ -245,12 +245,12 @@ router.post('/handlerReview', async (ctx, next) => {
                     preBalance: NP.minus(balance, amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,
-                    ownerId: reviewInfo.proposerId,
-                    ownerName: reviewInfo.proposerName,
-                    ownerNick: reviewInfo.proposerNick,
-                    parentId: reviewInfo.parentId,
-                    parentName: reviewInfo.parentName,
-                    parentNick: reviewInfo.parentNick,
+                    ownerId: owner.id,
+                    ownerName: owner.ownerName,
+                    ownerNick: owner.ownerNick,
+                    parentId: owner.parentId,
+                    parentName: owner.parentName,
+                    parentNick: owner.parentNick,
                     createAt: Date.now()
                 }, { session })
                 await mongodb.collection(Util.CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
@@ -263,7 +263,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 await session.endSession()
             }
         } else if (reviewInfo.project == Util.ProjectEnum.reducePoint) {
-            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: Util.ReviewEnum.Agree, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
+            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
         }
     }
     ctx.body = { err: false, res: '操作成功' }
