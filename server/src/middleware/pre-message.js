@@ -38,6 +38,7 @@ router.get('/message/page', async (ctx, next) => {
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }
+    inparam.findOption = { projection: { _id: 0 } }
     return next()
 })
 

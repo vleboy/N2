@@ -72,7 +72,7 @@ router.get('/tree', async (ctx, next) => {
     const token = ctx.tokenVerify
     let mongodb = global.mongodb
     //查出所有代理
-    let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { id: 1, parentId: 1, parentName: 1, parentNick: 1, userName: 1, userNick: 1, status: 1, role: 1, createAt: 1, level: 1, levelIndex: 1, lastBalanceTime: 1, lastBalance: 1, _id: 0 } }).toArray()
+    let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { userPwd: 0, _id: 0 } }).toArray()
     if (token.role != 'admin') { //任意层级代理需要过滤代理
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }

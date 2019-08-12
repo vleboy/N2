@@ -89,7 +89,7 @@ router.get('/player/page', async (ctx, next) => {
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }
-    inparam.findOption = { projection: { id: 1, playerName: 1, playerNick: 1, status: 1, role: 1, createAt: 1, lastBalanceTime: 1, lastBalance: 1, _id: 0 } }
+    inparam.findOption = { projection: { playerPwd: 0, _id: 0 } }
     return next()
 })
 

@@ -33,6 +33,8 @@ router.get('/subrole/query', async (ctx, next) => {
     let inparam = ctx.request.query
     let mongodb = global.mongodb
 
+    inparam.findOption = { projection: { _id: 0 } }
+
     return next()
 })
 
