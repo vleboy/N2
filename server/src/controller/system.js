@@ -90,9 +90,13 @@ router.post('/createReview', async (ctx, next) => {
     } else if (inparam.project == Util.ProjectEnum.reducePoint) {
         const session = await global.getMongoSession()
         try {
-            let agentBillId = await Util.getSeq('billSeq')
-            await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: agentBillId, role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount) * -1, ownerId: inparam.proposerId, ownerName: inparam.proposerName, ownerNick: inparam.proposerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
-            await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), billId: agentBillId, project: inparam.project, amount: Math.abs(inparam.amount) * -1, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
+            let billId = await Util.getSeq('billSeq')
+            inparam.id = inparam.proposerId
+            let preBalance = await checkHandlerPoint(inparam, billId)
+            let amount = Math.abs(inparam.amount) * -1
+            let balance = NP.plus(preBalance, amount)
+            await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: billId, role: inparam.role, project: inparam.project, preBalance, amount, balance, ownerId: inparam.proposerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt: Date.now() }, { session })
+            await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), billId, project: inparam.project, amount, role: inparam.role, proposerId: inparam.proposerId, proposerName: inparam.ownerName, proposerNick: inparam.ownerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() }, { session })
             await session.commitTransaction()
         } catch (error) {
             console.error(error)
