@@ -235,7 +235,7 @@ router.post('/handlerReview', async (ctx, next) => {
             const session = await global.getMongoSession()
             try {
                 // 变更余额
-                const res = await global.mongodb.collection(inparam.collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+                const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 // 写入流水，更新请求单为同意状态
                 const billId = await Util.getSeq('billSeq')
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
@@ -284,7 +284,7 @@ async function checkHandlerPoint(inparam) {
     const parentNick = user.parentNick
     if (inparam.role == Util.RoleEnum.player) {
         ownerName = user.playerName
-        ownerName = user.playerNick
+        ownerNick = user.playerNick
     }
     return { id, ownerName, ownerNick, parentId, parentName, parentNick }
 }
