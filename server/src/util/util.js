@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const moment = require('moment')
-const NP = require('number-precision')
 
 //加减点枚举
 const ProjectEnum = {
@@ -57,7 +56,7 @@ module.exports = {
     CollectionEnum,
     ReviewEnum,
     StatusEnum,
-    
+
     checkType,
     getSeq
 }
