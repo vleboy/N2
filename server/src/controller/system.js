@@ -168,7 +168,7 @@ router.post('/handlerReview', async (ctx, next) => {
     }
     // 检查代理或玩家是否正常
     inparam.collectionName = reviewInfo.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
-    await checkHandlerPoint({ id: reviewInfo.proposerId, role: reviewInfo.role })
+    await checkHandlerPoint({ id: reviewInfo.proposerId, role: reviewInfo.role, collectionName: inparam.collectionName })
     // 拒绝该订单
     if (inparam.status == Util.ReviewEnum.Refuse) {
         if (reviewInfo.project == Util.ProjectEnum.addPoint) {
@@ -178,7 +178,7 @@ router.post('/handlerReview', async (ctx, next) => {
             const session = await global.getMongoSession()
             try {
                 const res = await global.mongodb.collection(inparam.collectionName).findOneAndUpdate(
-                    { id: inparam.id },
+                    { id: reviewInfo.proposerId },
                     { $inc: { balance: reviewInfo.amount } },
                     { returnOriginal: false, projection: { balance: 1, _id: 0 } }
                 )
@@ -205,7 +205,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 let billId = await Util.getSeq('billSeq')
 
                 const res = await global.mongodb.collection(inparam.collectionName).findOneAndUpdate(
-                    { id: inparam.id },
+                    { id: reviewInfo.proposerId },
                     { $inc: { balance: reviewInfo.amount } },
                     { returnOriginal: false, projection: { balance: 1, _id: 0 } }
                 )
