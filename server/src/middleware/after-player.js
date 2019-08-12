@@ -24,16 +24,15 @@ router.post('/player/create', async (ctx, next) => {
  */
 router.get('/player/page', async (ctx, next) => {
     const token = ctx.tokenVerify
-    let playerArr = ctx.body.res
-    if (token.role == Util.RoleEnum.agent) {
-        playerArr = _.filter(playerArr, (o) => { return o.parentId == token.id })
-    }
-    let res = _.orderBy(playerArr, 'createAt', 'desc')
-    let playerList = []
-    for (let item of res) {
-        playerList.push(_.pick(item, ['id', 'playerName', 'playerNick', 'status', 'role', 'createAt']))
-    }
-    ctx.body = playerList
+    // let playerArr = ctx.body.res.res
+    // if (token.role == Util.RoleEnum.agent) {
+    //     playerArr = _.filter(playerArr, (o) => { return o.parentId == token.id })
+    // }
+    // let playerList = []
+    // for (let item of playerArr) {
+    //     playerList.push(_.pick(item, ['id', 'playerName', 'playerNick', 'status', 'role', 'createAt']))
+    // }
+    // ctx.body = playerList
 })
 
 module.exports = router
