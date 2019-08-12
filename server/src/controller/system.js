@@ -205,7 +205,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 let billId = await Util.getSeq('billSeq')
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                     id: billId,
-                    role: inparam.role,
+                    role: reviewInfo.role,
                     project: Util.ProjectEnum.addPoint,
                     preBalance: NP.minus(res.value.balance, reviewInfo.amount),
                     amount: reviewInfo.amount,
