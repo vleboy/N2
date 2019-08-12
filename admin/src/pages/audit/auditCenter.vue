@@ -43,6 +43,15 @@
         </template>
       </Table>
     </div>
+
+    <div class="page">
+      <Page :current="currentPage" :total="totalPage" :page-size="pageSize" @on-change="changepage"/>
+    </div>
+
+    <Spin size="large" fix v-show="spinShow" style="z-index:200;">
+      <Icon type="ios-loading" size="64" class="demo-spin-icon-load"></Icon>
+      <div style>加载中...</div>
+    </Spin>
   </div>  
 </template>
 
@@ -55,6 +64,12 @@ export default {
       proposerId: '',
       proposerName: '',
       proposerNick: '',
+      totalPage: 200,
+      currentPage: 1,
+      pageSize: 50,
+      startKey: null,
+      spinShow: false,
+      data: [],
       columns: [
         {
           title: '申请人账号',
@@ -92,6 +107,11 @@ export default {
           align: "center"
         },
         {
+          title: '流水ID',
+          key: 'billId',
+          align: "center"
+        },
+        {
           title: '创建时间',
           slot: 'createAt',
           align: "center"
@@ -109,7 +129,8 @@ export default {
         {
           title: '操作',
           slot: 'operate',
-          align: "center"
+          align: "center",
+          minWidth: 20
         }
       ],
       auditList: []
@@ -122,23 +143,45 @@ export default {
     createAtConfig(row) {
       return dayjs(row.createAt).format('YY-MM-DD')
     },
+    //切换页码
+    changepage(val) {
+      this.currentPage = val
+      if (this.startKey != null && this.currentPage % 4 == 0 && this.currentPage * this.pageSize >= this.data.length) {
+        this.getAudit()
+      } else {
+        this.auditList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
+      }
+    },
     search() {
+      this.initPage()
       this.getAudit()
     },
     reset() {
       this.proposerId = '',
       this.proposerName = '',
       this.proposerNick = '',
-      this.getAudit()
+      this.search()
+    },
+    //重置分页
+    initPage() {
+      this.data = []
+      this.startKey = null
+      this.currentPage = 1
     },
     getAudit() {
       let params = {
         proposerId: this.proposerId,
         proposerName: this.proposerName,
         proposerNick: this.proposerNick,
+        startKey: this.startKey
       }
+      this.spinShow = true
       queryAudit(params).then(res => {
-        this.auditList = res
+        this.data = this.data.concat(res.res)
+        this.totalPage = this.data.length
+        this.auditList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
+        this.startKey = res.startKey
+        this.spinShow = false
       })
     },
     operate(row, bool) {
@@ -180,11 +223,18 @@ export default {
       }
     }
   }
+  .page {
+      text-align: right;
+      margin-top: 20px;
+    }
   /deep/.ivu-table-small th {
       height: 26px;
     }
-    /deep/.ivu-table-small td {
-      height: 26px;
+  /deep/.ivu-table-small td {
+    height: 26px;
+  }
+  /deep/ .ivu-table-cell {
+      padding: 0;
     }
   .ivu-table-small th {
     height: 26px;

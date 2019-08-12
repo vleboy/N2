@@ -74,6 +74,7 @@ export default {
       playerId: "",
       playerName: "",
       playerNick: "",
+      startKey: null,
       playerList: [],
       data: [],
       columns: [
@@ -114,41 +115,44 @@ export default {
         }
       ],
       //分页相关
-      totalPage: 100,
-      pageSize: 2,//每页显示条数
+      totalPage: 200,
+      pageSize: 50,//每页显示条数
       currentPage: 1,
       startKey: ''//用于分页
     };
   },
   computed: {},
   mounted() {
-    let arr = [1,2,3,4,5,6]
-    let newArr = _.chunk(arr, 2)
-
     this.search();
   },
   methods: {
     //页码改变
     changepage(val) {
       this.currentPage = val
-      this.playerList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
+      if (this.startKey != null && this.currentPage % 4 == 0 && this.currentPage * this.pageSize >= this.data.length) {
+        this.getList()
+      } else {
+        this.playerList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
+      }
     },
     getList() {
       let params = {
         id: this.playerId,
         playerName: this.playerName,
-        playerNick: this.playerNick
+        playerNick: this.playerNick,
+        startKey: this.startKey
       };
       this.spinShow = true;
       queryPlayer(params).then(res => {
-       
-        this.data = this.data.concat(res)
+        this.data = this.data.concat(res.res)
         this.totalPage = this.data.length
         this.playerList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
+        this.startKey = res.startKey
         this.spinShow = false;
       });
     },
     search() {
+      this.initPage()
       this.getList()
     },
     reset() {
@@ -156,6 +160,12 @@ export default {
       this.playerName = "";
       this.playerNick = "";
       this.search();
+    },
+    //重置分页
+    initPage() {
+      this.data = []
+      this.startKey = null
+      this.currentPage = 1
     },
     //停用启用
     operateSatus(row) {

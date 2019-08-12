@@ -113,7 +113,8 @@ export default {
           title: "余额",
           key: "balance",
           minWidth: "auto",
-          headerAlign: 'center'
+          headerAlign: 'center',
+          align: 'center'
         },
         {
           title: "状态",

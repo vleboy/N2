@@ -29,6 +29,9 @@
         </template>
       </Table>
     </div>
+    <div class="page">
+      <Page :current="currentPage" :total="totalPage" :page-size="pageSize" @on-change="changepage"/>
+    </div>
     <Spin size="large" fix v-show="spinShow" style="z-index:200;">
       <Icon type="ios-loading" size="64" class="demo-spin-icon-load"></Icon>
       <div style>加载中...</div>
@@ -39,6 +42,7 @@
 <script>
 import dayjs from 'dayjs'
 import {queryBill} from '../../service/index'
+import _ from 'lodash'
 export default {
   data() {
     return {
@@ -46,6 +50,11 @@ export default {
       ownerId: '',
       ownerName: '',
       ownerNick: '',
+      totalPage: 200,
+      currentPage: 1,
+      pageSize: 50,
+      startKey: null,
+      data: [],
       columns: [
         {
           title: '玩家账号',
@@ -88,25 +97,45 @@ export default {
     createAtConfig(row) {
       return dayjs(row.createAt).format('YY-MM-DD')
     },
+    //切换页码
+    changepage(val) {
+      this.currentPage = val
+      if (this.startKey != null && this.currentPage % 4 == 0 && this.currentPage * this.pageSize >= this.data.length) {
+        this.getBill()
+      } else {
+        this.billList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
+      }
+    },
     search() {
+      this.initPage()
       this.getBill()
     },
     reset() {
       this.ownerId = ''
       this.ownerName = ''
       this.ownerNick = ''
-      this.getBill()
+      this.search()
+    },
+    //重置分页
+    initPage() {
+      this.data = []
+      this.startKey = null
+      this.currentPage = 1
     },
     getBill() {
       let params = {
         ownerId: this.ownerId,
         ownerName: this.ownerName,
         ownerNick: this.ownerNick,
-        role: 'player'
+        role: 'player',
+        startKey: this.startKey
       };
       this.spinShow = true
       queryBill(params).then(res => {
-        this.billList = res
+        this.data = this.data.concat(res.res)
+        this.totalPage = this.data.length
+        this.billList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
+        this.startKey = res.startKey
         this.spinShow = false
       })
     }
@@ -135,6 +164,10 @@ export default {
     }
     /deep/.ivu-table-small td {
       height: 26px;
+    }
+    .page {
+      text-align: right;
+      margin-top: 20px;
     }
   }
   .demo-spin-icon-load {

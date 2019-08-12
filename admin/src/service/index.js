@@ -106,7 +106,7 @@ export async function setPoints(params) {
 /* 玩家中心 */
 //获取玩家列表
 export async function queryPlayer(params) {
-  return axios.get("/xnosql/player/query", params);
+  return axios.get("/xnosql/player/page", params);
 }
 
 //创建玩家
@@ -119,9 +119,10 @@ export async function playerStatus(params) {
   return axios.post("/xnosql/player/update", params);
 }
 
+
 /* 账单查询 */
 export async function queryBill(params) {
-  return axios.get("/xnosql/bill/query", params);
+  return axios.get("/xnosql/bill/page", params);
 }
 
 
@@ -129,7 +130,7 @@ export async function queryBill(params) {
 
 //审核列表
 export async function queryAudit(params) {
-  return axios.get("/xnosql/review/query", params);
+  return axios.get("/xnosql/review/page", params);
 }
 
 //审核操作

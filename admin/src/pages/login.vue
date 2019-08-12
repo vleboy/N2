@@ -141,6 +141,7 @@ export default {
               }
             })
             .catch(err => {
+              this.isLoading = true
               this.showCode = true;
               this.validateCode = "";
             });
