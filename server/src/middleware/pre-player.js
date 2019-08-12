@@ -33,6 +33,7 @@ router.post('/player/create', async (ctx, next) => {
     inparam.status = Util.StatusEnum.Enable
     inparam.parentId = parent.id
     inparam.parentName = parent.userName
+    inparam.parentNick = parent.nickName
     inparam.role = Util.RoleEnum.player
     inparam.lastBalanceTime = 0
     inparam.lastBalance = 0
