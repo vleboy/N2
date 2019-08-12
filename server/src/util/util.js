@@ -57,6 +57,7 @@ module.exports = {
     CollectionEnum,
     ReviewEnum,
     StatusEnum,
+    
     checkType,
     getSeq
 }

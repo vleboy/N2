@@ -114,7 +114,7 @@ router.post('/createReview', async (ctx, next) => {
     await checkHandlerPoint(inparam)
     // 根据充值/提现判断
     if (inparam.project == Util.ProjectEnum.addPoint) {
-        await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), role: inparam.role, project: inparam.project, amount: Math.abs(inparam.amount), role: inparam.role, proposerId: inparam.id, proposerName: inparam.proposerName, proposerNick: inparam.proposerNick, parentId: inparam.parentId, status: 0, createdAt: Date.now() })
+        await mongodb.collection(Util.CollectionEnum.review).insertOne({ id: await Util.getSeq('reviewSeq'), role: inparam.role, project: inparam.project, amount: Math.abs(amount), role: inparam.role, proposerId: inparam.id, proposerName: inparam.ownerName, proposerNick: inparam.ownerName, parentId: inparam.parentId, status: 0, createdAt: Date.now() })
     } else if (inparam.project == Util.ProjectEnum.reducePoint) {
         let billId = await Util.getSeq('billSeq')
         // 点数处理事务
@@ -159,7 +159,6 @@ router.post('/handlerReview', async (ctx, next) => {
     if (!inparam.id || !(inparam.status == Util.ReviewEnum.Agree || inparam.status == Util.ReviewEnum.Refuse)) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    inparam.collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     let reviewInfo = await mongodb.collection(Util.CollectionEnum.review).findOne({ id: inparam.id })
     if (!reviewInfo) {
         return ctx.body = { err: true, res: '订单不存在' }
@@ -168,6 +167,7 @@ router.post('/handlerReview', async (ctx, next) => {
         return ctx.body = { err: true, res: '订单已处理' }
     }
     // 检查代理或玩家是否正常
+    inparam.collectionName = reviewInfo.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     await checkHandlerPoint({ id: reviewInfo.proposerId, role: reviewInfo.role })
     // 拒绝该订单
     if (inparam.status == Util.ReviewEnum.Refuse) {
