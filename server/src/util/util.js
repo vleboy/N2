@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const moment = require('moment')
+const axios = require('axios')
 
 //流水项目枚举
 const ProjectEnum = {
@@ -67,6 +68,46 @@ async function getSeq(seqName) {
     return +`${moment().utcOffset(8).format('YYMMDD')}${_.padStart(res.value.seqValue.toString(), 10, '0')}`
 }
 
+// 向N1注册玩家
+async function n1RegPlayer(userName, nickname) {
+    try {
+        let res = await axios.post('https://{domain}/dev/player/register', {
+            buId: 123456,
+            apiKey: "商户key",
+            userName,
+            userPwd: "123456",
+            nickname
+        })
+        if (res.data.code == 0) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+
+    }
+}
+
+// 向N1玩家转点
+async function n1Transfer(userName, action, amount) {
+    try {
+        let res = await axios.post('https://{domain}/dev/merchant/player', {
+            buId: 123456,
+            apiKey: "商户key",
+            userName,
+            action,
+            amount
+        })
+        if (res.data.code == 0) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+
+    }
+}
+
 module.exports = {
     ProjectEnum,
     RoleEnum,
@@ -74,6 +115,9 @@ module.exports = {
     ReviewEnum,
     StatusEnum,
     ModeEnum,
+
+    n1RegPlayer,
+    n1Transfer,
 
     checkType,
     getSeq
