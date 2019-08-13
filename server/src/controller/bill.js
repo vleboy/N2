@@ -72,39 +72,36 @@ router.post('/transfer', async (ctx, next) => {
         }
         // 写入流水
         if (res0.value.balance) {
-            await mongodb.collection(Util.CollectionEnum.bill).insertMany([
-                {
-                    id: ownerBillId,
-                    role: Util.RoleEnum.agent,
-                    project: ownerProject,
-                    preBalance: ownerPreBalance,
-                    amount: ownerAmount,
-                    balance: ownerBalance,
-                    ownerId: owner.id,
-                    ownerName: owner.userName,
-                    ownerNick: owner.userNick,
-                    parentId: owner.parentId,
-                    parentName: owner.parentName,
-                    parentNick: owner.parentNick,
-                    createAt: ownerCreateAt
-                },
-                {
-                    id: targetBillId,
-                    role: inparam.role,
-                    project: targetProject,
-                    preBalance: targetPreBalance,
-                    amount: targetAmout,
-                    balance: targetBalance,
-                    ownerId: target.id,
-                    ownerName: target.targetName,
-                    ownerNick: target.targetNick,
-                    parentId: target.parentId,
-                    parentName: target.parentName,
-                    parentNick: target.parentNick,
-                    createAt: targetCreateAt
-                },
-                { session }
-            ])
+            await mongodb.collection(Util.CollectionEnum.bill).insertOne({
+                id: ownerBillId,
+                role: Util.RoleEnum.agent,
+                project: ownerProject,
+                preBalance: ownerPreBalance,
+                amount: ownerAmount,
+                balance: ownerBalance,
+                ownerId: owner.id,
+                ownerName: owner.userName,
+                ownerNick: owner.userNick,
+                parentId: owner.parentId,
+                parentName: owner.parentName,
+                parentNick: owner.parentNick,
+                createAt: ownerCreateAt
+            }, { session })
+            await mongodb.collection(Util.CollectionEnum.bill).insertOne({
+                id: targetBillId,
+                role: inparam.role,
+                project: targetProject,
+                preBalance: targetPreBalance,
+                amount: targetAmout,
+                balance: targetBalance,
+                ownerId: target.id,
+                ownerName: target.targetName,
+                ownerNick: target.targetNick,
+                parentId: target.parentId,
+                parentName: target.parentName,
+                parentNick: target.parentNick,
+                createAt: targetCreateAt
+            }, { session })
         } else {
             return ctx.body = { err: true, res: '余额不足' }
         }
