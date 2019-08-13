@@ -23,7 +23,7 @@ router.post('/transfer', async (ctx, next) => {
     let ownerPreBalance = 0
     let ownerBalance = 0
     let targetAmout = Math.abs(inparam.amount)
-    let targetProject = Util.ProjectEnum.addPoint
+    let targetProject = inparam.project
     let targetQuery = { id: inparam.id }
     let targetPreBalance = 0
     let targetBalance = 0
@@ -33,7 +33,6 @@ router.post('/transfer', async (ctx, next) => {
     let ownerCreateAt = createAt
     let targetCreateAt = createAt
     if (inparam.project == Util.ProjectEnum.addPoint) {
-        targetProject = Util.ProjectEnum.reducePoint
         ownerAmount *= -1
         ownerQuery.balance = { $gte: Math.abs(inparam.amount) }
         ownerBillId = await Util.getSeq('billSeq')
