@@ -95,6 +95,9 @@ router.get('/agent/query', async (ctx, next) => {
     if (inparam.id) {
         inparam.id = +inparam.id
     }
+    if (inparam.parentId) {
+        inparam.parentId = +inparam.parentId
+    }
     return next()
 })
 

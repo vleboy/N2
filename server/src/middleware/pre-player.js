@@ -81,6 +81,9 @@ router.get('/player/page', async (ctx, next) => {
     if (inparam.id) {
         inparam.id = +inparam.id
     }
+    if (inparam.parentId) {
+        inparam.parentId = +inparam.parentId
+    }
     // 设置分页参数
     inparam.limit = 6
     inparam.sortBy = 'createAt'
