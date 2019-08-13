@@ -40,10 +40,11 @@ router.post('/handlerPoint', async (ctx, next) => {
     if (!inparam.id || !inparam.project || !inparam.role || !inparam.amount) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
+    inparam.project = inparam.project == 1 ? Util.ProjectEnum.Add : Util.ProjectEnum.Reduce
     const collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     let amount = Math.abs(inparam.amount)
     let queryBalance = { id: inparam.id }
-    if (inparam.project == Util.ProjectEnum.reducePoint) {
+    if (inparam.project == Util.ProjectEnum.Reduce) {
         amount *= -1
         queryBalance.balance = { $gte: Math.abs(amount) }
     }
@@ -94,17 +95,18 @@ router.post('/createReview', async (ctx, next) => {
     if (!inparam.id || !inparam.project || !inparam.amount || !inparam.role) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
+    inparam.project = inparam.project == 1 ? Util.ProjectEnum.Recharge : Util.ProjectEnum.Withdraw
     const collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     let amount = Math.abs(inparam.amount)
     let queryBalance = { id: inparam.id }
-    if (inparam.project == Util.ProjectEnum.reducePoint) {
+    if (inparam.project == Util.ProjectEnum.Withdraw) {
         amount *= -1
         queryBalance.balance = { $gte: Math.abs(amount) }
     }
     // 检查代理/玩家是否满足操作条件
     const owner = await checkHandlerPoint(inparam)
     // 充值申请
-    if (inparam.project == Util.ProjectEnum.addPoint) {
+    if (inparam.project == Util.ProjectEnum.Recharge) {
         await mongodb.collection(Util.CollectionEnum.review).insertOne({
             id: await Util.getSeq('reviewSeq'),
             role: inparam.role,
@@ -122,7 +124,7 @@ router.post('/createReview', async (ctx, next) => {
         })
     }
     // 提现申请 
-    else if (inparam.project == Util.ProjectEnum.reducePoint) {
+    else if (inparam.project == Util.ProjectEnum.Withdraw) {
         const session = await global.getMongoSession()
         try {
             // 变更余额
@@ -194,9 +196,9 @@ router.post('/handlerReview', async (ctx, next) => {
     const owner = await checkHandlerPoint({ id: reviewInfo.proposerId, role: reviewInfo.role })
     // 拒绝该订单
     if (inparam.status == Util.ReviewEnum.Refuse) {
-        if (reviewInfo.project == Util.ProjectEnum.addPoint) {
+        if (reviewInfo.project == Util.ProjectEnum.Recharge) {
             await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
-        } else if (reviewInfo.project == Util.ProjectEnum.reducePoint) {
+        } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
             const session = await global.getMongoSession()
             try {
                 // 变更余额
@@ -206,7 +208,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                     id: billId,
                     role: reviewInfo.role,
-                    project: Util.ProjectEnum.addPoint,
+                    project: Util.ProjectEnum.Unfreeze,
                     preBalance: NP.minus(res.value.balance, reviewInfo.amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,
@@ -231,7 +233,7 @@ router.post('/handlerReview', async (ctx, next) => {
     }
     //通过该订单
     else {
-        if (reviewInfo.project == Util.ProjectEnum.addPoint) {
+        if (reviewInfo.project == Util.ProjectEnum.Recharge) {
             const session = await global.getMongoSession()
             try {
                 // 变更余额
@@ -241,7 +243,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                     id: billId,
                     role: reviewInfo.role,
-                    project: Util.ProjectEnum.addPoint,
+                    project: Util.ProjectEnum.Recharge,
                     preBalance: NP.minus(res.value.balance, reviewInfo.amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,
@@ -262,7 +264,7 @@ router.post('/handlerReview', async (ctx, next) => {
             } finally {
                 await session.endSession()
             }
-        } else if (reviewInfo.project == Util.ProjectEnum.reducePoint) {
+        } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
             await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
         }
     }

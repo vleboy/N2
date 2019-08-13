@@ -3,14 +3,12 @@ const moment = require('moment')
 
 //流水项目枚举
 const ProjectEnum = {
-    addPoint: '加点',
-    reducePoint: '减点',
-
     Add: 'add',                 // 加点
     Reduce: 'reduce',           // 减点
 
     Recharge: 'recharge',       // 充值
     Withdraw: 'withdraw',       // 提现
+    Unfreeze: 'unfreeze',       // 解冻
 
     TransferIn: 'transferIn',   // 转入
     TransferOut: 'transferOut', // 转出

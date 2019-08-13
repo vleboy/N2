@@ -14,12 +14,13 @@ router.post('/transfer', async (ctx, next) => {
     if (!inparam.id || !inparam.amount || !inparam.project || !inparam.role) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
+    inparam.project = inparam.project == 1 ? Util.ProjectEnum.TransferIn : Util.ProjectEnum.TransferOut
     const collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     // 检查代理或玩家是否可以进行转账操作
     let [owner, target] = await checkTransfer(inparam, token)
     let ownerAmount = Math.abs(inparam.amount)
     let ownerQuery = { id: token.id }
-    let ownerProject = Util.ProjectEnum.reducePoint
+    let ownerProject = Util.ProjectEnum.TransferOut
     let ownerPreBalance = 0
     let ownerBalance = 0
     let targetAmout = Math.abs(inparam.amount)
@@ -32,14 +33,14 @@ router.post('/transfer', async (ctx, next) => {
     let createAt = Date.now()
     let ownerCreateAt = createAt
     let targetCreateAt = createAt
-    if (inparam.project == Util.ProjectEnum.addPoint) {
+    if (inparam.project == Util.ProjectEnum.TransferIn) {
         ownerAmount *= -1
         ownerQuery.balance = { $gte: Math.abs(inparam.amount) }
         ownerBillId = await Util.getSeq('billSeq')
         targetBillId = await Util.getSeq('billSeq')
         targetCreateAt += 1
     } else {
-        ownerProject = Util.ProjectEnum.addPoint
+        ownerProject = Util.ProjectEnum.TransferIn
         targetAmout *= -1
         targetQuery.balance = { $gte: Math.abs(inparam.amount) }
         targetBillId = await Util.getSeq('billSeq')
@@ -50,7 +51,7 @@ router.post('/transfer', async (ctx, next) => {
     try {
         let res0, res1 = {}
         // 变更余额
-        if (inparam.project == Util.ProjectEnum.addPoint) {
+        if (inparam.project == Util.ProjectEnum.TransferIn) {
             res0 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
             if (res0.value.balance) {
                 ownerBalance = res0.value.balance
