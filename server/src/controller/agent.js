@@ -29,6 +29,10 @@ router.post('/login', async (ctx, next) => {
         return ctx.body = { err: true, res: '密码不正确' }
     }
     delete VerifyCode[inparam.userName]
+    let subrole = await mongodb.collection(Util.CollectionEnum.subrole).findOne({ roleName: agentInfo.subrole })
+    if (!subrole) {
+        return ctx.body = { err: true, res: '角色不存在' }
+    }
     let token = jwt.sign({
         id: agentInfo.id,
         role: agentInfo.role,
@@ -36,7 +40,8 @@ router.post('/login', async (ctx, next) => {
         userNick: agentInfo.userNick,
         parentId: agentInfo.parentId,
         level: agentInfo.level,
-        subrole: agentInfo.subrole
+        subrole: agentInfo.subrole,
+        permissions: subrole.permissions
     }, config.auth.secret)
     ctx.body = { id: agentInfo.id, userNick: agentInfo.userNick, token }
 })
