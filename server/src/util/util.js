@@ -110,12 +110,12 @@ async function n1Transfer(userName, action, amount) {
             return { err: true, res: res.data.msg }
         }
     } catch (error) {
-        return checkSn(sn)
+        return await checkSn(sn)
     }
 }
 
 // 向N1检查充值/提现是否成功
-function checkSn(sn) {
+async function checkSn(sn) {
     try {
         let res = await axios.post(`https://${config.n1.domain}/dev/merchant/player`, {
             method: "QUERY_PLAYER_SN",
