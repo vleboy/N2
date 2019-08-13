@@ -15,7 +15,7 @@ const ProjectEnum = {
     TransferIn: 'transferIn',   // 转入
     TransferOut: 'transferOut', // 转出
 
-    Profit:'profit',            // 收益
+    Profit: 'profit',           // 收益
 }
 //角色枚举
 const RoleEnum = {
@@ -32,7 +32,8 @@ const CollectionEnum = {
     review: 'review',
     subrole: 'subrole',
     bill: 'bill',
-    profit: 'profit'
+    profit: 'profit',
+    config: 'config'
 }
 //启用/停用枚举
 const StatusEnum = {
