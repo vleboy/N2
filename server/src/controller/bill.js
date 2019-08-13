@@ -13,6 +13,7 @@ router.post('/transfer', async (ctx, next) => {
     if (!inparam.id || !inparam.amount || !inparam.project || !inparam.role) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
+    const collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     // 检查代理或玩家是否可以进行转账操作
     let [owner, target] = await checkTransfer(inparam, token)
     let ownerAmount = Math.abs(inparam.amount)
@@ -50,7 +51,7 @@ router.post('/transfer', async (ctx, next) => {
         let res0, res1 = {}
         // 变更余额
         if (inparam.project == Util.ProjectEnum.addPoint) {
-            res0 = await global.mongodb.collection(collectionName).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+            res0 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
             if (res0.value.balance) {
                 ownerBalance = res0.value.balance
                 ownerPreBalance = NP.minus(ownerBalance, ownerAmount)
@@ -63,7 +64,7 @@ router.post('/transfer', async (ctx, next) => {
             if (res0.value.balance) {
                 targetBalance = res0.value.balance
                 targetBalance = NP.minus(targetBalance, targetAmout)
-                res1 = await global.mongodb.collection(collectionName).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+                res1 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 ownerBalance = res1.value.balance
                 ownerPreBalance = NP.minus(ownerBalance, ownerAmount)
             }
@@ -137,7 +138,7 @@ async function checkTransfer(inparam, token) {
     let parentId = target.parentId
     let parentName = target.parentName
     let parentNick = target.parentNick
-    if (targte.role == Util.RoleEnum.player) {
+    if (target.role == Util.RoleEnum.player) {
         targetName = target.playerName
         targetNick = target.playerNick
     }
