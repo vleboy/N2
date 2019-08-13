@@ -24,9 +24,14 @@ router.post('/agent/create', async (ctx, next) => {
     if (inparam.userName.length < 3 || inparam.userName.length > 20 || inparam.userPwd.length < 6 || inparam.userPwd.length > 20 || inparam.userNick.length < 3 || inparam.userNick.length > 20) {
         return ctx.body = { err: true, res: '参数不合法' }
     }
+    if (inparam.mode != Util.ModeEnum.Rebate && inparam.mode != Util.ModeEnum.Commission && inparam.mode != Util.ModeEnum.Ratio) {
+        return ctx.body = { err: true, res: '请选择业务模式' }
+    }
+    inparam.modeValue = inparam.modeValue || 0
     if (await mongodb.collection(Util.CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }, { id: inparam.id }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
+
     // 查询上级代理
     let parent = inparam.parentId ? await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.parentId }) : {}
     inparam.status = Util.StatusEnum.Enable
@@ -34,12 +39,12 @@ router.post('/agent/create', async (ctx, next) => {
     inparam.level = parent.level + 1 || 0
     inparam.parentId = parent.id || 0
     inparam.parentName = parent.userName || 'system'
-    inparam.parentNick = parent.nickName || 'system'
+    inparam.parentNick = parent.userNick || 'system'
     inparam.levelIndex = parent.levelIndex ? `${parent.levelIndex},${inparam.id}` : inparam.id.toString()
+
     inparam.balance = 0
     inparam.agentCount = 0
     inparam.playerCount = 0
-    inparam.createAt = Date.now()
     return next()
 
 
@@ -75,6 +80,8 @@ router.post('/agent/update', async (ctx, next) => {
                 return ctx.body = { err: true, res: '不能越级操作' }
             }
         }
+        // 传承代理ID，后置路由处理
+        ctx.request.agentId = inparam.id
         return next()
     }
 })
@@ -88,6 +95,9 @@ router.get('/agent/query', async (ctx, next) => {
     let mongodb = global.mongodb
     if (inparam.id) {
         inparam.id = +inparam.id
+    }
+    if (inparam.parentId) {
+        inparam.parentId = +inparam.parentId
     }
     return next()
 })

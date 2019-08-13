@@ -15,7 +15,7 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/xserver/system/init",
+            "/xserver/init/init",
             "/xserver/agent/captcha",
             "/xserver/agent/login",
             "/xserver/player/login"
@@ -47,6 +47,7 @@
             ],
             "agent": [
                 "/xserver/agent/tree",
+                "/xserver/agent/realtime",
                 "/xnosql/agent/get/",
                 "/xnosql/agent/query",
                 "/xnosql/agent/update",
@@ -59,6 +60,7 @@
                 "/xserver/system/createReview"
             ],
             "player": [
+                "/xserver/player/realtime",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
                 "/xserver/system/createReview"
@@ -78,6 +80,16 @@
         "mongodbUrl": "mongodb://mongo0:27017,mongo1:27017,mongo2:27017/n2",
         "mongoOption": {
             "replicaSet": "rs"
-        }
+        },
+        "defaultCreateAt": "createAt",
+        "defaultUTC": 8,
+        "defaultSortBy": "id",
+        "defaultSortOrder": -1,
+        "defaultLimit": 200
+    },
+    "n1": {
+        "domain":"api.na12345.com",
+        "buId": "123456",
+        "apiKey": "123456"
     }
 }

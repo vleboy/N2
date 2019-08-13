@@ -15,10 +15,10 @@ const VerifyCode = {}
 router.post('/login', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (!inparam.userName || !inparam.userPwd || !inparam.code) {
+    if (!inparam.userName || !inparam.userPwd) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    if (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now()) {
+    if (!inparam.mobile && (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now())) {
         return ctx.body = { err: true, res: '验证码错误或过期' }
     }
     let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ userName: inparam.userName })
@@ -29,6 +29,14 @@ router.post('/login', async (ctx, next) => {
         return ctx.body = { err: true, res: '密码不正确' }
     }
     delete VerifyCode[inparam.userName]
+    // 管理员需要查询子角色
+    let subrole = {}
+    if (agentInfo.role == Util.RoleEnum.admin) {
+        subrole = await mongodb.collection(Util.CollectionEnum.subrole).findOne({ roleName: agentInfo.subrole })
+        if (!subrole) {
+            return ctx.body = { err: true, res: '角色不存在' }
+        }
+    }
     let token = jwt.sign({
         id: agentInfo.id,
         role: agentInfo.role,
@@ -36,9 +44,10 @@ router.post('/login', async (ctx, next) => {
         userNick: agentInfo.userNick,
         parentId: agentInfo.parentId,
         level: agentInfo.level,
-        subrole: agentInfo.subrole
+        subrole: agentInfo.subrole,
+        permissions: subrole.permissions
     }, config.auth.secret)
-    ctx.body = { id: agentInfo.id, userNick: agentInfo.userNick, token }
+    ctx.body = { id: agentInfo.id, role: agentInfo.role, subrole: agentInfo.subrole, permissions: subrole.permissions, userName: agentInfo.userName, userNick: agentInfo.userNick, token }
 })
 
 /**
@@ -108,7 +117,19 @@ function tree(treeArray, array) {
         if (array.length != 0) {
             tree(children, array)
         }
+
+        // 额外信息处理
+        if (treeNode.role != Util.RoleEnum.admin) {
+            treeNode.modeStr = `${Util.ModeStrEnum[treeNode.mode]}(${treeNode.modeValue}%)`
+        }
     }
 }
+
+/**
+ * 获取代理实时数据
+ */
+router.get('/realtime', async (ctx, next) => {
+})
+
 
 module.exports = router

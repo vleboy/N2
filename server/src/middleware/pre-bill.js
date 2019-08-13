@@ -16,7 +16,6 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 router.get('/bill/page', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.query
-    let mongodb = global.mongodb
     if (inparam.ownerId) {
         inparam.ownerId = +inparam.ownerId
     }
@@ -24,9 +23,6 @@ router.get('/bill/page', async (ctx, next) => {
         inparam.parentId = token.id
     }
     // 设置分页参数
-    inparam.limit = 6
-    inparam.sortBy = 'id'
-    inparam.sortOrder = -1
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }
