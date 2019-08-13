@@ -15,7 +15,7 @@ const VerifyCode = {}
 router.post('/login', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (!inparam.userName || !inparam.userPwd || !inparam.code) {
+    if (!inparam.userName || !inparam.userPwd) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     if (!inparam.mobile && (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now())) {

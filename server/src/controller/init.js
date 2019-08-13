@@ -15,6 +15,8 @@ router.post('/init', async (ctx, next) => {
             await mongodb.createCollection(Util.CollectionEnum[key])
         }
         // 创建索引
+        await mongodb.collection(Util.CollectionEnum.agent).createIndex({ id: -1 })
+        await mongodb.collection(Util.CollectionEnum.player).createIndex({ id: -1 })
         await mongodb.collection(Util.CollectionEnum.bill).createIndex({ id: -1 })
         await mongodb.collection(Util.CollectionEnum.review).createIndex({ id: -1 })
         await mongodb.collection(Util.CollectionEnum.message).createIndex({ id: -1 })

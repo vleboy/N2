@@ -24,8 +24,11 @@ router.post('/agent/update', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (inparam.status) {
-        await mongodb.collection(Util.CollectionEnum.agent).update({ levelIndex: { $regex: `.*${ctx.request.agentId}.*` } }, { $set: { status: inparam.status } })
+    if (inparam.status == Util.StatusEnum.Disable || inparam.status == Util.StatusEnum.Enable) {
+        let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find({ levelIndex: { $regex: `.*${ctx.request.agentId}.*` } }, { projection: { id: 1, _id: 0 } }).toArray()
+        for (let agent of agentArr) {
+            await mongodb.collection(Util.CollectionEnum.agent).updateOne({ id: agent.id }, { $set: { status: inparam.status } })
+        }
     }
 })
 
