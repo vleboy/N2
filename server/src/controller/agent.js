@@ -117,6 +117,11 @@ function tree(treeArray, array) {
         if (array.length != 0) {
             tree(children, array)
         }
+
+        // 额外信息处理
+        if (treeNode.role != Util.RoleEnum.admin) {
+            treeNode.modeStr = `${Util.ModeStrEnum[treeNode.mode]}(${treeNode.modeValue})%`
+        }
     }
 }
 

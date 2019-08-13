@@ -17,6 +17,19 @@ const ProjectEnum = {
 
     Profit: 'profit',           // 收益
 }
+const ProjectStrEnum = {
+    add: '加点',
+    reduce: '减点',
+
+    recharge: '充值',
+    withdraw: '提现',
+    unfreeze: '解冻',
+
+    transferIn: '转入',
+    transferOut: '转出',
+
+    profit: '收益',
+}
 //角色枚举
 const RoleEnum = {
     agent: 'agent',
@@ -51,6 +64,12 @@ const ModeEnum = {
     Rebate: 'rebate',           // 返利
     Commission: 'commission',   // 返佣
     Ratio: 'ratio',             // 占成
+}
+
+const ModeStrEnum = {
+    rebate: '返利',
+    commission: '返佣',
+    ratio: '占成'
 }
 
 //检查类型
@@ -142,6 +161,9 @@ module.exports = {
     ReviewEnum,
     StatusEnum,
     ModeEnum,
+
+    ProjectStrEnum,
+    ModeStrEnum,
 
     n1RegPlayer,
     n1Transfer,
