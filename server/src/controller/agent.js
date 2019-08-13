@@ -29,9 +29,13 @@ router.post('/login', async (ctx, next) => {
         return ctx.body = { err: true, res: '密码不正确' }
     }
     delete VerifyCode[inparam.userName]
-    let subrole = await mongodb.collection(Util.CollectionEnum.subrole).findOne({ roleName: agentInfo.subrole })
-    if (!subrole) {
-        return ctx.body = { err: true, res: '角色不存在' }
+    // 管理员需要查询子角色
+    let subrole = {}
+    if (agentInfo.role == Util.RoleEnum.admin) {
+        subrole = await mongodb.collection(Util.CollectionEnum.subrole).findOne({ roleName: agentInfo.subrole })
+        if (!subrole) {
+            return ctx.body = { err: true, res: '角色不存在' }
+        }
     }
     let token = jwt.sign({
         id: agentInfo.id,
