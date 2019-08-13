@@ -27,6 +27,7 @@ router.post('/create', async (ctx, next) => {
     inparam.status = 1
     inparam.role = 'admin'
     inparam.createAt = Date.now()
+    inparam.createAtStr = moment(inparam.createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
     let result = await mongodb.collection(Util.CollectionEnum.agent).insertOne(inparam)
     ctx.body = { err: false, res: result.insertedId }
 })
@@ -57,6 +58,7 @@ router.post('/handlerPoint', async (ctx, next) => {
         const res = await global.mongodb.collection(collectionName).findOneAndUpdate(queryBalance, { $inc: { balance: amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
         // 写入流水
         if (res.value) {
+            let createAt = Date.now()
             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                 id: await Util.getSeq('billSeq'),
                 role: inparam.role,
@@ -70,7 +72,9 @@ router.post('/handlerPoint', async (ctx, next) => {
                 parentId: owner.parentId,
                 parentName: owner.parentName,
                 parentNick: owner.parentNick,
-                createAt: Date.now()
+                createAt,
+                createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
+
             }, { session })
         } else {
             return ctx.body = { err: true, res: '余额不足' }
@@ -105,6 +109,7 @@ router.post('/createReview', async (ctx, next) => {
     }
     // 检查代理/玩家是否满足操作条件
     const owner = await checkHandlerPoint(inparam)
+    let createAt = Date.now()
     // 充值申请
     if (inparam.project == Util.ProjectEnum.Recharge) {
         await mongodb.collection(Util.CollectionEnum.review).insertOne({
@@ -120,7 +125,8 @@ router.post('/createReview', async (ctx, next) => {
             parentName: owner.parentName,
             parentNick: owner.parentNick,
             status: 0,
-            createdAt: Date.now()
+            createdAt,
+            createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
         })
     }
     // 提现申请 
@@ -145,7 +151,8 @@ router.post('/createReview', async (ctx, next) => {
                     parentId: owner.parentId,
                     parentName: owner.parentName,
                     parentNick: owner.parentNick,
-                    createAt: Date.now()
+                    createAt,
+                    createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
                 }, { session })
                 await mongodb.collection(Util.CollectionEnum.review).insertOne({
                     id: await Util.getSeq('reviewSeq'),
@@ -160,7 +167,8 @@ router.post('/createReview', async (ctx, next) => {
                     parentName: owner.parentName,
                     parentNick: owner.parentNick,
                     status: 0,
-                    createdAt: Date.now()
+                    createdAt,
+                    createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
                 }, { session })
             } else {
                 return ctx.body = { err: true, res: '余额不足' }
@@ -194,10 +202,11 @@ router.post('/handlerReview', async (ctx, next) => {
     // 检查代理或玩家是否正常
     const collectionName = reviewInfo.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     const owner = await checkHandlerPoint({ id: reviewInfo.proposerId, role: reviewInfo.role })
+    let createAt = Date.now()
     // 拒绝该订单
     if (inparam.status == Util.ReviewEnum.Refuse) {
         if (reviewInfo.project == Util.ProjectEnum.Recharge) {
-            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
+            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss') } })
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
             const session = await global.getMongoSession()
             try {
@@ -218,9 +227,10 @@ router.post('/handlerReview', async (ctx, next) => {
                     parentId: owner.parentId,
                     parentName: owner.parentName,
                     parentNick: owner.parentNick,
-                    createAt: Date.now()
+                    createAt,
+                    createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
                 }, { session })
-                await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
+                await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss') } }, { session })
                 await session.commitTransaction()
             } catch (error) {
                 console.error(error)
@@ -253,9 +263,10 @@ router.post('/handlerReview', async (ctx, next) => {
                     parentId: owner.parentId,
                     parentName: owner.parentName,
                     parentNick: owner.parentNick,
-                    createAt: Date.now()
+                    createAt,
+                    createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
                 }, { session })
-                await mongodb.collection(Util.CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } }, { session })
+                await mongodb.collection(Util.CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss') } }, { session })
                 await session.commitTransaction()
             } catch (error) {
                 console.error(error)
@@ -265,7 +276,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 await session.endSession()
             }
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
-            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: Date.now() } })
+            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss') } })
         }
     }
     ctx.body = { err: false, res: '操作成功' }
