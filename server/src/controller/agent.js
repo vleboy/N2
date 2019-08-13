@@ -47,7 +47,7 @@ router.post('/login', async (ctx, next) => {
         subrole: agentInfo.subrole,
         permissions: subrole.permissions
     }, config.auth.secret)
-    ctx.body = { id: agentInfo.id, userNick: agentInfo.userNick, token }
+    ctx.body = { id: agentInfo.id, role: agentInfo.role, subrole: agentInfo.subrole, permissions: subrole.permissions, userName: agentInfo.userName, userNick: agentInfo.userNick, token }
 })
 
 /**
