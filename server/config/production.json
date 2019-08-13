@@ -86,5 +86,10 @@
         "defaultSortBy": "id",
         "defaultSortOrder": -1,
         "defaultLimit": 200
+    },
+    "n1": {
+        "domain":"api.na12345.com",
+        "buId": "123456",
+        "apiKey": "123456"
     }
 }
