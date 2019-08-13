@@ -1,10 +1,21 @@
 const _ = require('lodash')
 const moment = require('moment')
 
-//加减点枚举
+//流水项目枚举
 const ProjectEnum = {
     addPoint: '加点',
-    reducePoint: '减点'
+    reducePoint: '减点',
+
+    Add: 'add',                 // 加点
+    Reduce: 'reduce',           // 减点
+
+    Recharge: 'recharge',       // 充值
+    Withdraw: 'withdraw',       // 提现
+
+    TransferIn: 'transferIn',   // 转入
+    TransferOut: 'transferOut', // 转出
+
+    Profit:'profit',            // 收益
 }
 //角色枚举
 const RoleEnum = {
@@ -21,7 +32,7 @@ const CollectionEnum = {
     review: 'review',
     subrole: 'subrole',
     bill: 'bill',
-    profit:'profit'
+    profit: 'profit'
 }
 //启用/停用枚举
 const StatusEnum = {
