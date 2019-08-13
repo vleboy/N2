@@ -19,6 +19,7 @@
           width="100"
           height="100"
           :src="noData"
+          :show-loading="false"
         />
         <div class="msg">暂无相关数据</div>
         <van-button type="info" size="normal" plain>点击重试</van-button>

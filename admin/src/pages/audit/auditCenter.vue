@@ -24,7 +24,7 @@
       </div>
     <div class="auditform">
       <Table :columns="columns" :data="auditList" size="small">
-         <template #createAt="row">
+         <template #createAt="{row}">
           {{createAtConfig(row)}}
         </template>
         <template #status="{row}">
@@ -107,7 +107,7 @@ export default {
           align: "center"
         },
         {
-          title: '流水ID',
+          title: '流水号',
           key: 'billId',
           align: "center"
         },
@@ -181,6 +181,8 @@ export default {
         this.totalPage = this.data.length
         this.auditList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
         this.startKey = res.startKey
+        this.spinShow = false
+      }).catch(err => {
         this.spinShow = false
       })
     },

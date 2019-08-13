@@ -10,17 +10,17 @@
     >
       <div>
         <Row class-name="content">
-          <Col span="6" class-name="tc">操作账户:</Col>
+          <Col span="6" class-name="tc">账户:</Col>
           <Col span="18">{{userName}}</Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">操作:</Col>
           <Col span="18">
             <RadioGroup v-model="project">
-              <Radio label="加点">
+              <Radio label="1">
                 <span>加点</span>
               </Radio>
-              <Radio label="减点">
+              <Radio label="-1">
                 <span>减点</span>
               </Radio>
             </RadioGroup>
@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       showDraw: false,
-      project: '加点',//判断加减点
+      project: '1',//判断加减点
       point: 0,
       remark: '',
       precision: 0,//点数精度
@@ -95,12 +95,12 @@ export default {
       setPoints(prarms).then(res => {
         this.initData()
         this.$Message.success({content: res.res})
-        this.$parent.getList()
+        this.$parent.search()
       })
     },
     //初始化数据
     initData() {
-      this.project = '加点'
+      this.project = '1'
       this.point = 0
       this.remark = ''
       this.$store.commit('setPointInfo', {

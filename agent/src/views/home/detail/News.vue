@@ -27,6 +27,7 @@
                   height="30"
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
                   style="margin-right:16px"
+                  :show-loading="false"
                 />
                 <div>
                   <div class="flex">
@@ -46,6 +47,7 @@
                   height="30"
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
                   style="margin-right:16px"
+                  :show-loading="false"
                 />
                 <div>
                   <div class="flex">
@@ -65,6 +67,7 @@
                   height="30"
                   src="https://img.yzcdn.cn/vant/cat.jpeg"
                   style="margin-right:16px"
+                  :show-loading="false"
                 />
                 <div>
                   <div class="flex">

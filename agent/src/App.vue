@@ -5,6 +5,8 @@
 </template>
 
 <style lang="less">
-
+* {
+  font-size: 16px;
+}
 
 </style>

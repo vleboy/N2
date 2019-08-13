@@ -3,6 +3,11 @@
     <div>
       <div class="content">
         <div class="fl">
+          <Input v-model="parentId" size="small">
+            <span slot="prepend">代理ID</span>
+          </Input>
+        </div>
+        <div class="fl">
           <Input v-model="playerId" size="small">
             <span slot="prepend">玩家ID</span>
           </Input>
@@ -26,6 +31,16 @@
     </div>
     <div class="playerform">
       <Table :columns="columns" :data="playerList" size="small">
+        <template #parentId="{row}">
+          <Tooltip content="前往代理中心" placement="bottom" transfer>
+            <span style="color:#20a0ff;cursor:pointer;" @click="toAgentCenter(row)">{{row.parentId}}</span>
+          </Tooltip>
+        </template>
+        <template #balance="{row}">
+          <Tooltip content="前往玩家账单" placement="bottom" transfer>
+            <span style="color:#20a0ff;cursor:pointer;" @click="toPlayerBill(row)">{{row.balance}}</span>
+          </Tooltip>
+        </template>
         <template #status="{row}">
           <Tag
             type="border"
@@ -68,8 +83,17 @@ export default {
     playerDetail,
     operatePoint
   },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (from.name == 'agentCenter' && vm.$route.params.parentId != undefined) {
+        vm.parentId = vm.$route.params.parentId
+        vm.search()
+      }
+    })
+  },
   data() {
     return {
+      parentId: "",
       spinShow: false,
       playerId: "",
       playerName: "",
@@ -78,6 +102,11 @@ export default {
       playerList: [],
       data: [],
       columns: [
+        {
+          title: "代理ID",
+          align: "center",
+          slot: "parentId"
+        },
         {
           title: "玩家账号",
           align: "center",
@@ -89,8 +118,13 @@ export default {
           align: "center"
         },
         {
-          title: "玩家昵称",
+          title: "昵称",
           key: "playerNick",
+          align: "center"
+        },
+        {
+          title: "余额",
+          slot: "balance",
           align: "center"
         },
         {
@@ -111,7 +145,7 @@ export default {
           title: "操作",
           slot: "operate",
           align: "center",
-          minWidth: 60
+          minWidth: 80
         }
       ],
       //分页相关
@@ -140,6 +174,7 @@ export default {
         id: this.playerId,
         playerName: this.playerName,
         playerNick: this.playerNick,
+        parentId: this.parentId,
         startKey: this.startKey
       };
       this.spinShow = true;
@@ -149,7 +184,25 @@ export default {
         this.playerList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
         this.startKey = res.startKey
         this.spinShow = false;
-      });
+      }).catch(err => {
+        this.spinShow = false
+      })
+    },
+    toAgentCenter(row) {
+      this.$router.push({
+        name: 'agentCenter',
+        params: {
+          id: row.parentId
+        }
+      })
+    },
+    toPlayerBill(row) {
+      this.$router.push({
+        name: 'playerBill',
+        params: {
+          ownerId: row.id
+        }
+      })
     },
     search() {
       this.initPage()
@@ -159,6 +212,7 @@ export default {
       this.playerId = "";
       this.playerName = "";
       this.playerNick = "";
+      this.parentId = ""
       this.search();
     },
     //重置分页
@@ -205,7 +259,7 @@ export default {
       this.$store.commit('setPlayerInfo', row)
     },
   }
-};
+}
 </script>
 
 <style scpoed lang="less">

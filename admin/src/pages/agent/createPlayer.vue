@@ -16,15 +16,15 @@
           </Col>
         </Row>
         <Row class-name="content">
-          <Col span="6" class-name="tc">玩家密码:</Col>
-          <Col span="18">
-            <Input :maxlength="max20" v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
-          </Col>
-        </Row>
-        <Row class-name="content">
           <Col span="6" class-name="tc">玩家昵称:</Col>
           <Col span="18">
             <Input :maxlength="max20" v-model="userNick" placeholder="3-20位" style="width: 100%" />
+          </Col>
+        </Row>
+        <Row class-name="content">
+          <Col span="6" class-name="tc">玩家密码:</Col>
+          <Col span="18">
+            <Input :maxlength="max20" v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
           </Col>
         </Row>
       </div>

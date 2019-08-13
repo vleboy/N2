@@ -70,12 +70,12 @@ export default {
     },
     showCount() {
       this.showIndex = 0
-      this.$refs.bottomSpan.style.left = '140px'
+      this.$refs.bottomSpan.style.left = '70px'
       this.$refs.box.style.transform = 'translateX(0)'
     },
     showRules() {
       this.showIndex = 1
-      this.$refs.bottomSpan.style.left = '475px'
+      this.$refs.bottomSpan.style.left = '228px'
       this.$refs.box.style.transform = 'translateX(-50%)'
     }
   }

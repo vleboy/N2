@@ -24,7 +24,7 @@
       </div>
     <div>
       <Table :columns="columns" :data="billList" size="small">
-        <template #createAt="row">
+        <template #createAt="{row}">
           {{createAtConfig(row)}}
         </template>
       </Table>
@@ -44,6 +44,14 @@ import dayjs from 'dayjs'
 import {queryBill} from '../../service/index'
 import _ from 'lodash'
 export default {
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (from.name == 'playerCenter' && vm.$route.params.ownerId != undefined) {
+        vm.ownerId = vm.$route.params.ownerId
+        vm.search()
+      }
+    })
+  },
   data() {
     return {
       spinShow: false,
@@ -56,6 +64,11 @@ export default {
       startKey: null,
       data: [],
       columns: [
+        {
+          title: '流水号',
+          key: 'id',
+          align: "center"
+        },
         {
           title: '玩家账号',
           align: 'center',
@@ -95,7 +108,7 @@ export default {
   },
   methods: {
     createAtConfig(row) {
-      return dayjs(row.createAt).format('YY-MM-DD')
+      return dayjs(row.createAt).format('YY-MM-DD HH:mm:ss')
     },
     //切换页码
     changepage(val) {
@@ -136,6 +149,8 @@ export default {
         this.totalPage = this.data.length
         this.billList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
         this.startKey = res.startKey
+        this.spinShow = false
+      }).catch(err => {
         this.spinShow = false
       })
     }

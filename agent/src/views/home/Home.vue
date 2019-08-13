@@ -3,7 +3,7 @@
     <div class="top">
       <div class="username">
         <van-image
-            
+            :show-loading="false"
             round
             src="https://img.yzcdn.cn/vant/cat.jpeg"
           />
@@ -39,7 +39,7 @@
       <div class="list">
         <div @click="jump('/commissionReport')">
           <van-image
-            
+            :show-loading="false"
             :src="img_commission"
           />
           <div>佣金报表</div>
@@ -47,7 +47,7 @@
         <div class="split"></div>
         <div @click="jump('/financeReport')">
           <van-image
-           
+           :show-loading="false"
             :src="img_financing"
           />
           <div>财务报表</div>
@@ -56,7 +56,7 @@
       <div class="list">
         <div @click="jump('/withdrawalApplication')">
           <van-image
-           
+           :show-loading="false"
             :src="img_withdrawal"
           />
           <div>取款申请</div>
@@ -64,7 +64,7 @@
         <div class="split"></div>
         <div @click="jump('/userInfo')">
           <van-image
-            
+            :show-loading="false"
             :src="img_user"
           />
           <div>用户信息</div>
@@ -73,7 +73,7 @@
       <div class="list">
         <div @click="jump('/news')">
           <van-image
-          
+          :show-loading="false"
             :src="img_info"
           />
           <div>消息</div>

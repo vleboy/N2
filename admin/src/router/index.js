@@ -11,6 +11,7 @@ const RouterConfig = {
 export const router = new VueRouter(RouterConfig);
 router.beforeEach((to, from, next) => {
   let token = window.localStorage.getItem('Token')
+  console.log(token)
   if (token) {
     next()
   } else {

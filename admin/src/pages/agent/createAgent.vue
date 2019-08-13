@@ -16,15 +16,46 @@
           </Col>
         </Row>
         <Row class-name="content">
-          <Col span="6" class-name="tc">代理密码:</Col>
-          <Col span="18">
-            <Input :maxlength="max20" v-model="userPwd" type="password" placeholder="6-20位" style="width: 100%" />
-          </Col>
-        </Row>
-        <Row class-name="content">
           <Col span="6" class-name="tc">代理昵称:</Col>
           <Col span="18">
             <Input :maxlength="max20" v-model="userNick" placeholder="3-20位" style="width: 100%" />
+          </Col>
+        </Row>
+        <Row class-name="content">
+          <Col span="6" class-name="tc">代理密码:</Col>
+          <Col span="18">
+            <Input
+              :maxlength="max20"
+              v-model="userPwd"
+              type="password"
+              placeholder="6-20位"
+              style="width: 100%"
+            />
+          </Col>
+        </Row>
+        <Row class-name="content">
+          <Col span="6" class-name="tc">业务模式:</Col>
+          <Col span="18">
+            <RadioGroup v-model="mode" @on-change="changeRadio">
+              <Radio label="rebate">
+                <span>返利</span>
+              </Radio>
+              <Radio label="commission">
+                <span>返佣</span>
+              </Radio>
+              <Radio label="ratio" v-if="showMode">
+                <span>占成</span>
+              </Radio>
+            </RadioGroup>
+          </Col>
+        </Row>
+        <Row class-name="content">
+          <Col span="6" class-name="tc">{{rateConfig}}比例:</Col>
+          <Col span="18" style="position:relative;">
+            <Input v-model="modeValue" placeholder="最多2位小数" :number="true">
+                <span slot="append">%</span>
+            </Input>
+            <p v-if="!pass" :class="{'regex': !pass}">最多2位小数</p>
           </Col>
         </Row>
       </div>
@@ -37,14 +68,19 @@
 </template>
 <script>
 import { createAgent } from "../../service/index";
+import { log } from 'util';
 export default {
   data() {
     return {
       max20: 20,
       showDraw: false,
-      userName: '',
-      userPwd: '',
-      userNick: '',
+      userName: "",
+      userPwd: "",
+      userNick: "",
+      modeValue: '',
+      mode: "rebate",
+      showMode: false,
+      pass: true,
       styles: {
         height: "calc(100% - 55px)",
         overflow: "auto",
@@ -57,41 +93,64 @@ export default {
     listenshowDraw() {
       return this.$store.state.admin.createAgent;
     },
+    rateConfig() {
+      let radioGroup = {
+        rebate: '返利',
+        commission: '返佣',
+        ratio: '占成'
+      }
+      return radioGroup[this.mode]
+    }
   },
   methods: {
     hideDraw() {
-      this.initData()
+      this.initData();
     },
     cancle() {
-      this.initData()
+      this.initData();
+    },
+    formatMode() {
+      let regex = /^\d+\.?\d{0,2}$/
+      if(!regex.test(this.modeValue)){
+        this.pass = false
+      } else {
+        this.pass = true
+      }
     },
     sub() {
+      this.formatMode()
       let prarms = {
         parentId: this.$store.state.admin.agentInfo.id,
         userName: this.userName,
         userPwd: this.userPwd,
-        userNick: this.userNick
+        userNick: this.userNick,
+        mode: this.mode,
+        modeValue: this.modeValue
       };
+    
       createAgent(prarms).then(res => {
-        this.initData()
-        this.$Message.success({content: '创建成功'})
-        this.$parent.getList()
-      });
+        this.initData();
+        this.$Message.success({ content: "创建成功" });
+        this.$parent.getList();
+      })
+      
     },
     initData() {
-      this.userName = ''
-      this.userPwd = ''
-      this.userNick = ''
-      this.$store.commit('setAgentInfo', {
-        
-      })
+      this.userName = "";
+      this.userPwd = "";
+      this.userNick = "";
+      this.$store.commit("setAgentInfo", {});
       this.$store.commit("showCreateAgent", false);
+    },
+    changeRadio(val) {
+      this.mode = val
     }
   },
   watch: {
     listenshowDraw: {
       handler: function(val, oldVal) {
         this.showDraw = val;
+        this.showMode = Object.keys(this.$store.state.admin.agentInfo).length == 0 ? true : false
       }
     }
   }
@@ -109,6 +168,12 @@ export default {
   text-align: right;
   background: #fff;
 }
+.regex {
+  color: red;
+  z-index: 100;
+  left: 0;
+  position: absolute;
+}
 .content {
   margin: 20px 0;
   display: flex;
@@ -117,6 +182,8 @@ export default {
     text-align: right;
   }
   .tc {
+    display: flex;
+    align-items: center;
     text-align: center;
   }
 }

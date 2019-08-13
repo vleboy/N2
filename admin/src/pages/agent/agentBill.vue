@@ -24,7 +24,7 @@
     </div>
     <div class="tableForm">
       <Table :columns="columns" :data="billList" size="small">
-        <template #createAt="row">{{createAtConfig(row)}}</template>
+        <template #createAt="{row}">{{createAtConfig(row)}}</template>
       </Table>
     </div>
     <div class="page">
@@ -41,6 +41,14 @@
 import dayjs from "dayjs";
 import { queryBill } from "../../service/index";
 export default {
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      if (from.name == 'agentCenter' && vm.$route.params.ownerId != undefined) {
+        vm.ownerId = vm.$route.params.ownerId
+        vm.search()
+      }
+    })
+  },
   data() {
     return {
       spinShow: false,
@@ -52,6 +60,11 @@ export default {
       pageSize: 50,
       startKey: null,
       columns: [
+        {
+          title: '流水号',
+          key: 'id',
+          align: "center"
+        },
         {
           title: "代理账号",
           align: "center",
@@ -92,7 +105,7 @@ export default {
   },
   methods: {
     createAtConfig(row) {
-      return dayjs(row.createAt).format("YY-MM-DD");
+      return dayjs(row.createAt).format("YY-MM-DD HH:mm:ss");
     },
     //切换页码
     changepage(val) {
@@ -134,7 +147,9 @@ export default {
         this.billList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
         this.startKey = res.startKey
         this.spinShow = false;
-      });
+      }).catch(err => {
+        this.spinShow = false
+      })
     }
   }
 };
