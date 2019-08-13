@@ -45,7 +45,6 @@ router.post('/agent/create', async (ctx, next) => {
     inparam.balance = 0
     inparam.agentCount = 0
     inparam.playerCount = 0
-    inparam.createAt = Date.now()
     return next()
 
 

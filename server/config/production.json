@@ -80,6 +80,11 @@
         "mongodbUrl": "mongodb://mongo0:27017,mongo1:27017,mongo2:27017/n2",
         "mongoOption": {
             "replicaSet": "rs"
-        }
+        },
+        "defaultCreateAt": "createAt",
+        "defaultUTC": 8,
+        "defaultSortBy": "id",
+        "defaultSortOrder": -1,
+        "defaultLimit": 200
     }
 }

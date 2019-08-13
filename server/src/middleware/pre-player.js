@@ -36,7 +36,6 @@ router.post('/player/create', async (ctx, next) => {
     inparam.parentNick = parent.userNick
     inparam.role = Util.RoleEnum.player
     inparam.balance = 0
-    inparam.createAt = Date.now()
     return next()
 })
 
@@ -77,7 +76,6 @@ router.post('/player/update', async (ctx, next) => {
  */
 router.get('/player/page', async (ctx, next) => {
     let inparam = ctx.request.query
-    let mongodb = global.mongodb
     if (inparam.id) {
         inparam.id = +inparam.id
     }
@@ -85,9 +83,6 @@ router.get('/player/page', async (ctx, next) => {
         inparam.parentId = +inparam.parentId
     }
     // 设置分页参数
-    inparam.limit = 200
-    inparam.sortBy = 'createAt'
-    inparam.sortOrder = -1
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }

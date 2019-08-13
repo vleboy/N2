@@ -15,7 +15,6 @@ router.post('/subrole/create', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
     inparam.id = _.random(1000, 9999)
-    inparam.createAt = Date.now()
     if (!inparam.roleName || !inparam.permissions) {
         ctx.body = { err: true, res: '请检查入参' }
     } else if (await mongodb.collection('role').findOne({ $or: [{ name: inparam.roleName }, { id: inparam.id }] })) {

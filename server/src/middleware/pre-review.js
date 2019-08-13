@@ -13,14 +13,10 @@ const log = require('tracer').colorConsole({ level: config.log.level })
  */
 router.get('/review/page', async (ctx, next) => {
     let inparam = ctx.request.query
-    let mongodb = global.mongodb
     if (inparam.proposerId) {
         inparam.proposerId = +inparam.proposerId
     }
     // 设置分页参数
-    inparam.limit = 200
-    inparam.sortBy = 'id'
-    inparam.sortOrder = -1
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }

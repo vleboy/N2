@@ -18,7 +18,6 @@ router.post('/message/create', async (ctx, next) => {
     if (!inparam.msg) {
         ctx.body = { err: true, res: '请检查入参' }
     } else {
-        inparam.createAt = Date.now()
         inparam.id = await Util.getSeq('messageSeq')
         return next()
     }
@@ -30,11 +29,7 @@ router.post('/message/create', async (ctx, next) => {
  */
 router.get('/message/page', async (ctx, next) => {
     let inparam = ctx.request.query
-    // let mongodb = global.mongodb
     // 设置分页参数
-    inparam.limit = 200
-    inparam.sortBy = 'id'
-    inparam.sortOrder = -1
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }
