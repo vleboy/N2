@@ -87,7 +87,7 @@ router.post('/transfer', async (ctx, next) => {
                 parentName: owner.parentName,
                 parentNick: owner.parentNick,
                 createAt: ownerCreateAt,
-                createAtStr: moment(ownerCreateAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
+                createAtStr: moment(ownerCreateAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
             }, { session })
             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                 id: targetBillId,
@@ -103,7 +103,7 @@ router.post('/transfer', async (ctx, next) => {
                 parentName: target.parentName,
                 parentNick: target.parentNick,
                 createAt: targetCreateAt,
-                createAtStr: moment(targetCreateAt).utcOffset(8).format('YYYY-MM-DD mm:HH:ss')
+                createAtStr: moment(targetCreateAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
             }, { session })
         } else {
             return ctx.body = { err: true, res: '余额不足' }
