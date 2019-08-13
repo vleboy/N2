@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const router = new Router()
 const Util = require('../util/util.js')
+const NP = require('number-precision')
 
 /**
  * 代理之间的转账接口
