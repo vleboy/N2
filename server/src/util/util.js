@@ -33,6 +33,12 @@ const ReviewEnum = {
     Agree: 1,
     Refuse: 2,
 }
+//业务模式枚举
+const ModeEnum = {
+    Rebate: 'rebate',           // 返利
+    Commission: 'commission',   // 返佣
+    Ratio: 'ratio',             // 占成
+}
 
 //检查类型
 function checkType(o) {
@@ -56,6 +62,7 @@ module.exports = {
     CollectionEnum,
     ReviewEnum,
     StatusEnum,
+    ModeEnum,
 
     checkType,
     getSeq
