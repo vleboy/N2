@@ -55,6 +55,8 @@ router.post('/handlerPoint', async (ctx, next) => {
     // 点数处理事务
     const session = await global.getMongoSession()
     try {
+        // TODO 玩家点数与N1同步
+
         // 变更余额
         const res = await global.mongodb.collection(collectionName).findOneAndUpdate(queryBalance, { $inc: { balance: amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
         // 写入流水
@@ -134,6 +136,7 @@ router.post('/createReview', async (ctx, next) => {
     else if (inparam.project == Util.ProjectEnum.Withdraw) {
         const session = await global.getMongoSession()
         try {
+            // TODO 玩家点数与N1同步
             // 变更余额
             const res = await global.mongodb.collection(collectionName).findOneAndUpdate(queryBalance, { $inc: { balance: amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
             // 写入流水，创建提现单
@@ -211,6 +214,7 @@ router.post('/handlerReview', async (ctx, next) => {
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
             const session = await global.getMongoSession()
             try {
+                // TODO 玩家点数与N1同步
                 // 变更余额
                 const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 // 写入流水，更新请求单为拒绝状态
@@ -247,6 +251,7 @@ router.post('/handlerReview', async (ctx, next) => {
         if (reviewInfo.project == Util.ProjectEnum.Recharge) {
             const session = await global.getMongoSession()
             try {
+                // TODO 玩家点数与N1同步
                 // 变更余额
                 const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 // 写入流水，更新请求单为同意状态

@@ -51,6 +51,7 @@ router.post('/transfer', async (ctx, next) => {
     const session = await global.getMongoSession()
     try {
         let res0, res1 = {}
+        // TODO 玩家点数与N1同步
         // 变更余额
         if (inparam.project == Util.ProjectEnum.TransferIn) {
             res0 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })

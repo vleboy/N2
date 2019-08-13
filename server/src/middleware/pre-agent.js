@@ -24,7 +24,7 @@ router.post('/agent/create', async (ctx, next) => {
     if (inparam.userName.length < 3 || inparam.userName.length > 20 || inparam.userPwd.length < 6 || inparam.userPwd.length > 20 || inparam.userNick.length < 3 || inparam.userNick.length > 20) {
         return ctx.body = { err: true, res: '参数不合法' }
     }
-    if (inparam.mode != Util.ModeEnum.Rebate || inparam.mode != Util.ModeEnum.Commission || inparam.mode != Util.ModeEnum.Ratio) {
+    if (inparam.mode != Util.ModeEnum.Rebate && inparam.mode != Util.ModeEnum.Commission && inparam.mode != Util.ModeEnum.Ratio) {
         return ctx.body = { err: true, res: '请选择业务模式' }
     }
     inparam.modeValue = inparam.modeValue || 0
