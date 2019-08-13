@@ -47,6 +47,7 @@
             ],
             "agent": [
                 "/xserver/agent/tree",
+                "/xserver/agent/realtime",
                 "/xnosql/agent/get/",
                 "/xnosql/agent/query",
                 "/xnosql/agent/update",
@@ -59,6 +60,7 @@
                 "/xserver/system/createReview"
             ],
             "player": [
+                "/xserver/player/realtime",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
                 "/xserver/system/createReview"

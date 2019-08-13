@@ -111,4 +111,11 @@ function tree(treeArray, array) {
     }
 }
 
+/**
+ * 获取代理实时数据
+ */
+router.get('/realtime', async (ctx, next) => {
+})
+
+
 module.exports = router

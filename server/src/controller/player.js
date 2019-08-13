@@ -27,4 +27,10 @@ router.post('/login', async (ctx, next) => {
     }
 })
 
+/**
+ * 获取玩家实时数据
+ */
+router.get('/realtime', async (ctx, next) => {
+})
+
 module.exports = router
