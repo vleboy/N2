@@ -20,7 +20,8 @@ const CollectionEnum = {
     player: 'player',
     review: 'review',
     subrole: 'subrole',
-    bill: 'bill'
+    bill: 'bill',
+    profit:'profit'
 }
 //启用/停用枚举
 const StatusEnum = {
