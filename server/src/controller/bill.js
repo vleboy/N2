@@ -16,17 +16,87 @@ router.post('/transfer', async (ctx, next) => {
     // 检查代理或玩家是否可以进行转账操作
     await checkAgentHandlerPoint(inparam, token)
     let ownerAmount = Math.abs(inparam.amount)
+    let ownerQuery = { id: token.id }
+    let ownerProject = Util.ProjectEnum.reducePoint
+    let ownerPreBalance = 0
+    let ownerBalance = 0
     let targetAmout = Math.abs(inparam.amount)
-    let createAt = Date.now()
-    let project = inparam.project
-    project == Util.ProjectEnum.addPoint ? ownerAmount *= -1 : targetAmout *= -1
+    let targetProject = Util.ProjectEnum.addPoint
+    let targetQuery = { id: inparam.ownerId }
+    let targetPreBalance = 0
+    let targetBalance = 0
+
+    if (inparam.project == Util.ProjectEnum.addPoint) {
+        targetProject = Util.ProjectEnum.reducePoint
+        ownerAmount *= -1
+        ownerQuery.balance = { $gte: Math.abs(inparam.amount) }
+    } else {
+        ownerProject = Util.ProjectEnum.addPoint
+        targetAmout *= -1
+        targetQuery.balance = { $gte: Math.abs(inparam.amount) }
+    }
     const session = await global.getMongoSession()
     try {
-        await mongodb.collection(Util.CollectionEnum.bill).insertMany([
-            { id: await Util.getSeq('billSeq'), role: Util.RoleEnum.agent, project, amount: ownerAmount, ownerId: token.id, ownerName: token.userName, ownerNick: token.userNick, parentId: token.parentId, createAt },
-            { id: await Util.getSeq('billSeq'), role: inparam.role, project, amount: targetAmout, ownerId: inparam.ownerId, ownerName: inparam.ownerName, ownerNick: inparam.ownerNick, parentId: inparam.parentId, createAt },
-            { session }
-        ])
+        let res0, res1 = {}
+        // 变更余额
+        if (inparam.project == Util.ProjectEnum.addPoint) {
+            res0 = await global.mongodb.collection(collectionName).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+            if (res0.value.balance) {
+                ownerBalance = res0.value.balance
+                ownerPreBalance = NP.minus(ownerBalance, ownerAmount)
+                res1 = await global.mongodb.collection(collectionName).findOneAndUpdate(targetQuery, { $inc: { balance: targetAmout } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+                targetBalance = res1.value.balance
+                targetBalance = NP.minus(targetBalance, targetAmout)
+            }
+        } else {
+            res0 = await global.mongodb.collection(collectionName).findOneAndUpdate(targetQuery, { $inc: { balance: targetAmout } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+            if (res0.value.balance) {
+                targetBalance = res0.value.balance
+                targetBalance = NP.minus(targetBalance, targetAmout)
+                res1 = await global.mongodb.collection(collectionName).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+                ownerBalance = res1.value.balance
+                ownerPreBalance = NP.minus(ownerBalance, ownerAmount)
+            }
+        }
+        // 写入流水
+        if (res0.value.balance) {
+            let createAt = Date.now()
+            await mongodb.collection(Util.CollectionEnum.bill).insertMany([
+                {
+                    id: await Util.getSeq('billSeq'),
+                    role: Util.RoleEnum.agent,
+                    project: ownerProject,
+                    preBalance: ownerPreBalance,
+                    amount: ownerAmount,
+                    balance: ownerBalance,
+                    ownerId: token.id,
+                    ownerName: token.userName,
+                    ownerNick: token.userNick,
+                    parentId: token.parentId,
+                    parentName: inparam.parentName,
+                    parentNick: inparam.parentNick,
+                    createAt
+                },
+                {
+                    id: await Util.getSeq('billSeq'),
+                    role: inparam.role,
+                    project: targetProject,
+                    preBalance: targetPreBalance,
+                    amount: targetAmout,
+                    balance: targetBalance,
+                    ownerId: inparam.ownerId,
+                    ownerName: inparam.ownerName,
+                    ownerNick: inparam.ownerNick,
+                    parentId: inparam.parentId,
+                    parentName: inparam.parentName,
+                    parentNick: inparam.parentNick,
+                    createAt
+                },
+                { session }
+            ])
+        } else {
+            return ctx.body = { err: true, res: '余额不足' }
+        }
         await session.commitTransaction()
     } catch (error) {
         console.error(error)
@@ -35,7 +105,6 @@ router.post('/transfer', async (ctx, next) => {
     } finally {
         await session.endSession()
     }
-
     ctx.body = { err: false, msg: '操作成功' }
 })
 
@@ -53,20 +122,11 @@ async function checkAgentHandlerPoint(inparam, token) {
         if (token.id != agentInfo.parentId) {
             throw { err: true, res: '不能跨级操作' }
         }
-        let balance = 0
-        if (inparam.project == Util.ProjectEnum.addPoint) {
-            balance = await Util.getBalanceById(token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
-        } else if (inparam.project == Util.ProjectEnum.reducePoint) {
-            balance = await Util.getBalanceById(agentInfo.id, inparam.role, agentInfo.lastBalanceTime, agentInfo.lastBalance)
-        } else {
-            throw { err: true, res: '未知操作' }
-        }
-        if (balance < inparam.amount) {
-            throw { err: true, res: '余额不足' }
-        }
         inparam.ownerName = agentInfo.userName
         inparam.ownerNick = agentInfo.userNick
         inparam.parentId = agentInfo.parentId
+        inparam.parentName = agentInfo.parentName
+        inparam.parentNick = agentInfo.parentNick
     } else if (inparam.role == Util.RoleEnum.player) {
         let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.ownerId })
         if (!player || player.status == 0) {
@@ -75,20 +135,11 @@ async function checkAgentHandlerPoint(inparam, token) {
         if (player.parentId != token.id) {
             throw { err: true, res: '代理只能操作自己的玩家' }
         }
-        let balance = 0
-        if (inparam.project == Util.ProjectEnum.addPoint) {
-            balance = await Util.getBalanceById(token.id, inparam.role, tokenInfo.lastBalanceTime, tokenInfo.lastBalance)
-        } else if (inparam.project == Util.ProjectEnum.reducePoint) {
-            balance = await Util.getBalanceById(player.id, inparam.role, player.lastBalanceTime, player.lastBalance)
-        } else {
-            throw { err: true, res: '未知操作' }
-        }
-        if (balance < inparam.amount) {
-            throw { err: true, res: '余额不足' }
-        }
         inparam.ownerName = player.playerName
         inparam.ownerNick = player.playerNick
         inparam.parentId = player.parentId
+        inparam.parentName = player.parentName
+        inparam.parentNick = player.parentNick
     } else {
         throw { err: true, res: '非法角色' }
     }
