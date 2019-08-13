@@ -120,7 +120,7 @@ function tree(treeArray, array) {
 
         // 额外信息处理
         if (treeNode.role != Util.RoleEnum.admin) {
-            treeNode.modeStr = `${Util.ModeStrEnum[treeNode.mode]}(${treeNode.modeValue})%`
+            treeNode.modeStr = `${Util.ModeStrEnum[treeNode.mode]}(${treeNode.modeValue}%)`
         }
     }
 }
