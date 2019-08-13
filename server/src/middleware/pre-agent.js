@@ -80,6 +80,8 @@ router.post('/agent/update', async (ctx, next) => {
                 return ctx.body = { err: true, res: '不能越级操作' }
             }
         }
+        // 传承代理ID，后置路由处理
+        ctx.request.agentId = inparam.id
         return next()
     }
 })

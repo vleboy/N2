@@ -18,6 +18,18 @@ router.post('/agent/create', async (ctx, next) => {
 })
 
 /**
+ * 更新代理（变更代理状态后，需要将其下所有代理联动）
+ */
+router.post('/agent/update', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    let inparam = ctx.request.body
+    let mongodb = global.mongodb
+    if (inparam.status) {
+        await mongodb.collection(Util.CollectionEnum.agent).update({ levelIndex: { $regex: `.*${ctx.request.agentId}.*` } }, { $set: { status: inparam.status } })
+    }
+})
+
+/**
  * 查询代理
  */
 router.get('/agent/query', async (ctx, next) => {
