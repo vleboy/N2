@@ -92,7 +92,7 @@ router.get('/tree', async (ctx, next) => {
     if (inparam.id) {
         query = { levelIndex: { $regex: `.*${inparam.id}.*` } }
     }
-    //查出所有代理
+    // 查出所有代理
     let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find(query, { projection: { userPwd: 0, _id: 0 } }).toArray()
     if (token.role != 'admin') { //任意层级代理需要过滤代理
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
