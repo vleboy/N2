@@ -77,7 +77,6 @@ router.post('/handlerPoint', async (ctx, next) => {
                 parentNick: owner.parentNick,
                 createAt,
                 createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
-
             }, { session })
         } else {
             return ctx.body = { err: true, res: '余额不足' }
