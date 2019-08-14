@@ -57,7 +57,10 @@
                 "/xnosql/player/page",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
-                "/xserver/system/createReview"
+                "/xserver/system/createReview",
+                "/xserver/bankcard/create",
+                "/xserver/bankcard/get",
+                "/xserver/bankcard/delete"
             ],
             "player": [
                 "/xserver/player/realtime",

@@ -77,7 +77,6 @@ router.post('/handlerPoint', async (ctx, next) => {
                 parentNick: owner.parentNick,
                 createAt,
                 createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
-
             }, { session })
         } else {
             return ctx.body = { err: true, res: '余额不足' }
@@ -99,10 +98,13 @@ router.post('/handlerPoint', async (ctx, next) => {
 router.post('/createReview', async (ctx, next) => {
     const inparam = ctx.request.body
     const mongodb = global.mongodb
-    if (!inparam.id || !inparam.project || !inparam.amount || !inparam.role) {
+    const token = ctx.tokenVerify
+    if (!inparam.project || !inparam.amount) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
-    inparam.project = inparam.project == 1 ? Util.ProjectEnum.Recharge : Util.ProjectEnum.Withdraw
+    inparam.id = token.id
+    inparam.role = token.role
+    inparam.project = inparam.project == 1 ? Util.ProjectEnum.Deposit : Util.ProjectEnum.Withdraw
     const collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
     let amount = Math.abs(inparam.amount)
     let queryBalance = { id: inparam.id }
@@ -114,7 +116,7 @@ router.post('/createReview', async (ctx, next) => {
     const owner = await checkHandlerPoint(inparam)
     let createAt = Date.now()
     // 充值申请
-    if (inparam.project == Util.ProjectEnum.Recharge) {
+    if (inparam.project == Util.ProjectEnum.Deposit) {
         await mongodb.collection(Util.CollectionEnum.review).insertOne({
             id: await Util.getSeq('reviewSeq'),
             role: inparam.role,
@@ -128,7 +130,7 @@ router.post('/createReview', async (ctx, next) => {
             parentName: owner.parentName,
             parentNick: owner.parentNick,
             status: 0,
-            createdAt,
+            createAt,
             createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
         })
     }
@@ -171,7 +173,7 @@ router.post('/createReview', async (ctx, next) => {
                     parentName: owner.parentName,
                     parentNick: owner.parentNick,
                     status: 0,
-                    createdAt,
+                    createAt,
                     createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
                 }, { session })
             } else {
@@ -209,7 +211,7 @@ router.post('/handlerReview', async (ctx, next) => {
     let createAt = Date.now()
     // 拒绝该订单
     if (inparam.status == Util.ReviewEnum.Refuse) {
-        if (reviewInfo.project == Util.ProjectEnum.Recharge) {
+        if (reviewInfo.project == Util.ProjectEnum.Deposit) {
             await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } })
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
             const session = await global.getMongoSession()
@@ -248,7 +250,7 @@ router.post('/handlerReview', async (ctx, next) => {
     }
     //通过该订单
     else {
-        if (reviewInfo.project == Util.ProjectEnum.Recharge) {
+        if (reviewInfo.project == Util.ProjectEnum.Deposit) {
             const session = await global.getMongoSession()
             try {
                 // TODO 玩家点数与N1同步
@@ -259,7 +261,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                     id: billId,
                     role: reviewInfo.role,
-                    project: Util.ProjectEnum.Recharge,
+                    project: Util.ProjectEnum.Deposit,
                     preBalance: NP.minus(res.value.balance, reviewInfo.amount),
                     amount: reviewInfo.amount,
                     balance: res.value.balance,

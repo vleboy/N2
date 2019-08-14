@@ -8,8 +8,8 @@ const ProjectEnum = {
     Add: 'add',                 // 加点
     Reduce: 'reduce',           // 减点
 
-    Recharge: 'recharge',       // 充值
-    Withdraw: 'withdraw',       // 提现
+    Deposit: 'deposit',         // 存款
+    Withdraw: 'withdraw',       // 取款
     Unfreeze: 'unfreeze',       // 解冻
 
     TransferIn: 'transferIn',   // 转入
@@ -21,8 +21,8 @@ const ProjectStrEnum = {
     add: '加点',
     reduce: '减点',
 
-    recharge: '充值',
-    withdraw: '提现',
+    deposit: '存款',
+    withdraw: '取款',
     unfreeze: '解冻',
 
     transferIn: '转入',
