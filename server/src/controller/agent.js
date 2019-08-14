@@ -108,7 +108,11 @@ router.get('/tree', async (ctx, next) => {
         data.push({ id: 0, userName: token.userName, userNick: token.userNick, statue: 1, role: token.role, children: [] })
     }
     tree(data, agentArr)
-    ctx.body = data[0].children
+    if (token.role != Util.RoleEnum.admin || inparam.id) {
+        ctx.body = data
+    } else {
+        ctx.body = data[0].children
+    }
 })
 
 function tree(treeArray, array) {
