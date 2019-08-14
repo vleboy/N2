@@ -50,25 +50,31 @@ router.post('/player/update', async (ctx, next) => {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     //只允许更新的参数
-    let diffArr = _.difference(Object.keys(inparam), ['id', 'playerPwd', 'playerNick', 'status'])
+    let diffArr = _.difference(Object.keys(inparam), ['id', 'playerPwd', 'status'])
     if (diffArr.length > 0) {
         return ctx.body = { err: true, res: `以下参数不能更新【${diffArr.join(',')}】` }
     }
-    let playerInfo = ''
     if (inparam.playerPwd && (inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20)) {
-        ctx.body = { err: true, res: '密码长度不合法' }
-    } else if (inparam.playerNick && (inparam.playerNick.length < 3 || inparam.playerNick.length > 20)) {
-        ctx.body = { err: true, res: '昵称长度不合法' }
-    } else if (!(playerInfo = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id }))) {
-        ctx.body = { err: true, res: '玩家不存在' }
-    } else {
-        if (inparam.status == Util.StatusEnum.Disable || inparam.status == Util.StatusEnum.Enable) {
-            if (token.role == Util.RoleEnum.agent && token.id != playerInfo.parentId) {
-                return ctx.body = { err: true, res: '不能越级操作' }
-            }
-        }
-        return next()
+        return ctx.body = { err: true, res: '密码长度不合法' }
     }
+    let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id })
+    if (!player) {
+        return ctx.body = { err: true, res: '玩家不存在' }
+    }
+    if (inparam.status == Util.StatusEnum.Disable || inparam.status == Util.StatusEnum.Enable) {
+        if (token.role == Util.RoleEnum.agent && token.id != player.parentId) {
+            return ctx.body = { err: true, res: '不能越级操作' }
+        }
+    }
+    // 密码变更校验旧密码
+    if (inparam.oldPwd && inparam.playerPwd) {
+        if (inparam.oldPwd != player.playerPwd) {
+            return ctx.body = { err: true, res: '旧密码不正确' }
+        }
+        inparam.id = token.id
+        delete inparam.oldPwd
+    }
+    return next()
 })
 
 /**

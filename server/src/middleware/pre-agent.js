@@ -85,7 +85,7 @@ router.post('/agent/update', async (ctx, next) => {
     }
     // 密码变更校验旧密码
     if (inparam.oldPwd && inparam.userPwd) {
-        if(inparam.oldPwd != agent.userPwd){
+        if (inparam.oldPwd != agent.userPwd) {
             return ctx.body = { err: true, res: '旧密码不正确' }
         }
         inparam.id = token.id
