@@ -63,7 +63,7 @@ router.post('/agent/update', async (ctx, next) => {
     //     return ctx.body = { err: true, res: '请检查入参' }
     // }
     //只允许更新的参数
-    let diffArr = _.difference(Object.keys(inparam), ['id', 'userPwd', 'subrole', 'status', 'gameList'])
+    let diffArr = _.difference(Object.keys(inparam), ['id', 'oldPwd', 'userPwd', 'subrole', 'status', 'gameList'])
     if (diffArr.length > 0) {
         return ctx.body = { err: true, res: `以下参数不能更新【${diffArr.join(',')}】` }
     }
