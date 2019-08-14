@@ -15,6 +15,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
  */
 router.get('/review/page', async (ctx, next) => {
     const token = ctx.tokenVerify
+    ctx.body.res.forEach(o => { o.projectStr = Util.ProjectStrEnum[o.project] })
 })
 
 module.exports = router
