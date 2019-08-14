@@ -85,7 +85,14 @@ router.get('/tree', async (ctx, next) => {
     if (token.role != 'admin') { //任意层级代理需要过滤代理
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }
-    agentArr = _.sortBy(agentArr, ['level'])
+    // 属性额外处理
+    // agentArr = _.sortBy(agentArr, ['level'])
+    for (let agent of agentArr) {
+        if (agent.role != Util.RoleEnum.admin) {
+            agent.modeStr = `${Util.ModeStrEnum[agent.mode]}(${agent.modeValue}%)`
+        }
+    }
+    // 组装树结构
     let data = []
     if (token.role == 'admin') {
         data.push({ id: 0, userName: token.userName, userNick: token.userNick, statue: 1, role: token.role, children: [] })
@@ -116,11 +123,6 @@ function tree(treeArray, array) {
         // 剩余节点不为0时，递归查询
         if (array.length != 0) {
             tree(children, array)
-        }
-
-        // 额外信息处理
-        if (treeNode.role != Util.RoleEnum.admin) {
-            treeNode.modeStr = `${Util.ModeStrEnum[treeNode.mode]}(${treeNode.modeValue}%)`
         }
     }
 }
