@@ -90,6 +90,8 @@ router.get('/player/page', async (ctx, next) => {
     }
     if (inparam.status == 'all') {
         delete inparam.status
+    } else if (inparam.status || inparam.status == Util.StatusEnum.Disable) {
+        inparam.status = +inparam.status
     }
     // 设置分页参数
     if (inparam.startKey) {

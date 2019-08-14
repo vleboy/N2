@@ -5,6 +5,7 @@ const Router = require('koa-router')
 const router = new Router()
 //工具相关
 const _ = require('lodash')
+const Util = require('../util/util.js')
 // 日志相关
 const log = require('tracer').colorConsole({ level: config.log.level })
 
@@ -24,6 +25,8 @@ router.get('/review/page', async (ctx, next) => {
     }
     if (inparam.status == 'all') {
         delete inparam.status
+    } else if (inparam.status || inparam.status == Util.ReviewEnum.Process) {
+        inparam.status = +inparam.status
     }
     // 设置分页参数
     if (inparam.startKey) {

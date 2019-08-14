@@ -80,8 +80,21 @@ router.post('/captcha', async function (ctx, next) {
 router.get('/tree', async (ctx, next) => {
     const token = ctx.tokenVerify
     let mongodb = global.mongodb
+    let inparam = ctx.request.query
+    // 查询指定代理
+    let query = { role: Util.RoleEnum.agent }
+    if (inparam.userName || inparam.userNick) {
+        let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }] }, { projection: { id: 1, _id: 0 } })
+        if (agent) {
+            inparam.id = agent.id
+        }
+    }
+    if (inparam.id) {
+        query.levelIndex = { $regex: `.*${inparam.id}.*` }
+    }
+    console.log(query)
     //查出所有代理
-    let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { userPwd: 0, _id: 0 } }).toArray()
+    let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find(query, { projection: { userPwd: 0, _id: 0 } }).toArray()
     if (token.role != 'admin') { //任意层级代理需要过滤代理
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }
