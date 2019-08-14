@@ -27,11 +27,11 @@ router.post('/create', async (ctx, next) => {
 /**
  * 删除银行卡
  */
-router.post('/delete/:cardno', async (ctx, next) => {
+router.post('/delete/:cardNo', async (ctx, next) => {
     let mongodb = global.mongodb
     let inparam = ctx.request.query
     let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
-    let bankCards = agent.bankCards.map(o => o.cardno != inparam.cardno)
+    let bankCards = agent.bankCards.map(o => o.cardNo != inparam.cardNo)
     await mongodb.collection(Util.CollectionEnum.agent).updateOne({ id: token.id }, { $set: { bankCards } })
     ctx.body = { err: false, res: '操作成功' }
 })
