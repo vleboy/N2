@@ -86,6 +86,7 @@ router.get('/player/page', async (ctx, next) => {
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }
+    inparam.sortBy = 'createAt'
     inparam.findOption = { projection: { playerPwd: 0, _id: 0 } }
     return next()
 })

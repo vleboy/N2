@@ -45,6 +45,8 @@ router.post('/agent/create', async (ctx, next) => {
     inparam.balance = 0
     inparam.agentCount = 0
     inparam.playerCount = 0
+
+    inparam.bankCards = []
     return next()
 
 
