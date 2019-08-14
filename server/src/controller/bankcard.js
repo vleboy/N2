@@ -1,6 +1,3 @@
-const config = require('config')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
 const _ = require('lodash')
 const Util = require('../util/util.js')
 const Router = require('koa-router')
@@ -38,4 +35,5 @@ router.post('/delete/:cardno', async (ctx, next) => {
     await mongodb.collection(Util.CollectionEnum.agent).updateOne({ id: token.id }, { $set: { bankCards } })
     ctx.body = { err: false, res: '操作成功' }
 })
+
 module.exports = router
