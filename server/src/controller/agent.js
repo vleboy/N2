@@ -90,27 +90,22 @@ router.get('/tree', async (ctx, next) => {
         }
     }
     if (inparam.id) {
-        query.levelIndex = { $regex: `.*${inparam.id}.*` }
+        query = { levelIndex: { $regex: `.*${inparam.id}.*` } }
     }
-    console.log(query)
     //查出所有代理
     let agentArr = await mongodb.collection(Util.CollectionEnum.agent).find(query, { projection: { userPwd: 0, _id: 0 } }).toArray()
     if (token.role != 'admin') { //任意层级代理需要过滤代理
         agentArr = _.filter(agentArr, (o) => { return o.levelIndex.indexOf(token.id) != -1 })
     }
     // 属性额外处理
-    // agentArr = _.sortBy(agentArr, ['level'])
-    for (let agent of agentArr) {
-        if (agent.role != Util.RoleEnum.admin) {
-            agent.modeStr = `${Util.ModeStrEnum[agent.mode]}(${agent.modeValue}%)`
-        }
-    }
+    agentArr = _.sortBy(agentArr, ['level'])
+    agentArr.forEach(o => o.modeStr = `${Util.ModeStrEnum[o.mode]}(${o.modeValue}%)`)
     // 组装树结构
     let data = []
-    if (token.role == 'admin') {
-        data.push({ id: 0, userName: token.userName, userNick: token.userNick, statue: 1, role: token.role, children: [] })
-    } else {
+    if (token.role != Util.RoleEnum.admin || inparam.id) {
         data.push({ ...agentArr.shift(), children: [] })
+    } else {
+        data.push({ id: 0, userName: token.userName, userNick: token.userNick, statue: 1, role: token.role, children: [] })
     }
     tree(data, agentArr)
     ctx.body = data[0].children
