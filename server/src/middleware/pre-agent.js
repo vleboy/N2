@@ -63,29 +63,37 @@ router.post('/agent/update', async (ctx, next) => {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     //只允许更新的参数
-    let diffArr = _.difference(Object.keys(inparam), ['id', 'userPwd', 'subrole', 'gameList', 'status'])
+    let diffArr = _.difference(Object.keys(inparam), ['id', 'userPwd', 'subrole', 'status', 'gameList'])
     if (diffArr.length > 0) {
         return ctx.body = { err: true, res: `以下参数不能更新【${diffArr.join(',')}】` }
     }
-    let agentInfo = ''
     if (inparam.userPwd && (inparam.userPwd.length < 6 || inparam.userPwd.length > 20)) {
-        ctx.body = { err: true, res: '密码长度不合法' }
-    } else if (inparam.userNick && (inparam.userNick.length < 3 || inparam.userNick.length > 20)) {
-        ctx.body = { err: true, res: '昵称长度不合法' }
-    } else if (inparam.gameList && (Util.checkType(inparam.gameList) != 'array')) {
-        ctx.body = { err: true, res: '游戏列表不合法' }
-    } else if (!(agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id }))) {
-        ctx.body = { err: true, res: '代理不存在' }
-    } else {
-        if (inparam.status == Util.StatusEnum.Disable || inparam.status == Util.StatusEnum.Enable) {
-            if (token.role == Util.RoleEnum.agent && token.id != agentInfo.parentId) {
-                return ctx.body = { err: true, res: '不能越级操作' }
-            }
-        }
-        // 传承代理ID，后置路由处理
-        ctx.request.agentId = inparam.id
-        return next()
+        return ctx.body = { err: true, res: '密码长度不合法' }
     }
+    if (inparam.gameList && (Util.checkType(inparam.gameList) != 'array')) {
+        return ctx.body = { err: true, res: '游戏列表不合法' }
+    }
+    let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id })
+    if (!agent) {
+        return ctx.body = { err: true, res: '代理不存在' }
+    }
+    // 状态变更权限控制
+    if (inparam.status == Util.StatusEnum.Disable || inparam.status == Util.StatusEnum.Enable) {
+        if (token.role == Util.RoleEnum.agent && token.id != agent.parentId) {
+            return ctx.body = { err: true, res: '不能越级操作' }
+        }
+    }
+    // 密码变更校验旧密码
+    if (inparam.oldPwd && inparam.userPwd) {
+        if(inparam.oldPwd != agent.userPwd){
+            return ctx.body = { err: true, res: '旧密码不正确' }
+        }
+        inparam.id = token.id
+        delete inparam.oldPwd
+    }
+    // 传承代理ID，后置路由处理
+    ctx.request.agentId = inparam.id
+    return next()
 })
 
 /**
