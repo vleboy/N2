@@ -22,6 +22,9 @@ router.get('/review/page', async (ctx, next) => {
     if (inparam.role == 'all') {
         delete inparam.role
     }
+    if (inparam.status == 'all') {
+        delete inparam.status
+    }
     // 设置分页参数
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey

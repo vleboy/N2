@@ -82,6 +82,9 @@ router.get('/player/page', async (ctx, next) => {
     if (inparam.parentId) {
         inparam.parentId = +inparam.parentId
     }
+    if (inparam.status == 'all') {
+        delete inparam.status
+    }
     // 设置分页参数
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
