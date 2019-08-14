@@ -7,7 +7,8 @@ const router = new Router()
  * 获取银行卡
  */
 router.get('/get', async (ctx, next) => {
-    let mongodb = global.mongodb
+    const mongodb = global.mongodb
+    const token = ctx.tokenVerify
     let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
     ctx.body = agent.bankCards
 })
@@ -16,7 +17,8 @@ router.get('/get', async (ctx, next) => {
  * 新建银行卡
  */
 router.post('/create', async (ctx, next) => {
-    let mongodb = global.mongodb
+    const mongodb = global.mongodb
+    const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
     agent.bankCards.push(inparam)
@@ -28,7 +30,8 @@ router.post('/create', async (ctx, next) => {
  * 删除银行卡
  */
 router.post('/delete/:cardNo', async (ctx, next) => {
-    let mongodb = global.mongodb
+    const mongodb = global.mongodb
+    const token = ctx.tokenVerify
     let inparam = ctx.request.query
     let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
     let bankCards = agent.bankCards.map(o => o.cardNo != inparam.cardNo)
