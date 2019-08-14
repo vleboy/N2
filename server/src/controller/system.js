@@ -131,7 +131,7 @@ router.post('/createReview', async (ctx, next) => {
             parentName: owner.parentName,
             parentNick: owner.parentNick,
             status: 0,
-            createdAt,
+            createAt,
             createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
         })
     }
@@ -174,7 +174,7 @@ router.post('/createReview', async (ctx, next) => {
                     parentName: owner.parentName,
                     parentNick: owner.parentNick,
                     status: 0,
-                    createdAt,
+                    createAt,
                     createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
                 }, { session })
             } else {
