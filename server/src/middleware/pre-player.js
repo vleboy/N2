@@ -57,7 +57,7 @@ router.post('/player/update', async (ctx, next) => {
     if (inparam.playerPwd && (inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20)) {
         return ctx.body = { err: true, res: '密码长度不合法' }
     }
-    let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id })
+    let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id || token.id})
     if (!player) {
         return ctx.body = { err: true, res: '玩家不存在' }
     }

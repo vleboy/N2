@@ -73,7 +73,7 @@ router.post('/agent/update', async (ctx, next) => {
     if (inparam.gameList && (Util.checkType(inparam.gameList) != 'array')) {
         return ctx.body = { err: true, res: '游戏列表不合法' }
     }
-    let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id })
+    let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id || token.id })
     if (!agent) {
         return ctx.body = { err: true, res: '代理不存在' }
     }
