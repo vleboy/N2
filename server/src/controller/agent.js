@@ -103,7 +103,7 @@ router.get('/tree', async (ctx, next) => {
     // 组装树结构
     let data = []
     if (token.role != Util.RoleEnum.admin || inparam.id) {
-        data.push({ ...agentArr.shift(), children: [] })
+        data.push({ ...agentArr[0], children: [] })
     } else {
         data.push({ id: 0, userName: token.userName, userNick: token.userNick, statue: 1, role: token.role, children: [] })
     }
