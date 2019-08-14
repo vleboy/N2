@@ -19,6 +19,9 @@ router.get('/bill/page', async (ctx, next) => {
     if (inparam.ownerId) {
         inparam.ownerId = +inparam.ownerId
     }
+    if (inparam.project == 'all') {
+        delete inparam.project
+    }
     // 代理APP，查看自己的账单流水
     if (token.role == Util.RoleEnum.agent) {
         inparam.ownerId = token.id

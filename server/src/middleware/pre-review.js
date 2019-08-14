@@ -16,6 +16,12 @@ router.get('/review/page', async (ctx, next) => {
     if (inparam.proposerId) {
         inparam.proposerId = +inparam.proposerId
     }
+    if (inparam.project == 'all') {
+        delete inparam.project
+    }
+    if (inparam.role == 'all') {
+        delete inparam.role
+    }
     // 设置分页参数
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
