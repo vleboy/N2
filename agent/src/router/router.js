@@ -3,19 +3,21 @@ import Main from '../views/Main.vue'
 import Setting from '../views/setting/Setting.vue'
 import Personal from '../views/setting/Personal.vue'
 import ChangePwd from '../views/setting/ChangePwd.vue'
-import Simulator from '../views/setting/Simulator.vue'
 
 import Agent from '../views/agent/Agent.vue'
 
 import Vip from '../views/vip/Vip.vue'
 
 import Home from '../views/home/Home.vue'
-import CommissionReport from '../views/home/detail/CommissionReport.vue'
-import WithdrawalRecord from '../views/home/detail/WithdrawalRecord.vue'
-import News from '../views/home/detail/News.vue'
-import WithdrawalApplication from '../views/home/detail/WithdrawalApplication.vue'
-import FinanceReport from '../views/home/detail/FinanceReport.vue'
-import UserInfo from '../views/home/detail/UserInfo.vue'
+import CommissionReport from '../views/home/commission/CommissionReport.vue'
+import WithdrawalRecord from '../views/home/withdrawal/WithdrawalRecord.vue'
+import News from '../views/home/news/News.vue'
+import WithdrawalApplication from '../views/home/withdrawal/WithdrawalApplication.vue'
+import FinanceReport from '../views/home/finance/FinanceReport.vue'
+import UserInfo from '../views/home/user/UserInfo.vue'
+import Deposit from '../views/home/finance/Deposit.vue'
+import Withdrawal from '../views/home/finance/Withdrawal.vue'
+import AddBankCard from '../views/home/withdrawal/AddBankCard.vue'
 
 import Login from '../views/Login.vue'
 
@@ -66,12 +68,7 @@ const otherRouter = [
     name: 'changePwd',
     component: ChangePwd,
   },
-  {
-    path: '/simulator',
-    name: 'simulator',
-    component: Simulator,
-  },
-
+  
   /* 首页相关 */
   {
     path: '/commissionReport',
@@ -102,6 +99,21 @@ const otherRouter = [
     path: '/userInfo',
     name: 'userInfo',
     component: UserInfo
+  },
+  {
+    path: '/deposit',
+    name: 'deposit',
+    component: Deposit
+  },
+  {
+    path: '/withdrawal',
+    name: 'withdrawal',
+    component: Withdrawal
+  },
+  {
+    path: '/addBankCard',
+    name: 'addBankCard',
+    component: AddBankCard
   }
 ]
 

@@ -6,28 +6,21 @@
     <div class="box">
       <ul class="list">
         <li>
-          <div>H5版代理链接</div>
+          <div>游戏端APP下载链接</div>
           <div class="content">
             <div class="link">https://www.bilibili.com/</div>
             <van-button type="info" size="small" round >复制</van-button>
           </div>
         </li>
         <li>
-          <div>PC代理链接</div>
+          <div>代理端APP下载链接</div>
           <div class="content">
             <div class="link">https://www.bilibili.com/</div>
             <van-button type="info" size="small" round >复制</van-button>
           </div>
         </li>
         <li>
-          <div>全站APP代理链接</div>
-          <div class="content">
-            <div class="link">https://www.bilibili.com/</div>
-            <van-button type="info" size="small" round >复制</van-button>
-          </div>
-        </li>
-        <li>
-          <div>体育APP版代理链接</div>
+          <div>管理端PC链接</div>
           <div class="content">
             <div class="link">https://www.bilibili.com/</div>
             <van-button type="info" size="small" round >复制</van-button>

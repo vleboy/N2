@@ -7,11 +7,10 @@
         @click-left="onClickLeft"
       />
       <van-cell title="用户账号" value="ff88808" size="large"/>
-      <van-cell title="真实姓名" size="large"/>
+      <van-cell title="用户昵称" size="large"/>
       <van-cell title="邮箱地址" size="large"/>
       <van-cell title="手机号码" size="large"/>
       <van-cell title="下线用户" value="2" size="large"/>
-      <van-cell title="合营代码" value="1364890" size="large"/>
       <div class="edit">
         <p>如需修改个人信息请联系</p>
         <a href="#">在线客服</a>
@@ -42,10 +41,15 @@ export default {
         display: flex;
         align-items: center;
         padding-left: 16px;
+        justify-content: center;
         color: rgb(196, 196, 196);
+        margin-top: 10px;
         a {
           margin-left: 8px;
           color: #20a0ff;
+        }
+        p {
+          margin: 0;
         }
       }
     }

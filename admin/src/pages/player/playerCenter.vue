@@ -22,7 +22,11 @@
             <span slot="prepend">玩家昵称</span>
           </Input>
         </div>
-
+        <div class="fl">
+          <Select v-model="status" style="width:100px" size="small">
+              <Option v-for="item in statusList" :value="item.label" :key="item.value">{{ item.value }}</Option>
+          </Select>
+        </div>
         <div class="fl">
           <Button type="primary" @click="search" size="small" class="search">搜索</Button>
           <Button @click="reset" size="small">重置</Button>
@@ -99,6 +103,21 @@ export default {
       playerName: "",
       playerNick: "",
       startKey: null,
+      status: 'all',
+      statusList: [
+        {
+          value: '全部状态',
+          label: 'all'
+        },
+        {
+          value: '已启用',
+          label: '1'
+        },
+        {
+          value: '已停用',
+          label: '0'
+        }
+      ],
       playerList: [],
       data: [],
       columns: [
@@ -175,7 +194,8 @@ export default {
         playerName: this.playerName,
         playerNick: this.playerNick,
         parentId: this.parentId,
-        startKey: this.startKey
+        startKey: this.startKey,
+        status: this.status
       };
       this.spinShow = true;
       queryPlayer(params).then(res => {
@@ -212,7 +232,8 @@ export default {
       this.playerId = "";
       this.playerName = "";
       this.playerNick = "";
-      this.parentId = ""
+      this.parentId = "",
+      this.status = 'all'
       this.search();
     },
     //重置分页

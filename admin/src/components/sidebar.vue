@@ -15,32 +15,32 @@
       <transition name="fade">
         <Menu ref="sideMenu" :active-name="$route.name" :open-names="openName" width="auto" @on-select='selectMenu' :style="{backgroundColor:'#1c2327',color:'#fff',marginTop:'.3rem'}">
           <MenuItem name="agentCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
-            <Icon type="md-game-controller-b" />
+            <Icon type="md-people" />
             <span v-if="unFlodMenu" class="ml">代理中心</span>
           </MenuItem>
           <MenuItem name="playerCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
-            <Icon type="md-game-controller-b" />
+            <Icon type="md-ionitron" />
             <span v-if="unFlodMenu" class="ml">玩家中心</span>
           </MenuItem>
           <MenuItem name="agentBill" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
-            <Icon type="md-game-controller-b" />
+            <Icon type="md-paper" />
             <span v-if="unFlodMenu" class="ml">代理账单</span>
           </MenuItem>
           <MenuItem name="playerBill" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
-            <Icon type="md-game-controller-b" />
+            <Icon type="md-paper" />
             <span v-if="unFlodMenu" class="ml">玩家账单</span>
           </MenuItem>
           <MenuItem name="auditCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
-            <Icon type="md-game-controller-b" />
+            <Icon type="md-checkbox-outline" />
             <span v-if="unFlodMenu" class="ml">审核中心</span>
           </MenuItem>
 
           <MenuItem name="adminList" v-if='flodMenu' :class="flodMenu ? 'flodMuenS' : 'class-b' ">
-            <Icon type="ios-paper" @click="unfold"/>
+            <Icon type="md-key" @click="unfold"/>
           </MenuItem>
           <Submenu name="adminCenter" v-if='unFlodMenu' class="sideMenu">
             <template slot="title">
-              <Icon type="ios-paper" />
+              <Icon type="md-key" />
               <span>管理中心</span>
             </template>
             <MenuItem name="adminList">管理员列表</MenuItem>

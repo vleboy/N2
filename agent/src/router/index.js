@@ -14,29 +14,15 @@ export const router = new Router(RouterConfig)
 
 /* router.beforeEach((to, from, next) => {
   let token = window.localStorage.getItem('Token')
-  console.log(233);
-  
   if (token) {
-    if (to.name == 'login') {
-      next({
-        name: 'home'
-      });
-    } else {
-      next()
-    }
+    next()
   } else {
-    if (to.name == 'login') {
-      next({
-        name: 'home'
-      });
-    } else {
-      next({
-        name: 'login',
-        query: {
-          redirect: to.fullPath
-        }
-      })
-    }
+    next({
+      name: 'login',
+      query: {
+        redirect: to.fullPath
+      }
+    })
   }
 
 }) */

@@ -10,7 +10,9 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "core-js": "^2.6.5",
+    "dayjs": "^1.8.15",
     "lib-flexible": "^0.3.2",
+    "lodash": "^4.17.15",
     "postcss-px-to-viewport": "^1.1.1",
     "postcss-px2rem": "^0.3.0",
     "register-service-worker": "^1.6.2",

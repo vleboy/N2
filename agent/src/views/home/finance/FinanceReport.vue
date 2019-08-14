@@ -43,11 +43,11 @@
         v-if="showModel1"
       /> -->
       <div class="list">
-        <div>
+        <div @click="jumpTo('deposit')">
           <div class="name">存款</div>
           <div class="num">100.00</div>
         </div>
-        <div>
+        <div @click="jumpTo('withdrawal')">
           <div class="name">取款</div>
           <div class="num">0.00</div>
         </div>
@@ -117,6 +117,11 @@ export default {
     getStartTime(e) {
       //console.log(e.getValues())
       this.st = e.getValues().join('-')
+    },
+
+    /* 路由跳转 */
+    jumpTo(name) {
+      this.$router.push({name})
     }
   }
 }

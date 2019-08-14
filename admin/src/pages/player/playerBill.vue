@@ -16,7 +16,11 @@
             <span slot="prepend">玩家昵称</span>
           </Input>
         </div>
-
+        <div class="fl">
+          <Select v-model="project" style="width:100px" size="small">
+              <Option v-for="item in projectList" :value="item.label" :key="item.value">{{ item.value }}</Option>
+          </Select>
+        </div>
         <div class="fl">
           <Button type="primary" @click="search" size="small" class="search">搜索</Button>
           <Button @click="reset" size="small">重置</Button>
@@ -63,6 +67,41 @@ export default {
       pageSize: 50,
       startKey: null,
       data: [],
+      project: 'all',
+      projectList: [
+        {
+          value: '全部类型',
+          label: 'all'
+        },
+        {
+          value: '加点',
+          label: 'add'
+        },
+        {
+          value: '减点',
+          label: 'reduce'
+        },
+        {
+          value: '存款',
+          label: 'deposit'
+        },
+        {
+          value: '取款',
+          label: 'withdraw'
+        },
+        {
+          value: '解冻',
+          label: 'unfreeze'
+        },
+        {
+          value: '转入',
+          label: 'transferIn'
+        },
+        {
+          value: '转出',
+          label: 'transferOut'
+        }
+      ],
       columns: [
         {
           title: '流水号',
@@ -87,7 +126,7 @@ export default {
         {
           title: '操作类型',
           align: 'center',
-          key: 'project'
+          key: 'projectStr'
         },
         {
           title: '操作金额',
@@ -127,6 +166,7 @@ export default {
       this.ownerId = ''
       this.ownerName = ''
       this.ownerNick = ''
+      this.project = 'all'
       this.search()
     },
     //重置分页
@@ -141,7 +181,8 @@ export default {
         ownerName: this.ownerName,
         ownerNick: this.ownerNick,
         role: 'player',
-        startKey: this.startKey
+        startKey: this.startKey,
+        project: this.project
       };
       this.spinShow = true
       queryBill(params).then(res => {

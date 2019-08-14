@@ -1,22 +1,31 @@
 <template>
   <div class="auditCenter">
      <div class="content">
+      <div class="fl">
+          <Input v-model="proposerName" size="small">
+            <span slot="prepend">申请人账号</span>
+          </Input>
+        </div>
         <div class="fl">
           <Input v-model="proposerId" size="small">
             <span slot="prepend">申请人ID</span>
           </Input>
         </div>
         <div class="fl">
-          <Input v-model="proposerName" size="small">
-            <span slot="prepend">申请人账号</span>
-          </Input>
-        </div>
+          <Select v-model="role" style="width:100px" size="small">
+            <Option v-for="item in roleList" :value="item.label" :key="item.value">{{ item.value }}</Option>
+          </Select>
+        </div> 
         <div class="fl">
-          <Input v-model="proposerNick" size="small">
-            <span slot="prepend">申请人昵称</span>
-          </Input>
-        </div>
-
+          <Select v-model="project" style="width:100px" size="small">
+              <Option v-for="item in projectList" :value="item.label" :key="item.value">{{ item.value }}</Option>
+          </Select>
+        </div> 
+        <div class="fl">
+          <Select v-model="status" style="width:100px" size="small">
+              <Option v-for="item in statusList" :value="item.label" :key="item.value">{{ item.value }}</Option>
+          </Select>
+        </div> 
         <div class="fl">
           <Button type="primary" @click="search" size="small" class="search">搜索</Button>
           <Button @click="reset" size="small">重置</Button>
@@ -38,16 +47,14 @@
             <Button size="small" type="error" ghost @click="operate(row, false)">拒绝</Button>
           </div>
           <div v-else>
-            <Button type="success" ghost disabled>已审核</Button>
+            <Button type="success" ghost disabled size="small">已审核</Button>
           </div>
         </template>
       </Table>
     </div>
-
     <div class="page">
       <Page :current="currentPage" :total="totalPage" :page-size="pageSize" @on-change="changepage"/>
     </div>
-
     <Spin size="large" fix v-show="spinShow" style="z-index:200;">
       <Icon type="ios-loading" size="64" class="demo-spin-icon-load"></Icon>
       <div style>加载中...</div>
@@ -63,12 +70,60 @@ export default {
     return {
       proposerId: '',
       proposerName: '',
-      proposerNick: '',
       totalPage: 200,
       currentPage: 1,
       pageSize: 50,
       startKey: null,
       spinShow: false,
+      role: 'all',
+      project: 'all',
+      status: 'all',
+      roleList: [
+        {
+          value: '全部角色',
+          label: 'all'
+        },
+        {
+          value: '玩家',
+          label: 'player'
+        },
+        {
+          value: '代理',
+          label: 'agent'
+        }
+      ],
+      projectList: [
+        {
+          value: '全部类型',
+          label: 'all'
+        },
+        {
+          value: '存款',
+          label: 'deposit'
+        },
+        {
+          value: '取款',
+          label: 'withdraw'
+        }
+      ],
+      statusList: [
+        {
+          value: '全部状态',
+          label: 'all'
+        },
+        {
+          value: '未处理',
+          label: '0'
+        },
+        {
+          value: '同意',
+          label: '1'
+        },
+        {
+          value: '拒绝',
+          label: '2'
+        }
+      ],
       data: [],
       columns: [
         {
@@ -93,7 +148,7 @@ export default {
         },
         {
           title: '申请类型',
-          key: 'project',
+          key: 'projectStr',
           align: "center"
         },
         {
@@ -152,6 +207,15 @@ export default {
         this.auditList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
       }
     },
+    /* changeRole(value) {
+      console.log(value);
+    },
+    changeProject(value) {
+      console.log(value);
+    },
+    changeStatus(value) {
+      console.log(value);
+    }, */
     search() {
       this.initPage()
       this.getAudit()
@@ -159,7 +223,9 @@ export default {
     reset() {
       this.proposerId = '',
       this.proposerName = '',
-      this.proposerNick = '',
+      this.role = 'all',
+      this.project = 'all',
+      this.status = 'all'
       this.search()
     },
     //重置分页
@@ -172,8 +238,10 @@ export default {
       let params = {
         proposerId: this.proposerId,
         proposerName: this.proposerName,
-        proposerNick: this.proposerNick,
-        startKey: this.startKey
+        startKey: this.startKey,
+        role: this.role,
+        project: this.project,
+        status: this.status
       }
       this.spinShow = true
       queryAudit(params).then(res => {

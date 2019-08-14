@@ -130,8 +130,9 @@ export default {
                 }
                 localStorage.setItem("loginId", res.userId);
                 localStorage.setItem("displayName", res.userNick);
+                localStorage.setItem("subrole", res.subrole);
                 setTimeout(() => localStorage.removeItem("Token"), 259200000);
-                this.$router.push('/home')
+                this.$router.push({name:'agentCenter'})
               } else {
                 this.showCode = true;
                 this.isLoading = false;
@@ -141,9 +142,11 @@ export default {
               }
             })
             .catch(err => {
-              this.isLoading = true
+              this.loadImg = false;
+              this.isLoading = false
               this.showCode = true;
               this.validateCode = "";
+              this.formValidate.password = "";
             });
         } else {
           return;

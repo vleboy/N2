@@ -94,107 +94,33 @@ export function httpRequest(method, url, params) {
   }
 }
 
-//登录
+/* 登录 */
 export async function logIn(params) {
   return axios.post("/xserver/agent/login", params);
 }
 
-/* 代理中心 */
-//获取代理列表
-export async function queryAgent(params) {
-  return axios.get("/xserver/agent/tree", params);
+/* 首页 */
+
+//取款申请
+export async function createReview(params) {
+  return axios.post("/xserver/system/createReview", params);
 }
-
-//创建代理
-export async function createAgent(params) {
-  return axios.post("/xnosql/agent/create", params);
-}
-
-//停用启用代理
-export async function agentStatus(params) {
-  return axios.post("/xnosql/agent/update", params);
-}
-
-//加减点
-export async function setPoints(params) {
-  return axios.post("/xserver/system/handlerPoint", params);
-}
-
-
-/* 玩家中心 */
-//获取玩家列表
-export async function queryPlayer(params) {
-  return axios.get("/xnosql/player/page", params);
-}
-
-//创建玩家
-export async function createPlayer(params) {
-  return axios.post("/xnosql/player/create", params);
-}
-
-//停用启用玩家
-export async function playerStatus(params) {
-  return axios.post("/xnosql/player/update", params);
-}
-
-
-/* 账单查询 */
-export async function queryBill(params) {
+//存款列表
+export async function depositBill(params) {
   return axios.get("/xnosql/bill/page", params);
 }
-
-
-/* 审核中心 */
-
-//审核列表
-export async function queryAudit(params) {
-  return axios.get("/xnosql/review/page", params);
+//添加银行卡
+export async function addBankCard(params) {
+  return axios.post("/xserver/bankcard/create", params);
 }
-
-//审核操作
-export async function operateAudit(params) {
-  return axios.post("/xserver/system/handlerReview", params);
+//获取银行卡列表
+export async function getCardList(params) {
+  return axios.get("/xserver/bankcard/get", params);
 }
 
 
-/* 管理员中心 */
-
-//创建管理员角色
-export async function createRole(params) {
-  return axios.post("/xnosql/subrole/create", params);
-}
-
-//查询管理员角色
-export async function queryRole(params) {
-  return axios.get("/xnosql/subrole/query", params);
-}
-
-//修改管理员角色
-export async function updateRole(params) {
-  return axios.post("/xnosql/subrole/update", params);
-}
-
-//删除管理员角色
-export async function deleteRole(params) {
-  return axios.post(`/xnosql/subrole/delete/${params.id}`, params);
-}
-
-//查询管理员列表
-export async function queryAdmin(params) {
-  return axios.get("/xnosql/agent/query", params);
-}
-
-//创建管理员
-export async function createAdmin(params) {
-  return axios.post("/xserver/system/create", params);
-}
-
-//修改管理员
-export async function updateAdmin(params) {
+/* 设置 */
+//修改密码
+export async function updatePwd(params) {
   return axios.post("/xnosql/agent/update", params);
-}
-
-//删除管理员
-export async function deleteAdmin(params) {
-  return axios.post(`/xnosql/agent/delete/${params.id}`, params);
 }

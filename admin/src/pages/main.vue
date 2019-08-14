@@ -13,7 +13,7 @@
             <Avatar icon="md-person" size="small" style="background: #619fe7;margin-right: 10px;"></Avatar>
             <Dropdown transfer trigger="click" @on-click="handleClickUserDropdown" placement="bottom-start">
               <a href="javascript:void(0)">
-                <span class="main-user-name">{{ userName }}</span>
+                <span class="main-user-name">{{ `${userName}(${subrole})` }}</span>
                 <Icon type="ios-arrow-down"></Icon>
               </a>
               <DropdownMenu slot="list">
@@ -43,6 +43,7 @@ export default {
     return {
       // avatorPath: "",
       userName: localStorage.displayName,
+      subrole: localStorage.subrole,
       openName: []
     };
   },
