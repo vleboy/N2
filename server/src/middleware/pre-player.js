@@ -46,9 +46,9 @@ router.post('/player/update', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    if (!inparam.id) {
-        return ctx.body = { err: true, res: '请检查入参' }
-    }
+    // if (!inparam.id) {
+    //     return ctx.body = { err: true, res: '请检查入参' }
+    // }
     //只允许更新的参数
     let diffArr = _.difference(Object.keys(inparam), ['id', 'playerPwd', 'status'])
     if (diffArr.length > 0) {
