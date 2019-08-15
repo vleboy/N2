@@ -15,7 +15,7 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/xserver/init/init",
+            "/xserver/_init/init",
             "/xserver/agent/captcha",
             "/xserver/agent/login",
             "/xserver/player/login"
