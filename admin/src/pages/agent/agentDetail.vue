@@ -35,8 +35,8 @@
             <span>{{agentInfo.parentName}}</span>
           </Col>
         </Row>
-        <Row>
-          <Col span="6" class-name="tc">下级代理数量</Col>
+        <Row class-name="content">
+          <Col span="6" class-name="tc">下级代理:</Col>
           <Col span="16" push="2">
             {{agentInfo.agentCount}}
           </Col>
@@ -53,6 +53,26 @@
             <span>{{createAtConfig(agentInfo.createAt)}}</span>
           </Col>
         </Row>
+        <div class-name="content" v-for="(item, index) in agentInfo.bankCards" :key="index" style="border-top:1px solid #fff">
+          <Row class-name="content">
+            <Col span="6" class-name="tc">开户行:</Col>
+            <Col span="16" push="2">
+              <span>{{item.cardBank}}</span>
+            </Col>
+          </Row>
+          <Row class-name="content">
+            <Col span="6" class-name="tc">持卡人:</Col>
+            <Col span="16" push="2">
+              <span>{{item.cardName}}</span>
+            </Col>
+          </Row>
+          <Row class-name="content">
+            <Col span="6" class-name="tc">卡号:</Col>
+            <Col span="16" push="2">
+              <span>{{item.cardNo}}</span>
+            </Col>
+          </Row>
+        </div>
       </div>
     </Drawer>
   </div>

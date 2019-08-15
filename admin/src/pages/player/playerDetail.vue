@@ -33,6 +33,26 @@
             <span>{{createAtConfig(playerInfo.createAt)}}</span>
           </Col>
         </Row>
+        <div class-name="content" v-for="(item, index) in playerInfo.bankCards" :key="index" style="border-top:1px solid #fff">
+          <Row class-name="content">
+            <Col span="6" class-name="tc">开户行:</Col>
+            <Col span="16" push="2">
+              <span>{{item.cardBank}}</span>
+            </Col>
+          </Row>
+          <Row class-name="content">
+            <Col span="6" class-name="tc">持卡人:</Col>
+            <Col span="16" push="2">
+              <span>{{item.cardName}}</span>
+            </Col>
+          </Row>
+          <Row class-name="content">
+            <Col span="6" class-name="tc">卡号:</Col>
+            <Col span="16" push="2">
+              <span>{{item.cardNo}}</span>
+            </Col>
+          </Row>
+        </div>
       </div>
     </Drawer>
   </div>

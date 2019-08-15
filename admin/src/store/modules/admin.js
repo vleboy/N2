@@ -7,6 +7,8 @@ export const admin = {
     playerDetail: false,
     createRole: false,
     operateAdmin: false,
+    operateConfig: false,
+    auditDetail: false,
     pointInfo: {},
     playerInfo: {},
     agentInfo: {},
@@ -18,8 +20,9 @@ export const admin = {
     adminInfo: {
       adminName: '',
       operate: 'create'
-    }
-    
+    },
+    configInfo: {},
+    auditInfo: {}
   },
   mutations: {
     /* 显示抽屉组件 */
@@ -45,6 +48,12 @@ export const admin = {
     showOperateAdmin(state, params) {
       state.operateAdmin = params
     },
+    showOperateConfig(state, params) {
+      state.operateConfig = params
+    },
+    showAuditDetail(state, params) {
+      state.auditDetail = params
+    },
     setPointInfo(state, params) {
       state.pointInfo = params
     },
@@ -59,6 +68,12 @@ export const admin = {
     },
     setAdminInfo(state, params) {
       state.adminInfo = params
+    },
+    setConfigInfo(state, params) {
+      state.configInfo = params
+    },
+    setAuditInfo(state, params) {
+      state.auditInfo = params
     }
   },
   actions: {

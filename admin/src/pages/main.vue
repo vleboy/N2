@@ -122,7 +122,6 @@ export default {
 }
 
 /deep/ .ivu-layout-header {
-  background: red;
   padding: 0;
 }
 .tags-con {
@@ -150,6 +149,6 @@ export default {
   padding-right: 20px;
 }
 /deep/.ivu-card-body {
-  height: 100vh;
+  height: calc(100vh - 52px);
 }
 </style>

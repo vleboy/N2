@@ -180,3 +180,13 @@ export async function updateAdmin(params) {
 export async function deleteAdmin(params) {
   return axios.post(`/xnosql/agent/delete/${params.id}`, params);
 }
+
+//查询配置中心
+export async function configQuery(params) {
+  return axios.get("/xnosql/config/query", params);
+}
+
+//修改配置中心
+export async function configUpdate(params) {
+  return axios.post("/xnosql/config/update", params);
+}

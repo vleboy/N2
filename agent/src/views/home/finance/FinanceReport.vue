@@ -45,22 +45,22 @@
       <div class="list">
         <div @click="jumpTo('deposit')">
           <div class="name">存款</div>
-          <div class="num">100.00</div>
+          <div class="num">{{dataList.currentDeposit}}</div>
         </div>
         <div @click="jumpTo('withdrawal')">
           <div class="name">取款</div>
-          <div class="num">0.00</div>
+          <div class="num">{{dataList.currentWithdraw}}</div>
         </div>
       </div>
       <div class="list">
         <div>
           <div class="name">红利加返水</div>
-          <div class="num">1.05</div>
+          <div class="num">{{dataList.currentCommission}}</div>
         </div>
         <div>
           <div class="name">平台费</div>
           <div class="num">
-            <div>0.00</div>
+            <div>{{dataList.currentPlatformFee}}</div>
             <van-button type="default" size="small">查看详情</van-button>
           </div>
         </div>
@@ -69,13 +69,13 @@
         <div>
           <div class="name">总输赢</div>
           <div class="num">
-            <div>-0.27</div>
+            <div>{{dataList.currentWinlose}}</div>
             <van-button type="default" size="small">查看详情</van-button>
           </div>
         </div>
         <div>
           <div class="name">净输赢</div>
-          <div class="num">-1.32</div>
+          <div class="num">{{dataList.currentProfit}}</div>
         </div>
       </div>
     </div>
@@ -87,6 +87,7 @@
 </template>
 
 <script>
+import { getView } from '../../../service/index'
 export default {
   data() {
     return {
@@ -98,8 +99,12 @@ export default {
       endTime: '',
       startWeek: '2233',
       endWeek: '',
-      showModel1: false
+      showModel1: false,
+      dataList: []
     }
+  },
+  mounted() {
+    this.getData()
   },
   methods: {
     onClickLeft() {
@@ -118,7 +123,11 @@ export default {
       //console.log(e.getValues())
       this.st = e.getValues().join('-')
     },
-
+    getData() {
+      getView().then(res => {
+        this.dataList = res
+      })
+    },
     /* 路由跳转 */
     jumpTo(name) {
       this.$router.push({name})

@@ -3,10 +3,8 @@
     <div class="top">
       <van-nav-bar
         title="取款申请"
-        right-text="取款记录"
         left-arrow
         @click-left="onClickLeft"
-        @click-right="onClickRight"
         :border="false"
       />
       <p class="fs12">可取款金额</p>
@@ -17,36 +15,28 @@
       </van-row>
       <van-row align="center">
         <van-col span="7" class="col7">
-          <div>0.00</div>
-          <div>锁定钱包</div>
+          
         </van-col>
         <van-col span="10" class="col7">
-          <div>2019-06</div>
           <div>发放月份</div>
+          <div>2019-06</div>
         </van-col>
         <van-col span="7" class="col7">
-          <div>0.00</div>
-          <div>合计</div>
+          
         </van-col>
       </van-row>
     </div>
     <div class="container">
-      <!-- <van-cell-group>
-        <van-field v-model="point" label="金额" placeholder="请输入金额" />
-      </van-cell-group>
-      <van-radio-group v-model="radio">
-        <van-radio name="1">充值</van-radio>
-        <van-radio name="2">提现</van-radio>
-      </van-radio-group>-->
+      <van-field v-model="value" label="申请金额" :placeholder="pointHolder" :error="pointErr" @focus="pointFocus" @touchstart.native.stop="show = true" clickable/>
       <div class="cardInfo">
-        <div class="card" v-for="(item, index) in cardList" :key="index">
+        <div class="card" :class="{cardBg: actCard == index}" v-for="(item, index) in cardList" :key="index" @click="checkBankCard(item, index)">
           <van-swipe-cell>
             <template slot="default">
-              <div>{{item.cardBank}}</div>
+              <div style="padding-top:10px">{{item.cardBank}}</div>
               <div class="no">{{cardNoFormat(item.cardNo)}}</div>
             </template>
             <template slot="right">
-              <van-button square type="danger" text="删除" />
+              <van-button @click="deleteCard(item.cardNo)" square type="danger" text="删除" />
             </template>
           </van-swipe-cell>
         </div>
@@ -58,51 +48,38 @@
         </div>
       </div>
       <div class="sub">
-        <van-button type="info" size="large" @click="showDialog = true">提交申请</van-button>
+        <van-button type="info" size="large" @click="sub">提交申请</van-button>
       </div>
     </div>
-    <van-dialog
-      v-model="showDialog"
-      title="标题"
-      show-cancel-button
-    >
-      <van-field v-model="point" label="金额" placeholder="请输入金额" />
-      <van-radio-group v-model="radio">
-        <van-cell-group>
-          <van-cell v-for="(item, index) in cardList" :title="item.cardBank" clickable @click="radio = index">
-            <van-radio slot="right-icon" name="1" />
-          </van-cell>
-          <!-- <van-cell title="单选框 1" clickable @click="radio = '1'">
-            <van-radio slot="right-icon" name="1" />
-          </van-cell>
-          <van-cell title="单选框 2" clickable @click="radio = '2'">
-            <van-radio slot="right-icon" name="2" />
-          </van-cell> -->
-        </van-cell-group>
-      </van-radio-group>
-    </van-dialog>
-    <van-number-keyboard
+     <van-number-keyboard
+      v-model="value"
       :show="show"
+      :maxlength="6"
       theme="custom"
-      extra-key="."
       close-button-text="完成"
+      extra-key="."
       @blur="show = false"
-      @input="onInput"
-    />
+    /> 
   </div>
 </template>
 
 <script>
-import { getCardList } from "../../../service/index";
+import { getCardList, createReview, deleteBankCard } from "../../../service/index";
 import { log } from 'util';
 export default {
   data() {
     return {
       show: false,
-      radio: "1",
-      point: "",
+      radio: 0,
+      value: "",
+      pointErr: false,
+      pointHolder: '请输入金额',
       cardList: [],
-      showDialog: false
+      cardBank: '',
+      cardName: '',
+      cardNo: '',
+      show: false,
+      actCard: 0
     };
   },
   mounted() {
@@ -112,6 +89,11 @@ export default {
     
   },
   methods: {
+    pointFocus() {
+      document.activeElement.blur()
+      this.pointErr = false
+      this.pointHolder = '请输入金额'
+    },
     cardNoFormat(val) {
       let length = val.length - 4
       return '**** **** **** ' + val.substr(length)
@@ -119,28 +101,70 @@ export default {
     getCardList() {
       getCardList().then(res => {
         this.cardList = res
+        this.checkBankCard(this.cardList[0], 0)
       }).catch(err => {
-
       })
+    },
+    checkBankCard(val, index) {
+      this.actCard = index
+      this.cardBank = val.cardBank
+      this.cardName = val.cardName
+      this.cardNo = val.cardNo
     },
     onClickLeft() {
       this.$router.push("home");
     },
-    onClickRight() {
-      this.$router.push("WithdrawalRecord");
+    deleteCard(val) {
+      this.$dialog.confirm({
+        title: '删除银行卡',
+        message: '确定删除银行卡?'
+      }).then(() => {
+        deleteBankCard({cardNo: val}).then(res => {
+        this.$notify({
+          message: '删除成功',
+          duration: 1000,
+          background: 'green'
+        })
+          this.getCardList()
+        }).catch(err => {
+          this.$notify({
+            message: res.res,
+            duration: 1000,
+            background: 'red'
+          })
+        })
+      });
+      
     },
     sub() {
-      /* let params = {
-        project: this.radio,
-        amount: this.point
+       let params = {
+        project: -1, //-1代表取款(提现)
+        amount: this.value,
+        cardBank: this.cardBank,
+        cardName: this.cardName,
+        cardNo: this.cardNo
       };
-      createReview(params)
+      console.log(params)
+      if (this.value != '') {
+        createReview(params)
         .then(res => {
-          console.log("success");
+          this.$notify({
+            message: '取款成功',
+            duration: 1000,
+            background: 'green'
+          })
+          this.pointErr = false
+          this.value = ''
+          this.getCardList()
         })
         .catch(err => {
-          console.log("err");
-        }); */
+          this.value = ''
+          this.pointHolder = err.res
+          this.pointErr = true
+        });
+      } else {
+        this.pointErr = true
+      }
     },
     addBankCard() {
       this.$router.push({ name: "addBankCard" });
@@ -148,9 +172,6 @@ export default {
     onInput(key) {
       this.point += key;
     },
-    /* onDelete(key) {
-      this.point -= this.point.substring(this.point.length - 1)
-    },*/
     showKeyboard() {
       console.log(1);
       console.log(document.activeElement);
@@ -196,9 +217,10 @@ export default {
       padding:0 16px;
       margin: 10px 0;
       .card {
-        background: green;
+        background: url('../../../assets/images/home/card.png') no-repeat;
+        background-size: cover;
         box-sizing: border-box;
-        padding: 10px 0 10px 10px;
+        padding: 0 0 0 10px;
         color: #fff;
         height: 80px;
         border-radius: 5px;
@@ -207,9 +229,17 @@ export default {
           margin-top: 10px;
           font-size: 20px;
         }
-        .van-button {
-          height: 100%;
+        .van-swipe-cell {
+          height: 80px;
         }
+        .van-button {
+          height: 80px;
+          border-radius: 0 5px 5px 0;
+        }
+      }
+      .cardBg {
+        background: url('../../../assets/images/home/card_select.png') no-repeat;
+        background-size: cover;
       }
     }
     .add {
@@ -230,7 +260,6 @@ export default {
       padding: 0 16px;
       height: 80px;
       bottom: 0px;
-      background: rgb(230, 230, 230);
       .van-button {
         border-radius: 20px;
       }

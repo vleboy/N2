@@ -100,6 +100,12 @@ export async function logIn(params) {
 }
 
 /* 首页 */
+//获取首页数据
+export async function getView(params) {
+  return axios.get("/xserver/agent/realtime", params);
+}
+
+
 
 //取款申请
 export async function createReview(params) {
@@ -112,6 +118,10 @@ export async function depositBill(params) {
 //添加银行卡
 export async function addBankCard(params) {
   return axios.post("/xserver/bankcard/create", params);
+}
+//删除银行卡
+export async function deleteBankCard(params) {
+  return axios.post(`/xserver/bankcard/delete/${params.cardNo}`, params);
 }
 //获取银行卡列表
 export async function getCardList(params) {

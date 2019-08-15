@@ -79,6 +79,10 @@ export default {
                   title: "角色列表",
                   expand: false
                 },
+                {
+                  title: "配置中心",
+                  expand: false
+                },
               ]
             },
           ]

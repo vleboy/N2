@@ -1,6 +1,6 @@
 <template>
   <div class="sider">
-    <Sider :width="menuWidth" collapsible hide-trigger :style="{overflow:'auto',position:'fixed',height: '100vh', left: 0,backgroundColor:'#1c2327'}" class="showMenu">
+    <Sider :width="menuWidth" collapsible hide-trigger :style="{overflow:'auto',position:'fixed',height: '100vh', left: 0,backgroundColor:'#111'}" class="showMenu">
       <div id="logo" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
         <p class="logoimg" v-if="unFlodMenu">
           <img src="../../public/logo.png" alt="">
@@ -13,7 +13,7 @@
         </p>
       </div>
       <transition name="fade">
-        <Menu ref="sideMenu" :active-name="$route.name" :open-names="openName" width="auto" @on-select='selectMenu' :style="{backgroundColor:'#1c2327',color:'#fff',marginTop:'.3rem'}">
+        <Menu ref="sideMenu" :active-name="$route.name" :open-names="openName" width="auto" @on-select='selectMenu' :style="{backgroundColor:'#111',color:'#fff',marginTop:'.3rem'}">
           <MenuItem name="agentCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
             <Icon type="md-people" />
             <span v-if="unFlodMenu" class="ml">代理中心</span>
@@ -45,6 +45,7 @@
             </template>
             <MenuItem name="adminList">管理员列表</MenuItem>
             <MenuItem name="adminRole">角色列表</MenuItem>
+            <MenuItem name="configuration">配置中心</MenuItem>
           </Submenu>  
         </Menu>
       </transition>
@@ -55,7 +56,7 @@
 export default {
   data() {
     return {
-      menuWidth: '240px',
+      menuWidth: '180px',
       foldIcon: true,
       //默认不折叠
       unFlodMenu: true,
@@ -83,8 +84,8 @@ export default {
       this.unFlodMenu = true
       this.flodMenu = false
       this.foldIcon = true
-      this.menuWidth = '240px'
-      this.$store.commit("changeWidth", '240px');
+      this.menuWidth = '180px'
+      this.$store.commit("changeWidth", '180px');
     }
   },
   computed: {
@@ -175,7 +176,7 @@ export default {
   z-index: 9999;
 }
 /deep/ .ivu-tooltip-inner {
-  background: red;
+
    z-index: 999;
 }
 

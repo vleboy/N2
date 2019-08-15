@@ -12,24 +12,24 @@
       </div>
       <div class="amount">
         <p>净输赢(元)</p>
-        <p>-1.32</p>
+        <p>{{dataList.currentProfit}}</p>
       </div>
       <div class="detail">
         <ul>
           <li>
-            <p>0%</p>
+            <p>{{dataList.modeValue}}%</p>
             <p>佣金比例</p>
           </li>
           <li>
-            <p>2</p>
+            <p>{{dataList.playerCount}}</p>
             <p>下线用户</p>
           </li>
           <li>
-            <p>2</p>
+            <p>{{dataList.newRegPlayerCount}}</p>
             <p>新注册</p>
           </li>
           <li>
-            <p>1</p>
+            <p>{{dataList.activePlayerCount}}</p>
             <p>活跃用户</p>
           </li>
         </ul>
@@ -67,7 +67,7 @@
             :show-loading="false"
             :src="img_user"
           />
-          <div>用户信息</div>
+          <div>玩家报表</div>
         </div>
       </div>
       <div class="list">
@@ -86,6 +86,7 @@
 </template>
 
 <script>
+import { getView } from '../../service/index'
 export default {
   data() {
     return {
@@ -93,16 +94,34 @@ export default {
       img_financing: require('../../assets/images/home/caiwu.png'),
       img_withdrawal: require('../../assets/images/home/qukuan.png'),
       img_user: require('../../assets/images/home/yonghu.png'),
-      img_info: require('../../assets/images/home/xiaoxi.png')
+      img_info: require('../../assets/images/home/xiaoxi.png'),
+      dataList: []
     }
   },
   mounted() {
-    console.log('enter');
-    
+    this.getData()
   },
   methods: {
     jump(name) {
       this.$router.push(name)
+    },
+    getData() {
+      getView().then(res => {
+        console.log(res)
+        this.dataList = res
+        // mode: agent.mode,                     // 业务模式
+        // modeValue: agent.modeValue,           // 业务模式比例
+        // playerCount: agent.playerCount,       // 玩家数量
+        // newRegPlayerCount: 0,                 // 新注册玩家数量
+        // activePlayerCount: 0,                 // 活跃玩家数量
+        // currentProfit: 0,                     // 当前利润
+        // currentWinlose: 0,                    // 当前输赢
+        // currentPlatformFee: 0,                // 当前平台费
+        // currentDeposit: 0,                    // 当前存款
+        // currentWithdraw: 0,                   // 当前取款
+        // currentCommission: 0                  // 当前佣金
+
+      })
     }
   }
 }

@@ -3,10 +3,7 @@
     <div class="container">
       <div class="logo">
         <p>
-          <img :src="logo1" alt="" class="logo1">
-        </p>
-        <p>
-          <img :src="logo2" alt="" class="logo2">
+          <img :src="logo" alt="" class="logo1">
         </p>
       </div>
       <div class="form">
@@ -21,7 +18,7 @@
           :border="false"
           style="margin-top:30px"
         />
-        <van-button type="info" size="large" :disabled="logInStatus" @click="login">登录</van-button>
+        <van-button type="info" size="large" :disabled="logInStatus" @click="login">登&emsp;录</van-button>
       </div>
     </div>
   </div>
@@ -34,8 +31,7 @@ export default {
   name: 'login',
   data() {
     return {
-      logo1: require('../assets/images/logo1.png'),
-      logo2: require('../assets/images/logo2.png'),
+      logo: require('../assets/images/logo.png'),
       userIcon: require('../assets/images/user.png'),
       pwdIcon: require('../assets/images/pwd.png'),
       username: '',
@@ -82,11 +78,7 @@ export default {
       margin: 0;
       text-align: center;
       .logo1 {
-        width: 40px;
-      }
-      .logo2 {
-        width: 70px;
-        margin-top: 5px;
+        width: 150px;
       }
     }
   }

@@ -6,7 +6,7 @@
     <div class="box">
       <van-cell title="个人信息" is-link size="large" to="personal" />
       <van-cell title="修改密码" is-link size="large" to="changePwd"/>
-      <van-cell title="关于" is-link size="large"/>
+      <van-cell title="关于YIBO" is-link size="large"/>
       <van-button type="info" round size="large" @click="logout">退出登录</van-button>
     </div>
   </div>

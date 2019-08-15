@@ -1,7 +1,7 @@
 <template>
   <div>
     <Drawer
-      title="创建管理员"
+      :title="title"
       v-model="showDraw"
       width="320"
       :mask-closable="false"
@@ -48,7 +48,7 @@
         <Row class-name="content">
           <Col span="6" class-name="tc">管理员角色:</Col>
           <Col span="18">
-            <Select :disabled="disabledInput" v-model="subRole" style="width:200px" @on-change="selectRole">
+            <Select v-model="subRole" style="width:200px" @on-change="selectRole">
               <Option
                 v-for="item in roleArr"
                 :value="item.roleName"
@@ -75,6 +75,7 @@ export default {
       showDraw: false,
       userName: "",
       disabledInput: false,
+      title: '',
       userPwd: "",
       userNick: "",
       subRole: "",
@@ -125,6 +126,7 @@ export default {
         let params = {
           id: this.$store.state.admin.adminInfo.id,
           userPwd: this.userPwd,
+          subrole: this.subRole
         };
         updateAdmin(params)
           .then(res => {
@@ -160,12 +162,15 @@ export default {
           this.roleArr = res;
           if (this.$store.state.admin.adminInfo.operate == "create") {
             this.subRole = res[0].roleName;
+            this.disabledInput = false
+            this.title = '创建管理员'
           } else {
             this.subRole = this.$store.state.admin.adminInfo.subRole;
             this.userName = this.$store.state.admin.adminInfo.userName;
             this.userPwd = this.$store.state.admin.adminInfo.userPwd;
             this.userNick = this.$store.state.admin.adminInfo.userNick;
             this.disabledInput = true
+            this.title = '修改管理员'
           }
         });
       }

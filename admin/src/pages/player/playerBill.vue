@@ -106,7 +106,8 @@ export default {
         {
           title: '流水号',
           key: 'id',
-          align: "center"
+          align: "center",
+          minWidth: 40,
         },
         {
           title: '玩家账号',
@@ -129,14 +130,25 @@ export default {
           key: 'projectStr'
         },
         {
-          title: '操作金额',
-          align: 'center',
-          key: 'amount'
+          title: "前置金额",
+          align: "center",
+          key: "preBalance"
+        },
+        {
+          title: "操作金额",
+          align: "center",
+          key: "amount"
+        },
+        {
+          title: "余额",
+          align: "center",
+          key: "balance"
         },
         {
           title: '创建时间',
           align: 'center',
-          slot: 'createAt'
+          slot: 'createAt',
+          minWidth: 40
         }
       ],
       billList: []

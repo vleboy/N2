@@ -42,16 +42,20 @@
           <Tag type="border" color="error" v-else>拒绝</Tag>
         </template>
         <template #operate="{row}">
-          <div v-if="row.status == 0">
-            <Button size="small" type="info" ghost style="margin-right:5px" @click="operate(row, true)">同意</Button>
-            <Button size="small" type="error" ghost @click="operate(row, false)">拒绝</Button>
-          </div>
-          <div v-else>
-            <Button type="success" ghost disabled size="small">已审核</Button>
+          <div style="display:flex;">
+            <Button size="small" type="info" ghost style="margin-right:5px" @click="detail(row)">查看</Button>
+            <div v-if="row.status == 0">
+              <Button size="small" type="info" ghost style="margin-right:5px" @click="operate(row, true)">同意</Button>
+              <Button size="small" type="error" ghost @click="operate(row, false)">拒绝</Button>
+            </div>
+            <div v-else>
+              <Button type="success" ghost disabled size="small">已审核</Button>
+            </div>
           </div>
         </template>
       </Table>
     </div>
+    <auditDetail></auditDetail>
     <div class="page">
       <Page :current="currentPage" :total="totalPage" :page-size="pageSize" @on-change="changepage"/>
     </div>
@@ -65,7 +69,11 @@
 <script>
 import dayjs from 'dayjs'
 import {queryAudit, operateAudit} from '../../service/index'
+import auditDetail from './auditDetail'
 export default {
+  components: {
+    auditDetail
+  },
   data() {
     return {
       proposerId: '',
@@ -164,7 +172,8 @@ export default {
         {
           title: '流水号',
           key: 'billId',
-          align: "center"
+          align: "center",
+          minWidth: 40,
         },
         {
           title: '创建时间',
@@ -185,7 +194,7 @@ export default {
           title: '操作',
           slot: 'operate',
           align: "center",
-          minWidth: 20
+          minWidth: 40
         }
       ],
       auditList: []
@@ -207,15 +216,6 @@ export default {
         this.auditList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
       }
     },
-    /* changeRole(value) {
-      console.log(value);
-    },
-    changeProject(value) {
-      console.log(value);
-    },
-    changeStatus(value) {
-      console.log(value);
-    }, */
     search() {
       this.initPage()
       this.getAudit()
@@ -274,6 +274,10 @@ export default {
         }
       });
     },
+    detail(row) {
+      this.$store.commit('showAuditDetail', true)
+      this.$store.commit('setAuditInfo', row)
+    }
   }
 }
 </script>

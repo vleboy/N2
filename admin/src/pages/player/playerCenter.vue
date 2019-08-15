@@ -225,6 +225,7 @@ export default {
       })
     },
     search() {
+      console.log('player')
       this.initPage()
       this.getList()
     },

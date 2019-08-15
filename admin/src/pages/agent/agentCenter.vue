@@ -205,6 +205,7 @@ export default {
       return dayjs(row.createdAt).format("YY-MM-DD");
     },
     search() {
+      console.log('agent')
       this.getList();
     },
     reset() {
