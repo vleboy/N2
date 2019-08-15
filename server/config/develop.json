@@ -41,6 +41,8 @@
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
                 "/xnosql/message/page",
+                "/xnosql/config/query",
+                "/xnosql/config/update",
                 "/xserver/system/create",
                 "/xserver/system/handlerReview",
                 "/xserver/system/handlerPoint"
