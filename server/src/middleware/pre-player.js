@@ -36,6 +36,8 @@ router.post('/player/create', async (ctx, next) => {
     inparam.parentNick = parent.userNick
     inparam.role = Util.RoleEnum.player
     inparam.balance = 0
+
+    inparam.bankCards = []
     return next()
 })
 

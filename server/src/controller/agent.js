@@ -13,8 +13,8 @@ const VerifyCode = {}
  * （代理/管理员）登录接口
  */
 router.post('/login', async (ctx, next) => {
-    let inparam = ctx.request.body
-    let mongodb = global.mongodb
+    const inparam = ctx.request.body
+    const mongodb = global.mongodb
     if (!inparam.userName || !inparam.userPwd) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
@@ -79,8 +79,8 @@ router.post('/captcha', async function (ctx, next) {
  */
 router.get('/tree', async (ctx, next) => {
     const token = ctx.tokenVerify
-    let mongodb = global.mongodb
-    let inparam = ctx.request.query
+    const mongodb = global.mongodb
+    const inparam = ctx.request.query
     // 查询指定代理
     let query = { role: Util.RoleEnum.agent }
     if (inparam.userName || inparam.userNick) {
@@ -143,6 +143,26 @@ function tree(treeArray, array) {
  * 获取代理实时数据
  */
 router.get('/realtime', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    const mongodb = global.mongodb
+
+    let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { mode: 1, modeValue: 1, playerCount: 1, agentCount: 1, _id: 0 } })
+
+    let data = {
+        mode: agent.mode,                     // 业务模式
+        modeValue: agent.modeValue,           // 业务模式比例
+        playerCount: agent.playerCount,       // 玩家数量
+        newRegPlayerCount: 0,                 // 新注册玩家数量
+        activePlayerCount: 0,                 // 活跃玩家数量
+        currentProfit: 0,                     // 当前利润
+        currentWinlose: 0,                    // 当前输赢
+        currentPlatformFee: 0,                // 当前平台费
+        currentDeposit: 0,                    // 当前存款
+        currentWithdraw: 0,                   // 当前取款
+        currentCommission: 0                  // 当前佣金
+    }
+
+    ctx.body = data
 })
 
 

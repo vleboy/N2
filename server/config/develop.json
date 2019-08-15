@@ -15,10 +15,11 @@
         "secret": "cheneyweb",
         "tokenname": "token",
         "pass": [
-            "/xserver/init/init",
+            "/xserver/_init/init",
             "/xserver/agent/captcha",
             "/xserver/agent/login",
-            "/xserver/player/login"
+            "/xserver/player/login",
+            "/xserver/wallet/transfer"
         ],
         "role": {
             "admin": [
@@ -41,6 +42,8 @@
                 "/xnosql/message/create",
                 "/xnosql/message/delete/",
                 "/xnosql/message/page",
+                "/xnosql/config/query",
+                "/xnosql/config/update",
                 "/xserver/system/create",
                 "/xserver/system/handlerReview",
                 "/xserver/system/handlerPoint"
