@@ -16,6 +16,10 @@ const ProjectEnum = {
     TransferOut: 'transferOut', // 转出
 
     Profit: 'profit',           // 收益
+
+    Bet: 'bet',                 // 投注
+    Win: 'win',                 // 返奖
+    Refund: 'refund'            // 退款
 }
 const ProjectStrEnum = {
     add: '加点',
@@ -29,6 +33,10 @@ const ProjectStrEnum = {
     transferOut: '转出',
 
     profit: '收益',
+
+    bet: '投注',
+    win: '返奖',
+    refund: '退款'
 }
 //角色枚举
 const RoleEnum = {

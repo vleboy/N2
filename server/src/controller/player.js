@@ -2,6 +2,7 @@ const config = require('config')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const _ = require('lodash')
+const Util = require('../util/util.js')
 const Router = require('koa-router')
 const router = new Router()
 
@@ -11,7 +12,7 @@ const router = new Router()
 router.post('/login', async (ctx, next) => {
     let inparam = ctx.request.body
     let mongodb = global.mongodb
-    let player = await mongodb.collection('player').findOne({ playerName: inparam.playerName })
+    let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ playerName: inparam.playerName })
     if (!player) {
         ctx.body = { err: true, res: '帐号不存在' }
     } else if (!bcrypt.compareSync(player.playerPwd, inparam.playerPwd)) {

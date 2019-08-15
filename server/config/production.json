@@ -18,7 +18,8 @@
             "/xserver/_init/init",
             "/xserver/agent/captcha",
             "/xserver/agent/login",
-            "/xserver/player/login"
+            "/xserver/player/login",
+            "/xserver/wallet/transfer"
         ],
         "role": {
             "admin": [
