@@ -173,6 +173,9 @@ router.post('/createReview', async (ctx, next) => {
                     parentName: owner.parentName,
                     parentNick: owner.parentNick,
                     status: 0,
+                    cardBank: inparam.cardBank,
+                    cardName: inparam.cardName,
+                    cardNo: inparam.cardNo,
                     createAt,
                     createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
                 }, { session })

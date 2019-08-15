@@ -38,7 +38,7 @@ router.post('/delete/:cardNo', async (ctx, next) => {
     const token = ctx.tokenVerify
     const inparam = ctx.request.query
     const collectionName = token.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
-    
+
     let user = await mongodb.collection(collectionName).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
     let bankCards = user.bankCards.filter(o => o.cardNo != inparam.cardNo)
     await mongodb.collection(collectionName).updateOne({ id: token.id }, { $set: { bankCards } })
