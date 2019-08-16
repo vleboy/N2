@@ -47,7 +47,7 @@ router.post('/message/create', async (ctx, next) => {
 })
 
 /**
- * 查询消息
+ * 查询消息分页
  */
 router.get('/message/page', async (ctx, next) => {
     const inparam = ctx.request.query
@@ -60,7 +60,7 @@ router.get('/message/page', async (ctx, next) => {
 })
 
 /**
- * 查询消息
+ * 客户端查询消息
  */
 router.get('/message/query', async (ctx, next) => {
     const inparam = ctx.request.query
