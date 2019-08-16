@@ -27,7 +27,7 @@ router.post('/transfer', async (ctx, next) => {
         let balanceRes = await syncBill(inparam, player)
         if (balanceRes.err) {
             res.code = -1
-            res.msg = '余额不足'
+            res.msg = balanceRes.res
         } else {
             res.balance = balanceRes.balance
         }
@@ -44,6 +44,15 @@ async function syncBill(inparam, player) {
     // 如果是投注，需要判断余额
     if (inparam.method == 'bet') {
         queryBalance.balance = { $gte: Math.abs(inparam.amount) }
+    }
+    // 幂等控制
+    if (await mongodb.collection(Util.CollectionEnum.bill).findOne({ sourceId: inparam.sn }, { projection: { id: 1, _id: 0 } })) {
+        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId })
+        if (player) {
+            return { balance: player.balance }
+        } else {
+            return { err: true, res: '玩家不存在' }
+        }
     }
     try {
         // 变更玩家余额
