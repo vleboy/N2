@@ -11,18 +11,41 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 
 /**
  * 创建消息
+ * project:(公告/私信/站内信)
+ * ownerId:消息送达人(全部/指定代理ID)
+ * msg:消息体
+ * createrId:创建人ID
+ * createrName:创建人帐号
+ * createrNick:创建人昵称
  */
 router.post('/message/create', async (ctx, next) => {
-    let inparam = ctx.request.body
-    let mongodb = global.mongodb
-    if (!inparam.msg) {
-        ctx.body = { err: true, res: '请检查入参' }
-    } else {
-        inparam.id = await Util.getSeq('messageSeq')
-        return next()
+    const inparam = ctx.request.body
+    const mongodb = global.mongodb
+    const token = ctx.tokenVerify
+    if (!inparam.project || !inparam.ownerId || !inparam.msg) {
+        return ctx.body = { err: true, res: '请检查入参' }
     }
+    // 检查创建人
+    let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { _id: 0 } })
+    if (!agent) {
+        return ctx.body = { err: true, res: '帐号不存在' }
+    }
+    inparam.createrId = agent.id
+    inparam.createrName = agent.userName
+    inparam.createrNick = agent.userNick
+    // 检查送达人
+    if (inparam.role) {
+        let collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
+        let user = await mongodb.collection(collectionName).findOne({ id: token.id }, { projection: { _id: 0 } })
+        if (!user) {
+            return ctx.body = { err: true, res: '帐号不存在' }
+        }
+        inparam.ownerName = inparam.role == Util.RoleEnum.agent ? user.userName : user.playerName
+        inparam.ownerNick = inparam.role == Util.RoleEnum.agent ? user.userNick : user.playerNick
+    }
+    inparam.id = await Util.getSeq('messageSeq')
+    return next()
 })
-
 
 /**
  * 查询消息

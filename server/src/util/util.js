@@ -3,6 +3,12 @@ const moment = require('moment')
 const axios = require('axios')
 const config = require('config')
 
+//角色枚举
+const RoleEnum = {
+    agent: 'agent',
+    admin: 'admin',
+    player: 'player'
+}
 //流水项目枚举
 const ProjectEnum = {
     Add: 'add',                 // 加点
@@ -38,24 +44,6 @@ const ProjectStrEnum = {
     win: '返奖',
     refund: '退款'
 }
-//角色枚举
-const RoleEnum = {
-    agent: 'agent',
-    admin: 'admin',
-    player: 'player'
-}
-//数据库集合枚举
-const CollectionEnum = {
-    _seq: '_seq',
-    agent: 'agent',
-    message: 'message',
-    player: 'player',
-    review: 'review',
-    subrole: 'subrole',
-    bill: 'bill',
-    profit: 'profit',
-    config: 'config'
-}
 //启用/停用枚举
 const StatusEnum = {
     Enable: 1,
@@ -73,11 +61,35 @@ const ModeEnum = {
     Commission: 'commission',   // 返佣
     Ratio: 'ratio',             // 占成
 }
-
 const ModeStrEnum = {
     rebate: '返利',
     commission: '返佣',
     ratio: '占成'
+}
+// 消息枚举
+const MsgEnum = {
+    NoticeAll: 'noticeAll',
+    NoticeAgent: 'noticeAgent',
+    NoticePlayer: 'noticePlayer',
+    Private: 'private'
+}
+const MsgStrEnum = {
+    noticeAll: '全体公告',
+    noticeAgent: '代理公告',
+    noticePlayer: '玩家公告',
+    private: '私信'
+}
+//数据库集合枚举
+const CollectionEnum = {
+    _seq: '_seq',
+    agent: 'agent',
+    message: 'message',
+    player: 'player',
+    review: 'review',
+    subrole: 'subrole',
+    bill: 'bill',
+    profit: 'profit',
+    config: 'config'
 }
 
 //检查类型
@@ -172,6 +184,9 @@ module.exports = {
 
     ProjectStrEnum,
     ModeStrEnum,
+
+    MsgEnum,
+    MsgStrEnum,
 
     n1RegPlayer,
     n1Transfer,
