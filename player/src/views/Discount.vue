@@ -201,7 +201,7 @@ export default {
     background: url('../assets/images/background/bg_discount.jpg') no-repeat fixed;
     background-size: cover;
     .box {
-      padding: 1rem .5rem;
+      padding: 16px 8px;
       .van-tabs--card {
         padding: 0;
         .van-tabs__nav--card {
@@ -235,19 +235,19 @@ export default {
           left: 2.5%;
           bottom: 10px;
           .name {
-            font-size: 1rem;
+            font-size: 16px;
             font-weight: bolder;
             margin-bottom: 4px;
             span {
               display: inline-block;
-              margin-right: .4rem;
+              margin-right: 9px;
             }
           }
           .time {
-            font-size: .7rem;
+            font-size: 16px;
             span {
               display: inline-block;
-              margin-right: .5rem;
+              margin-right: 8px;
             }
           }
         }

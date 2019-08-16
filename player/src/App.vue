@@ -5,11 +5,10 @@
 </template>
 
 <style lang="less">
+* {
+  font-size: 16px;
+}
 #app {
-  -webkit-overflow-scrolling:touch;
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
 }

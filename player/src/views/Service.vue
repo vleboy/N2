@@ -31,24 +31,24 @@ export default {
     background: url('../assets/images/background/bg_service.jpg') no-repeat fixed;
     background-size: cover;
     .box {
-      padding: 0 1rem;
+      padding: 0 16px;
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%,-50%);
-      width: 20rem;
+      width: 320px;
       .first {
         background: rgba(255, 255, 255, .3);
         height: 50px;
         margin-bottom: 10px;
         line-height: 50px;
-        font-size: .9rem;
+        font-size: 15px;
       }
       .second {
         background: rgba(255, 255, 255, .3);
         height: 50px;
         line-height: 50px;
-        font-size: .9rem;
+        font-size: 15px;
       }
     }
     

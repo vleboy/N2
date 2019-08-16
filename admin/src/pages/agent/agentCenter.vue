@@ -95,7 +95,7 @@ import dayjs from "dayjs";
 import _ from "lodash";
 import { queryAgent, agentStatus } from "../../service/index";
 
-import operatePoint from "../../components/operatePoint";
+import operatePoint from "./operatePoint";
 import createAgent from "./createAgent";
 import createPlayer from "./createPlayer";
 import agentDetail from "./agentDetail";

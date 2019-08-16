@@ -3,12 +3,12 @@
    <div class="box">
     <div class="message">
       <img src="" alt="">
-      <img src="../assets/images/mine/message.png" alt="">
+      <!-- <img src="../assets/images/mine/message.png" alt=""> -->
     </div>
     <div class="top">
       <div class="header">
         <div class="via">
-          <van-image round width="3rem" height="3rem" :src="via" :show-loading="false" />
+          <van-image round :src="via" :show-loading="false" />
         </div>
         <div class="nickname">{{nickname}}</div>
       </div>
@@ -24,8 +24,6 @@
         <div class="right">
           <div class="list" v-for="(item, index) in topMenu" :key="index">
               <van-image
-                width="32"
-                height="32"
                 :src="item.img"
                 :show-loading='false'
               />
@@ -39,7 +37,7 @@
         <div v-for="item in val">
           <div>
             <div >
-              <van-image width="24" height="24" :src="item.img" :show-loading="false" />
+              <van-image :src="item.img" :show-loading="false" />
               <p>{{item.text}}</p>
             </div>
           </div>
@@ -107,7 +105,7 @@ export default {
           },
           {
             img: require("../assets/images/mine/icon_home_partner.png"),
-            text: '银行卡管理'
+            text: '银行卡号'
           }
         ],
         [
@@ -147,7 +145,7 @@ export default {
     background: url('../assets/images/background/bg_mine.jpg') no-repeat fixed;
     background-size: cover;
     .box {
-      padding: 0 1rem;
+      padding: 0 16px;
       .message {
         padding-top: 20px;
         display: flex;
@@ -160,15 +158,19 @@ export default {
         .header {
           display: flex;
           justify-content: start;
-          padding: 1rem;
+          padding: 16px;
           .via {
-            width: 3rem;
-            height: 3rem;
+            width: 48px;
+            height: 48px;
             border: 2px solid #fff;
             border-radius: 50%;
+            .van-image {
+              width: 48px;
+              height: 48px;
+            }
           }
           .nickname {
-            margin-left: 1rem;
+            margin-left: 16px;
             display: flex;
             align-items: center;
             color: #fff;
@@ -178,33 +180,37 @@ export default {
           display: flex;
           align-items: center;
           .left {
-            padding: 0 2rem;
+            padding: 0 32px;
             
-            font-size: .9rem;
+            font-size: 15px;
             div:first-child {
               color:#0478e1;
               display: flex;
-              font-size: 1.5rem;
+              font-size: 32px;
               margin-bottom: 4px;
               p {
                 margin: 0;
               }
               p:first-child {
-                font-size: .7rem;
-                margin-right: .1rem;
+                font-size: 15px;
+                margin-right: .16px;
                 margin-top: 4px;
               }
             }
           }
           .right {
             display: flex;
-            padding-left: 1rem;
+            padding-left: 16px;
             .list {
-              margin-right: .7rem
+              margin-right: 11.2px;
+              .van-image {
+                width: 32px;
+                height: 32px;
+              }
             }
             p {
               margin: 0;
-              font-size: .7rem;
+              font-size: 15px;
               text-align: center;
             }
           }
@@ -216,12 +222,16 @@ export default {
           background: rgba(255, 255, 255, .5);
           margin: 15px 0;
           display: flex;
-          padding: .5rem 1.5rem;
+          padding: 8px 24px;
           align-items: center;
           justify-content: space-around;
+          .van-image {
+            width: 24px;
+            height: 24px;
+          }
           p {
               margin: 0;
-              font-size: .7rem;
+              font-size: 16px;
               text-align: center;
               padding-top: 2px;
             }
@@ -229,7 +239,7 @@ export default {
             display: flex;
             align-items: center;
             div {
-              margin: 0 1rem;
+              margin: 0 16px;
             }
           }
           div:nth-child(2)::before {
@@ -249,9 +259,8 @@ export default {
               transform: scaleX(0.5)    
           }
         }
+        }
       }
-    }
-    
   }
   .split {
     width: 1px;

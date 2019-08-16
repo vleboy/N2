@@ -74,7 +74,8 @@ export default {
   .tabbar {
     margin-top:80px;
    
-    .van-tabbar {
+    /deep/.van-tabbar {
+      height: 6vh;
        /* background: url('../assets/images/tabbar/btn_close_pressed.png') no-repeat fixed; */
       background: rgb(235, 233, 226);
     }

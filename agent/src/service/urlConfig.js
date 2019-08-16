@@ -2,7 +2,7 @@ export let URL = () => {
   if (process.env.NODE_ENV == 'production') {
     return 'n1admin.na12345.com'
   } else {
-    return '192.168.3.18:2000'
+    return '192.168.3.17:2000'
   }
 }
 

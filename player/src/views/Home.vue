@@ -1,15 +1,22 @@
 <template>
   <div class="home">
-    <Carousel/>
+    <div class="swipe">
+      <van-swipe :autoplay="3000" indicator-color="white">
+        <van-swipe-item v-for="(item, index) in swipeList" :key="index">
+          <img :src="item.img" alt="">
+        </van-swipe-item>
+      </van-swipe>
+    </div>
     <div class="box">
-      <van-notice-bar :text="notice" :left-icon="leftIcon" background="transparent" color="#fff" />
+      <div class="notice">
+        <van-notice-bar :text="notice" :left-icon="leftIcon" background="transparent" color="#8A8A8A" />
+      </div>
       <div class="operate">
         <div class="header">
           <div class="left">
             早上好,请登录
           </div>
           <div class="right">
-            <img src="../assets/images/home/icon_yabo.png" alt="" height="20px">
             <div>个人资料</div>
           </div>
         </div>
@@ -24,138 +31,33 @@
           </div>
           <div class="right">
             <div class="menu" v-for="(item, index) in operateHeader" :key="index">
-              <img :src="item.img" alt="" height="40px">
+              <img :src="item.img" alt="" >
               <div class="name">{{item.name}}</div>
             </div>
           </div>
         </div>
       </div>
       <div class="tabMenu">
-        <div class="left">
+         <div class="left">
          <ul class="tabMenuList">
             <li v-for="(item, index) in tabMenuList" :key="index" :class="{'actMenu': index==swipeIndex}" @click="changeMenu(index)">
               <span>
-                <img :src="item.actImg" alt="" width="32px" v-if="swipeIndex == index">
-                <img :src="item.img" alt="" width="32px" v-else>
+                <img :src="item.actImg" alt="" v-if="swipeIndex == index">
+                <img :src="item.img" alt="" v-else>
               </span>
               <span>{{item.name}}</span>
             </li>
          </ul>
         </div>
         <div class="right">
-          <van-swipe ref="swipe" style="height: 325px;" :height="325" vertical :show-indicators='false' :loop="false" @change="changeSwipe">
-            <van-swipe-item class="swipeMenu1">
-              <div class="logo">
-                <img src="../assets/images/home/about_logo.png" alt="" width="70px;">
-              </div>
-              <div class="split">
-                <div class="sp"></div>
-                <div class="content">赞数伙伴</div>
-                <div class="sp"></div>
-              </div>
-              <div class="lab">
-                <div>
-                  <p><img src="../assets/images/home/yijia_logo.png" alt="" width="40px"></p>
-                  
-                </div>
-                <div>
-                  <p><img src="../assets/images/home/berlin_logo.png" alt="" width="40px"></p>
-                 
-                </div>
-                <div>
-                  <p><img src="../assets/images/home/ata_logo.png" alt="" width="40px"></p>
-                  
-                </div>
-                <div>
-                  <p><img src="../assets/images/home/as_logo.png" alt="" width="40px"></p>
-                
-                </div>
-              </div> 
-              <div class="enter">点击进入</div>
-            </van-swipe-item>
-            <van-swipe-item class="swipeMenu2">
-              <div class="sm2_01">
-                <img src="../assets/images/home/font_livecasino_ag.png" alt="">
-              </div>
-              <div class="sm2_02">
-                <img src="../assets/images/home/font_livecasino_ebet_short.png" alt="">
-              </div>
-              <div class="sm2_03">
-                <div class="sm2_03_1">
-                  <img src="../assets/images/home/font_livecasino_og_short.png" alt="">
-                </div>
-                <div class="sm2_03_2">
-                  <img src="../assets/images/home/font_livecasino_gd_short.png" alt="">
-                </div>
-              </div>
-            </van-swipe-item>
-            <van-swipe-item class="swipeMenu3">
-              <div class="sm3_01">
-                <img src="../assets/images/home/font_lottery_sg_short.png" alt="">
-              </div>
-              <div class="sm3_02">
-                <div class="sm3_02_1">
-                  <img src="../assets/images/home/font_lb.png" alt="">
-                </div>
-                <div class="sm3_02_2">
-                  <img src="../assets/images/home/font_kg.png" alt="">
-                </div>
-              </div>
-              <div class="sm3_03">
-                <div class="sm3_03_1">
-                  <img src="../assets/images/home/font_bbin.png" alt="">
-                </div>
-                <div class="sm3_03_2">
-                  <img src="../assets/images/home/font_lottery_tcg_short.png" alt="">
-                </div>
-              </div>
-            </van-swipe-item>
-            <van-swipe-item class="swipeMenu5">
-              <div class="sm5_01">
-                <img src="../assets/images/home/font_esports_yb.png" alt="" class="img1">
-                <img src="../assets/images/home/col_top_yaboesports.png" alt="" class="img3">
-                <img src="../assets/images/home/col_bottom_yaboesports_long.png" alt="" class="img2">
-              </div>
-              <div class="sm5_02">
-                <img src="../assets/images/home/font_esports_avia.png" alt="" class="img1">
-                <img src="../assets/images/home/col_bottom_aviaesports_long.png" alt="" class="img2">
-              </div>
-            </van-swipe-item>
-            <van-swipe-item class="swipeMenu4">
-              <div class="sm4_01">
-                <div class="sm4_01_1">
-                  <img src="../assets/images/home/font_pg.png" alt="">
-                </div>
-                <div class="sm4_01_2">
-                  <img src="../assets/images/home/font_ag.png" alt="">
-                </div>
-              </div>
-              <div class="sm4_02">
-                <div class="sm4_02_1">
-                  <img src="../assets/images/home/font_pt.png" alt="">
-                </div>
-                <div class="sm4_02_2">
-                  <img src="../assets/images/home/font_mg.png" alt="">
-                </div>
-              </div>
-              <div class="sm4_03">
-                <div class="sm4_03_1">
-                  <img src="../assets/images/home/font_pp.png" alt="">
-                </div>
-                <div class="sm4_03_2">
-                  <img src="../assets/images/home/font_dt.png" alt="">
-                </div>
-              </div>
-            </van-swipe-item>
-            <van-swipe-item class="swipeMenu6">
-              <div class="sm6_01">
-                <img src="../assets/images/home/font_gd.png" alt="">
-              </div>
-              <div class="sm6_02">
-                <img src="../assets/images/home/font_sy.png" alt="">
-              </div>
-            </van-swipe-item>
-          </van-swipe>
+          <ul ref="swipe" :style="{transform: swipeTo}">
+            <li style="background:red" class="swip1">
+              <img :src="sideImg1" alt="">
+            </li>
+            <li style="background:yellow">2</li>
+            <li style="background:blue">3</li>
+            <li style="background:green">4</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -189,53 +91,52 @@ export default {
           name: '取款'
         }
       ],
+      swipeList: [
+        {
+          img: require('../assets/images/home/swipe1.png')
+        },
+        {
+          img: require('../assets/images/home/swipe2.png')
+        },
+        {
+          img: require('../assets/images/home/swipe3.png')
+        }
+      ],
       tabMenuList:[
         {
-          name: '亚搏体育',
+          name: '真人视讯',
           img: require('../assets/images/home/icon_sports_darkgolden.png'),
           actImg: require('../assets/images/home/icon_sports_white.png')
         },
         {
-          name: '真人娱乐',
+          name: '电子游艺',
           img: require('../assets/images/home/icon_livecasino_darkgolden.png'),
           actImg: require('../assets/images/home/icon_livecasino_white.png')
         },
         {
-          name: '彩票投注',
+          name: '体育竞技',
           img: require('../assets/images/home/icon_lottery_darkgolden.png'),
           actImg: require('../assets/images/home/icon_lottery_white.png')
         },
         {
-          name: '电子竞技',
+          name: '棋牌游戏',
           img: require('../assets/images/home/icon_esports_darkgolden.png'),
           actImg: require('../assets/images/home/icon_esports_white.png')
-        },
-        {
-          name: '捕鱼电玩',
-          img: require('../assets/images/home/icon_slotgame_darkgolden.png'),
-          actImg: require('../assets/images/home/icon_slotgame_white.png')
-        },
-        {
-          name: '棋牌游戏',
-          img: require('../assets/images/home/icon_boardgame_darkgolden.png'),
-          actImg: require('../assets/images/home/icon_boardgame_white.png')
         }
       ],
+      sideImg1: require('../assets/images/home/side_menu_1_1.png'),
       swipeIndex: 0//tab激活下标
     }
   },
   computed: {
-    changeIndex() {
-      return this.swipeIndex
+    swipeTo() {
+      let num = -(this.swipeIndex * 34)
+      return `translateY(${num}vh)`
     }
   },
   methods: {
-    changeSwipe(index) {
-      this.swipeIndex = index
-    },
     changeMenu(index) {
       this.swipeIndex = index
-      this.$refs.swipe.swipeTo(index)
     }
   }
 }
@@ -243,103 +144,135 @@ export default {
 
 <style lang="less" scoped>
   .home {
-    padding-top: 0.5rem;
+    color: #8A8A8A;
     position: absolute;
+    background: #F0F0F0;
     width: 100%;
-    height: 95%;
+    height: 100%;
     top: 0;
     left: 0;
     overflow-y: auto;
-    background: url('../assets/images/background/bg_discount.jpg') no-repeat fixed;
-    background-size: cover;
-    .box {
-      padding: 0 .5rem;
-      margin-top: 5px;
-      .van-notice-bar {
-        height: 20px;
-        padding: 0.2rem .5rem;
-        font-size: 0.5rem;
-        /deep/.van-image {
-          width: 1.5rem;
-          height: 1.5rem;
-          margin-right: 0.3rem;
+    .swipe {
+      box-sizing: border-box;
+      padding: 0 8px;
+      .van-swipe__track {
+        img {
+          display: block;
+          height: 34vh;
+          width: 100%;
         }
       }
+    }
+    .box {
+      box-sizing: border-box;  
+      padding: 0 8px;
+      .notice {
+        height: 5vh;
+        .van-notice-bar {
+        box-sizing: border-box;  
+        height: 100%;
+        padding: 0;
+        font-size: 8px;
+        /deep/.van-image {
+          width: 24px;
+          height: 24px;
+          margin-right: 4.8px;
+          
+        }
+      }
+      }
       .operate {
-        height: 100px;
+        height: 13vh;
         background:rgba(255, 255, 255, .4);
         border-radius: 5px;
         .header {
-          height: 24px;
+          box-sizing: border-box;
+          height: 3vh;
           border-radius: 5px 5px 0 0;
-          background: url('../assets/images/home/bg_wallet_top.png') no-repeat ;
-          background-size: cover;
+          background: #fff;
           display: flex;
           justify-content: space-between;
-          color:#fff;
-          font-size: .7rem;
-          padding: 0 1rem;
+          color:#8A8A8A;
+          padding: 0 16px;
           .left {
             display: flex;
             align-items: center;
+            font-size: 12px;
           }
-          .right {
+          .right {    
             display: flex;
             align-items: center;
             div {
-              border: 1px solid #fff;
+              box-sizing: border-box;
+              font-size: 12px;
+              border: 1px solid #8A8A8A;
               border-radius: 20px;
-              padding: 0 0.5rem;
-              margin-left: 0.4rem;
+              padding: 0 8px;
+              margin-left: 6.5px;
             }
           }
         }
         .content {
+          height: 10vh;
+          box-sizing: border-box;
           display: flex;
-          padding: 0.2rem 0;
+          background: #E1E0E1;
           .left {
-            font-size: .7rem;
-            padding: 1rem 2rem;
+            font-size: 11.2px;
+            box-sizing: border-box;
+            padding: 0 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
             .see {
+              box-sizing: border-box;
               border: 1px solid rgb(139, 126, 126);
-              color: rgb(139, 126, 126);
-              padding: 0 0.5rem;
+              padding: 0 8px;
               border-radius: 20px;
-              margin-bottom: 0.2rem;
-            }      
+            }   
+            .money {
+              margin-top: 1vh;
+            }   
           }
           .right {
-            border-left: 1px solid rgb(192, 189, 189);
             flex: 1;
             display: flex;
             justify-content: space-around;
+            align-items: center;
             .menu {
+              img {
+                height: 40px;
+              }
               .name {
-                font-size: 0.8rem;
-                color: rgb(139, 126, 126);
+                font-size: 12.8px;
               }
             }
           }
         }
       }  
       .tabMenu {
-        margin-top: 5px;
+        height: 36vh;
         display: flex;
+        box-sizing: border-box;
+        padding: 1vh 0;
         .left {
-          width: 7rem;
-          margin-right: .4rem;
+          width: 112px;
+          margin-right: 6.5px;
           .tabMenuList {
             li {
               border-radius: 5px;
-              height: 50px;
-              margin-bottom: 5px;
+              height: 8.5vh;
               display: flex;
               justify-content: center;
               align-items: center;
               background:rgba(255, 255, 255, .4);
-              font-size: .7rem;
+              font-size: 11.2px;
               &:nth-child(6) {
                 margin-bottom: 0;
+              }
+              img {
+                height: 4vh;
               }
             }
             .actMenu {
@@ -351,405 +284,18 @@ export default {
         }
         .right {
           flex: 1;
-          .swipeMenu1 {
-            background: url('../assets/images/home/col_cover_sports.webp') no-repeat fixed;
-            background-size: cover;
-            box-sizing:border-box;
-            padding-top: 30px;
-            position: relative;
-            .lab {
-              display: flex;
-              justify-content: space-around;
-              div {
-                width: 60px;
-                height: 5rem;
-              }
+          height: 100%;
+          border-radius: 5px;
+          overflow: hidden;
+          ul {
+            transition: all .2s linear;
+            li {
+              height: 34vh;
             }
-            .enter {
-              position: absolute;
-              width: 6rem;
-              padding: .3rem .6rem;
-              border: 1px solid #fff;
-              border-radius: 20px;
-              color: #fff;
-              font-size: 1rem;
-              background: rgba(255, 255, 255, .2);
-              left: 50%;
-              transform: translateX(-50%);
-              bottom: 50px;
-            }
-            .split {
-              display: flex;
-              align-items: center;
-              justify-content: space-around;
-              .sp {
-                width: 4rem;
-                height: 1px;
-                background: #fff;
-              }
-              .content {
-                font-size: .8rem;
-                color: #fff;
-              }
-              
-            }
-          }
-          .swipeMenu2 {
-            .sm2_01 {
-              border-radius: 5px;
-              background: url('../assets/images/home/col_cover_livecasino_ag_short.webp') no-repeat;
-              background-size: cover;
-              height: 105px;
-              margin-bottom: 5px;
-              position: relative;
+            .swip1 {
               img {
-                position: absolute;
-                display: block;
-                width: 4.5rem;
-                right: .5rem;
-                top: .5rem;
-              }
-            }
-            .sm2_02 {
-              border-radius: 5px;
-              background: url('../assets/images/home/col_cover_livecasino_ebet.webp') no-repeat;
-              background-size: cover;
-              height: 105px;
-              margin-bottom: 5px;
-              position: relative;
-              img {
-                position: absolute;
-                display: block;
-                width: 4.5rem;
-                right: .5rem;
-                top: .5rem;
-              }
-            }
-            .sm2_03 {
-              display: flex;
-              height: 105px;
-              justify-content: space-between;
-              .sm2_03_1 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_livecasino_og_short.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 4rem;
-                right: .1rem;
-             
-              }
-              }
-              .sm2_03_2 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_livecasino_gd_short.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 4rem;
-                right: .1rem;
-                
-              }
-              }
-            }
-          }
-          .swipeMenu3 {
-            .sm3_01 {
-              border-radius: 5px;
-              background: url('../assets/images/home/col_cover_lottery_sg.webp') no-repeat;
-              background-size: cover;
-              height: 105px;
-              margin-bottom: 5px;
-              position: relative;
-              img {
-                position: absolute;
-                display: block;
-                width: 4.5rem;
-                left: .5rem;
-                top: .5rem;
-              }
-            }
-            .sm3_02 {
-              display: flex;
-              height: 105px;
-              justify-content: space-between;
-              margin-bottom: 5px;
-              .sm3_02_1 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_lottery_lb.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-             
-              }
-              }
-              .sm3_02_2 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_lottery_kg.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-                
-              }
-              }
-            }
-            .sm3_03 {
-              display: flex;
-              height: 105px;
-              justify-content: space-between;
-              .sm3_03_1 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_lottery_bbin.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-             
-              }
-              }
-              .sm3_03_2 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_lottery_tcg.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-                
-              }
-              }
-            }
-          }
-          .swipeMenu5 {
-            .sm5_01 {
-              border-radius: 5px;
-              background: url('../assets/images/home/col_cover_esports_short.webp') no-repeat;
-              background-size: cover;
-              height: 160px;
-              margin-bottom: 5px;
-              position: relative;
-              .img1 {
-                position: absolute;
-                display: block;
-                width: 4rem;
-                right: .5rem;
-                top: 1rem;
-              }
-              .img3 {
-                position: absolute;
-                display: block;
-                width: 9rem;
-                left: 1rem;
-                top: 1rem;
-              }
-              .img2 {
-                position: absolute;
-                display: block;
+                height: 34vh;
                 width: 100%;
-                bottom: 0;
-                height: 100px;
-              }
-            }
-            .sm5_02 {
-              border-radius: 5px;
-              background: url('../assets/images/home/col_cover_aviaesports_long.png') no-repeat;
-              background-size: cover;
-              height: 160px;
-              margin-bottom: 5px;
-              position: relative;
-              .img1 {
-                position: absolute;
-                display: block;
-                width: 4rem;
-                right: .5rem;
-                top: .5rem;
-              }
-              .img2 {
-                position: absolute;
-                display: block;
-                width: 100%;
-                bottom: 0;
-                height: 100px;
-              }
-            }
-          }
-          .swipeMenu4 {
-            .sm4_01 {
-              display: flex;
-              height: 105px;
-              justify-content: space-between;
-              margin-bottom: 5px;
-              .sm4_01_1 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_slotgame_pg.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-             
-              }
-              }
-              .sm4_01_2 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_slotgame_ag.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-                
-              }
-              }
-            }
-            .sm4_02 {
-              display: flex;
-              height: 105px;
-              justify-content: space-between;
-              margin-bottom: 5px;
-              .sm4_02_1 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_slotgame_pt.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-             
-              }
-              }
-              .sm4_02_2 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_slotgame_mg.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-                
-              }
-              }
-            }
-            .sm4_03 {
-              display: flex;
-              height: 105px;
-              justify-content: space-between;
-              .sm4_03_1 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_slotgame_pp.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-             
-              }
-              }
-              .sm4_03_2 {
-                width: 7.4rem;
-                border-radius: 5px;
-                height: 105px;
-                background: url('../assets/images/home/col_cover_slotgame_dt.webp') no-repeat;
-                background-size: cover;
-                position: relative;
-                img {
-                position: absolute;
-                display: block;
-                width: 6rem;
-                left: 1rem;
-                top: .2rem;
-                
-              }
-              }
-            }
-          }
-          .swipeMenu6 {
-            .sm6_01 {
-              border-radius: 5px;
-              background: url('../assets/images/home/col_cover_boardgame_sg_short.webp') no-repeat;
-              background-size: cover;
-              height: 160px;
-              margin-bottom: 5px;
-              position: relative;
-              img {
-                position: absolute;
-                display: block;
-                width: 4rem;
-                right: .5rem;
-                top: .5rem;
-              }
-            }
-            .sm6_02 {
-              border-radius: 5px;
-              background: url('../assets/images/home/col_cover_boardgame_sy_short.webp') no-repeat;
-              background-size: cover;
-              height: 160px;
-              margin-bottom: 5px;
-              position: relative;
-              img {
-                position: absolute;
-                display: block;
-                width: 4rem;
-                right: .5rem;
-                top: .5rem;
               }
             }
           }

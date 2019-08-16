@@ -29,7 +29,7 @@ export default {
     padding-top: 20px;
     background: blue;
     .container {
-      padding: 0 .5rem;
+      padding: 0 8px;
       margin-top: 5px;
     }
   }
