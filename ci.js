@@ -12,9 +12,9 @@ const server = http.createServer((async (req, res) => {
     // 构建
     try {
         await gitPull()
-        deployWeb('admin')
-        deployWeb('agent')
-        deployWeb('player')
+        // deployWeb('admin')
+        // deployWeb('agent')
+        // deployWeb('player')
         deployServer('server')
     } catch (error) {
         console.error('构建异常：')
