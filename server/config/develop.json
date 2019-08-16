@@ -60,6 +60,7 @@
                 "/xnosql/player/page",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
+                "/xnosql/message/query",
                 "/xserver/system/createReview",
                 "/xserver/bankcard/create",
                 "/xserver/bankcard/get",
@@ -69,6 +70,7 @@
                 "/xserver/player/realtime",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
+                "/xnosql/message/query",
                 "/xserver/system/createReview"
             ]
         },
@@ -85,7 +87,8 @@
         "controllerDir": "/src/controller/",
         "mongodbUrl": "mongodb://mongo0:27017,mongo1:27017,mongo2:27017/n2",
         "mongoOption": {
-            "replicaSet": "rs"
+            "replicaSet": "rs",
+            "useUnifiedTopology": true
         },
         "defaultCreateAt": "createAt",
         "defaultUTC": 8,
@@ -94,7 +97,7 @@
         "defaultLimit": 200
     },
     "n1": {
-        "domain":"xbbw2jfb58.execute-api.ap-southeast-1.amazonaws.com",
+        "domain": "xbbw2jfb58.execute-api.ap-southeast-1.amazonaws.com",
         "buId": "123456",
         "apiKey": "123456"
     }

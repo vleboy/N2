@@ -36,12 +36,11 @@ router.post('/create', async (ctx, next) => {
 router.post('/delete/:cardNo', async (ctx, next) => {
     const mongodb = global.mongodb
     const token = ctx.tokenVerify
-    const inparam = ctx.request.query
+    const inparam = ctx.params
     const collectionName = token.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
 
     let user = await mongodb.collection(collectionName).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
-    let bankCards = user.bankCards.filter(o => o.cardNo != inparam.cardNo)
-    await mongodb.collection(collectionName).updateOne({ id: token.id }, { $set: { bankCards } })
+    await mongodb.collection(collectionName).updateOne({ id: token.id }, { $set: { bankCards: user.bankCards.filter(o => o.cardNo != inparam.cardNo) } })
     ctx.body = { err: false, res: '操作成功' }
 })
 
