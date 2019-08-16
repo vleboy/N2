@@ -53,7 +53,7 @@ yum install certbot python2-certbot-nginx
 # 6、安装git
 rpm -ivh https://centos7.iuscommunity.org/ius-release.rpm
 
-
-
+# 调整最大tcp连接量
+ulimit -n
 
 

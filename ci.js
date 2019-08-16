@@ -27,7 +27,7 @@ server.listen(1000)
 console.log('启动持续集成服务 ...')
 
 // const PROJECT_ROOT = '/usr/dev/N2'
-const PROJECT_ROOT = '/Users/cheney/project/aws/N2'
+const PROJECT_ROOT = '/usr/local/N2'
 
 function gitPull() {
     console.info('开始执行 git pull ...')
