@@ -11,12 +11,10 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 
 /**
  * 创建消息
- * project:(公告/私信/站内信)
- * ownerId:消息送达人(全部/指定代理ID)
+ * project:(公告/私信)
  * msg:消息体
- * createrId:创建人ID
- * createrName:创建人帐号
- * createrNick:创建人昵称
+ * role:角色(agent/player)
+ * ownerId:消息送达人ID
  */
 router.post('/message/create', async (ctx, next) => {
     const inparam = ctx.request.body

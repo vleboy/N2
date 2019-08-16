@@ -17,7 +17,6 @@ router.post('/message/create', async (ctx, next) => {
     ctx.body = { id: inparam.id, createAt: inparam.createAt }
 })
 
-
 /**
  * 查询消息
  */
