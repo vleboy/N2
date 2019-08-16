@@ -15,6 +15,7 @@ const server = http.createServer((async (req, res) => {
         deployWeb('admin')
         deployWeb('agent')
         deployWeb('player')
+        deployServer('server')
     } catch (error) {
         console.error('构建异常：')
         console.error(error)
@@ -57,8 +58,30 @@ function deployWeb(project) {
     return new Promise((reslove, reject) => {
         const commands = [
             `cd ${PROJECT_ROOT}/${project}`,
-            'npm run build',
-            'cd dist',
+            'npm run build'
+        ].join(' && ')
+        exec(commands, execOptions, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`)
+                reject(error)
+            }
+            if (stdout) {
+                console.info(`stdout: ${stdout}`)
+            }
+            if (stderr) {
+                console.error(`stderr: ${stderr}`)
+            }
+            reslove(stdout)
+        })
+    })
+}
+
+function deployServer(project) {
+    console.info(`重启服务 ${project} ...`)
+    return new Promise((reslove, reject) => {
+        const commands = [
+            `cd ${PROJECT_ROOT}/${project}`,
+            'npm run compose-server'
         ].join(' && ')
         exec(commands, execOptions, (error, stdout, stderr) => {
             if (error) {
