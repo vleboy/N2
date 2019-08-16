@@ -60,6 +60,7 @@
                 "/xnosql/player/page",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
+                "/xnosql/message/query",
                 "/xserver/system/createReview",
                 "/xserver/bankcard/create",
                 "/xserver/bankcard/get",
@@ -70,6 +71,7 @@
                 "/xserver/player/realtime",
                 "/xnosql/player/update",
                 "/xnosql/bill/page",
+                "/xnosql/message/query",
                 "/xserver/system/createReview"
             ]
         },
