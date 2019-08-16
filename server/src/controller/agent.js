@@ -54,20 +54,14 @@ router.post('/login', async (ctx, next) => {
  * 获取验证码
  */
 router.post('/captcha', async function (ctx, next) {
-    let arr = []
-    for (let i = 0; i < 1000; i++) {
-        arr.push({ i, random1: Math.random(), random2: Math.random(), random3: Math.random(), random4: Math.random(), random5: Math.random() })
-    }
-    mongodb.collection('message').insertMany(arr)
-
-    let inparam = ctx.request.body
+    const inparam = ctx.request.body
     if (!inparam.userName) {
         return ctx.body = { err: true, res: "请检查入参" }
     }
     inparam.code = _.random(1000, 9999)
     VerifyCode[inparam.userName] = { code: inparam.code, exp: Date.now() + 3 * 60 * 1000 }
     // 生成验证码的base64返回
-    let p = new captchapng(80, 30, inparam.code)
+    const p = new captchapng(80, 30, inparam.code)
     p.color(255, 255, 255, 0) // First color: background (red, green, blue, alpha)
     p.color(80, 80, 80, 255)  // Second color: paint (red, green, blue, alpha)
     // 结果返回
