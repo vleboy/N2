@@ -53,6 +53,18 @@ yum install certbot python2-certbot-nginx
 # 6、安装git
 rpm -ivh https://centos7.iuscommunity.org/ius-release.rpm
 
+#7、安装应用
+cd /usr/local/
+git clone https://github.com/vleboy/N2.git
+cd /usr/local/N2/ && vi .git/config
+[credential]
+     helper = store
+cd server
+pm2 start ci.js -n ci
+npm i && npm run compose-up
+npm run mongo-rd
+npm run logs
+
 # 调整最大tcp连接量
 ulimit -n
 
