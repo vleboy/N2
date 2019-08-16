@@ -22,7 +22,7 @@ router.post('/message/create', async (ctx, next) => {
     const inparam = ctx.request.body
     const mongodb = global.mongodb
     const token = ctx.tokenVerify
-    if (!inparam.project || !inparam.ownerId || !inparam.msg) {
+    if (!inparam.project || !inparam.msg) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
     // 检查创建人
@@ -36,7 +36,7 @@ router.post('/message/create', async (ctx, next) => {
     // 检查送达人
     if (inparam.role) {
         let collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
-        let user = await mongodb.collection(collectionName).findOne({ id: token.id }, { projection: { _id: 0 } })
+        let user = await mongodb.collection(collectionName).findOne({ id: inparam.ownerId }, { projection: { _id: 0 } })
         if (!user) {
             return ctx.body = { err: true, res: '帐号不存在' }
         }
