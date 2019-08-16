@@ -35,6 +35,7 @@ router.post('/message/create', async (ctx, next) => {
     inparam.createrNick = agent.userNick
     // 检查送达人
     if (inparam.role) {
+        inparam.ownerId = +inparam.ownerId
         let collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
         let user = await mongodb.collection(collectionName).findOne({ id: inparam.ownerId }, { projection: { _id: 0 } })
         if (!user) {
