@@ -50,7 +50,7 @@ router.post('/message/create', async (ctx, next) => {
  * 查询消息
  */
 router.get('/message/page', async (ctx, next) => {
-    let inparam = ctx.request.query
+    const inparam = ctx.request.query
     // 设置分页参数
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
@@ -59,4 +59,15 @@ router.get('/message/page', async (ctx, next) => {
     return next()
 })
 
+/**
+ * 查询消息
+ */
+router.get('/message/query', async (ctx, next) => {
+    const inparam = ctx.request.query
+    const token = ctx.tokenVerify
+    if (inparam.project == Util.MsgEnum.Private) {
+        inparam.ownerId = token.id
+    }
+    return next()
+})
 module.exports = router
