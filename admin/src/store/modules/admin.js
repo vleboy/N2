@@ -1,6 +1,7 @@
 export const admin = {
   state: {
-    pointDrawer: false,
+    playerPoint: false,
+    agentPoint: false,
     createAgent: false,
     createPlayer: false,
     agentDetail: false,
@@ -9,7 +10,8 @@ export const admin = {
     operateAdmin: false,
     operateConfig: false,
     auditDetail: false,
-    pointInfo: {},
+    agentPointInfo: {},
+    playerPointInfo: {},
     playerInfo: {},
     agentInfo: {},
     roleInfo: {
@@ -27,8 +29,11 @@ export const admin = {
   mutations: {
     /* 显示抽屉组件 */
     
-    showPointDrawer(state, params) {
-      state.pointDrawer = params
+    showPlayerPoint(state, params) {
+      state.playerPoint = params
+    },
+    showAgentPoint(state, params) {
+      state.agentPoint = params
     },
     showCreateAgent(state, params) {
       state.createAgent = params
@@ -54,8 +59,11 @@ export const admin = {
     showAuditDetail(state, params) {
       state.auditDetail = params
     },
-    setPointInfo(state, params) {
-      state.pointInfo = params
+    setAgentPointInfo(state, params) {
+      state.agentPointInfo = params
+    },
+    setPlayerPointInfo(state, params) {
+      state.playerPointInfo = params
     },
     setPlayerInfo(state, params) {
       state.playerInfo = params

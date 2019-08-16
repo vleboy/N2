@@ -67,7 +67,7 @@
     <div class="page">
       <Page :current="currentPage" :total="totalPage" :page-size="pageSize" @on-change="changepage"/>
     </div>
-    <operatePoint></operatePoint>
+    <playerPoint></playerPoint>
     <playerDetail></playerDetail>
     <Spin size="large" fix v-show="spinShow" style="z-index:200;">
       <Icon type="ios-loading" size="64" class="demo-spin-icon-load"></Icon>
@@ -80,12 +80,12 @@
 import dayjs from "dayjs";
 import { queryPlayer, playerStatus } from "../../service/index";
 import playerDetail from './playerDetail'
-import operatePoint from '../../components/operatePoint'
+import playerPoint from './playerPoint'
 import _ from 'lodash'
 export default {
   components: {
     playerDetail,
-    operatePoint
+    playerPoint
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
@@ -272,8 +272,8 @@ export default {
         id: row.id,
         role: row.role,
       }
-      this.$store.commit('showPointDrawer', true)
-      this.$store.commit('setPointInfo', params)
+      this.$store.commit('showPlayerPoint', true)
+      this.$store.commit('setPlayerPointInfo', params)
     },
     //查看玩家详情
     playerDetail(row) {

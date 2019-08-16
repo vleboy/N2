@@ -79,7 +79,7 @@
       </template>
     </tree-table>
     <!-- 加减点 -->
-    <operatePoint></operatePoint>
+    <agentPoint></agentPoint>
     <createAgent></createAgent>
     <createPlayer></createPlayer>
     <agentDetail></agentDetail>
@@ -95,13 +95,13 @@ import dayjs from "dayjs";
 import _ from "lodash";
 import { queryAgent, agentStatus } from "../../service/index";
 
-import operatePoint from "./operatePoint";
+import agentPoint from "./agentPoint";
 import createAgent from "./createAgent";
 import createPlayer from "./createPlayer";
 import agentDetail from "./agentDetail";
 export default {
   components: {
-    operatePoint,
+    agentPoint,
     createAgent,
     createPlayer,
     agentDetail
@@ -254,8 +254,8 @@ export default {
         id: row.id,
         role: row.role
       };
-      this.$store.commit("showPointDrawer", true);
-      this.$store.commit("setPointInfo", params);
+      this.$store.commit("showAgentPoint", true);
+      this.$store.commit("setAgentPointInfo", params);
     },
     //创建直属代理
     createNewAgent() {

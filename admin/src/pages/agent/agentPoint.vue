@@ -52,7 +52,7 @@
   </div>
 </template>
 <script>
-import {setPoints} from '../service/index'
+import {setPoints} from '../../service/index'
 export default {
   data() {
     return {
@@ -71,10 +71,10 @@ export default {
   },
   computed: {
     listenshowDraw() {
-      return this.$store.state.admin.pointDrawer;
+      return this.$store.state.admin.agentPoint;
     },
     userName() {
-      return this.$store.state.admin.pointInfo.name;
+      return this.$store.state.admin.agentPointInfo.name;
     }
   },
   methods: {
@@ -86,9 +86,9 @@ export default {
     },
     sub() {
       let prarms = {
-        id: this.$store.state.admin.pointInfo.id,
+        id: this.$store.state.admin.agentPointInfo.id,
         project: this.project,
-        role: this.$store.state.admin.pointInfo.role,
+        role: this.$store.state.admin.agentPointInfo.role,
         amount: this.point,
         remark: this.remark
       }
@@ -104,10 +104,10 @@ export default {
       this.project = '1'
       this.point = 0
       this.remark = ''
-      this.$store.commit('setPointInfo', {
+      this.$store.commit('setAgentPointInfo', {
         
       })
-      this.$store.commit("showPointDrawer", false);
+      this.$store.commit("showAgentPoint", false);
     }
   },
   watch: {
