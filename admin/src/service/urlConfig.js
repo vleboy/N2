@@ -5,7 +5,6 @@ export let URL = () => {
     return 'api.1bets.co'
   }
 }
-
 export const httpType = 'http://'
 
 export const api = {
