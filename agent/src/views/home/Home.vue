@@ -8,7 +8,7 @@
             src="https://img.yzcdn.cn/vant/cat.jpeg"
           />
         <p>早上好!</p>
-        <p>ff88808</p>
+        <p>{{userName}}</p>
       </div>
       <div class="amount">
         <p>净输赢(元)</p>
@@ -97,6 +97,11 @@ export default {
       img_info: require('../../assets/images/home/xiaoxi.png'),
       dataList: []
     }
+  },
+  computed: {
+    userName() {
+      return localStorage.userName
+    } 
   },
   mounted() {
     this.getData()

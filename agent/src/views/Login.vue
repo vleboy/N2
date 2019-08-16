@@ -55,7 +55,9 @@ export default {
         mobile: true
       }
       logIn(params).then(res => {
+        console.log(res)
         localStorage.setItem("Token", res.token);
+        localStorage.userName = res.userName
         setTimeout(() => localStorage.removeItem("Token"), 259200000);
         this.$router.push('/home')
       }).catch(err => {
