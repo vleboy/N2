@@ -48,7 +48,19 @@ chmod +x /usr/local/bin/docker-compose
 # 5、安装certbot
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional
+
+# 可选修复
+pip install requests urllib3 pyOpenSSL --force --upgrade
+pip install --upgrade --force-reinstall 'requests==2.6.0'
+
 yum install certbot python2-certbot-nginx
+
+
+docker run -it --rm --name certbot \
+            -v "/etc/letsencrypt:/etc/letsencrypt" \
+            -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+            certbot/certbot --nginx
+
 
 # 6、安装git
 rpm -ivh https://centos7.iuscommunity.org/ius-release.rpm
