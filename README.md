@@ -87,4 +87,7 @@ db.createUser({user:"root",pwd:"Ab123456",roles:[{role:"root",db:"admin"}]}) -->
 # 调整最大tcp连接量
 ulimit -n
 
-
+# 数据库备份与还原
+1、在远程主机的 N2/server目录下执行npm run mongo-dump
+2、在本地主机的 project/aws目录下执行 ./scpn2.sh
+3、在本地主机的 N2/server目录下执行npm run mongo-restore
