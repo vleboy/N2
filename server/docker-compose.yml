@@ -24,7 +24,7 @@ services:
     ports:
       - 27017:27017
     restart: always
-    entrypoint: mongod --auth --bind_ip_all --replSet "rs"
+    entrypoint: mongod  --bind_ip_all --replSet "rs"
     networks:
       - n2_overlay
   mongo1:
@@ -37,7 +37,7 @@ services:
     ports:
       - 27018:27017
     restart: always
-    entrypoint: mongod --auth --bind_ip_all --replSet "rs"
+    entrypoint: mongod  --bind_ip_all --replSet "rs"
     networks:
       - n2_overlay
   mongo2:
@@ -50,7 +50,7 @@ services:
     ports:
       - 27019:27017
     restart: always
-    entrypoint: mongod --auth --bind_ip_all --replSet "rs"
+    entrypoint: mongod  --bind_ip_all --replSet "rs"
     networks:
       - n2_overlay
 networks:
