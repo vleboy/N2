@@ -80,6 +80,7 @@ pm2 start ci.js -n ci
 npm i && npm run compose-up
 npm run mongo-rs
 npm run mongo-in
+use admin
 db.createUser({user:"root",pwd:"Ab123456",roles:[{role:"root",db:"admin"}]})
 npm run logs
 
