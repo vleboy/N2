@@ -50,7 +50,7 @@ async function createIndex(mongodb) {
     await mongodb.collection(Util.CollectionEnum.agent).createIndex({ id: -1 })
     await mongodb.collection(Util.CollectionEnum.player).createIndex({ id: -1 })
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ id: -1 })
-    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceId: -1 }, { unique: true, sparse: true })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceId: 1 }, { unique: true, sparse: true })
     await mongodb.collection(Util.CollectionEnum.review).createIndex({ id: -1 })
     await mongodb.collection(Util.CollectionEnum.message).createIndex({ id: -1 })
 }
@@ -72,7 +72,7 @@ async function testTransaction() {
     } catch (error) {
         console.error('事务回滚')
         console.error(error.codeName)
-        console.error(error.errmsg)// sourceId_-1
+        console.error(error.errmsg)// sourceId_1
         console.error('错误详情')
         console.error(error)
         await session.abortTransaction()
