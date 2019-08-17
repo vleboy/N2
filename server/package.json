@@ -17,7 +17,7 @@
     "compose-down": "docker-compose -f docker-compose.yml down",
     "mongo-rs": "docker exec -it mongo0 mongo --eval 'config={\"_id\":\"rs\",\"members\":[{\"_id\":0,\"host\":\"mongo0:27017\",\"priority\":1},{\"_id\":1,\"host\":\"mongo1:27017\",\"priority\":0.1},{\"_id\":2,\"host\":\"mongo2:27017\",\"priority\":0.1}]};rs.initiate(config)'",
     "mongo-in": "docker exec -it mongo0 mongo",
-    "mongo-dump":"docker exec -it mongo0 mongodump -h localhost --port 27017 -d n2 -o /dump",
+    "mongo-dump":"docker exec -it mongo0 mongodump --host localhost:27017 -d n2 -o /dump && tar -zcvf n2.tar.gz /dump/n2",
     "logs": "docker logs server -f",
     "tar": "rm -f _db.tar.gz && tar -zcvf _db.tar.gz _db"
   },
