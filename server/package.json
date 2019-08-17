@@ -17,7 +17,8 @@
     "compose-down": "docker-compose -f docker-compose.yml down",
     "mongo-rs": "docker exec -it mongo0 mongo --eval 'config={\"_id\":\"rs\",\"members\":[{\"_id\":0,\"host\":\"mongo0:27017\",\"priority\":1},{\"_id\":1,\"host\":\"mongo1:27017\",\"priority\":0.1},{\"_id\":2,\"host\":\"mongo2:27017\",\"priority\":0.1}]};rs.initiate(config)'",
     "logs": "docker logs server -f",
-    "mongo-in": "docker exec -it mongo0 mongo"
+    "mongo-in": "docker exec -it mongo0 mongo",
+    "tar": "tar -zcvf _db.tar.gz _db"
   },
   "author": "cheneyxu",
   "license": "ISC",
