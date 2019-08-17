@@ -6,7 +6,7 @@ export let URL = () => {
   }
 }
 
-export const httpType = 'http://'
+export const httpType = 'https://'
 
 export const api = {
   getVaptcha: httpType + URL() + '/vaptcha/getVaptcha',
