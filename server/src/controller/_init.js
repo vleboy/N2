@@ -15,11 +15,7 @@ router.post('/init', async (ctx, next) => {
             await mongodb.createCollection(Util.CollectionEnum[key])
         }
         // 创建索引
-        await mongodb.collection(Util.CollectionEnum.agent).createIndex({ id: -1 })
-        await mongodb.collection(Util.CollectionEnum.player).createIndex({ id: -1 })
-        await mongodb.collection(Util.CollectionEnum.bill).createIndex({ id: -1 })
-        await mongodb.collection(Util.CollectionEnum.review).createIndex({ id: -1 })
-        await mongodb.collection(Util.CollectionEnum.message).createIndex({ id: -1 })
+        await createIndex(mongodb)
         // 预置数据
         await mongodb.collection(Util.CollectionEnum._seq).insertMany([{ seqName: 'billSeq', seqValue: 0 }, { seqName: 'reviewSeq', seqValue: 0 }, { seqName: 'messageSeq', seqValue: 0 }])
 
@@ -41,10 +37,48 @@ router.post('/init', async (ctx, next) => {
         await mongodb.collection(Util.CollectionEnum.config).insertOne({ id: '1170000', name: 'NA电竞平台费(百分比)', value: 6 })
         await mongodb.collection(Util.CollectionEnum.config).insertOne({ id: '1100000', name: 'VG棋牌平台费(百分比)', value: 6 })
 
+        // 事务测试
+        // await testTransaction()
+
         ctx.body = 'Y'
     } else {
         ctx.body = 'N'
     }
 })
+
+async function createIndex(mongodb) {
+    await mongodb.collection(Util.CollectionEnum.agent).createIndex({ id: -1 })
+    await mongodb.collection(Util.CollectionEnum.player).createIndex({ id: -1 })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ id: -1 })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceId: -1 }, { unique: true, sparse: true })
+    await mongodb.collection(Util.CollectionEnum.review).createIndex({ id: -1 })
+    await mongodb.collection(Util.CollectionEnum.message).createIndex({ id: -1 })
+}
+
+async function testTransaction() {
+    const mongodb = global.mongodb
+    const session = await global.getMongoSession()
+    try {
+        await mongodb.collection(Util.CollectionEnum._seq).findOneAndUpdate(
+            { seqName: 'billSeq' },
+            { $inc: { seqValue: 1 } },
+            { returnOriginal: false, projection: { seqValue: 1, _id: 0 }, session }
+        )
+        await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: 1, sourceId: 1 }, { session })
+        await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: 2 }, { session })
+        await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: 3 }, { session })
+        await mongodb.collection(Util.CollectionEnum.bill).insertOne({ id: 4, sourceId: 1 }, { session })
+        await session.commitTransaction()
+    } catch (error) {
+        console.error('事务回滚')
+        console.error(error.codeName)
+        console.error(error.errmsg)// sourceId_-1
+        console.error('错误详情')
+        console.error(error)
+        await session.abortTransaction()
+    } finally {
+        await session.endSession()
+    }
+}
 
 module.exports = router
