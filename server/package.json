@@ -18,6 +18,7 @@
     "mongo-rs": "docker exec -it mongo0 mongo --eval 'config={\"_id\":\"rs\",\"members\":[{\"_id\":0,\"host\":\"mongo0:27017\",\"priority\":1},{\"_id\":1,\"host\":\"mongo1:27017\",\"priority\":0.1},{\"_id\":2,\"host\":\"mongo2:27017\",\"priority\":0.1}]};rs.initiate(config)'",
     "mongo-in": "docker exec -it mongo0 mongo",
     "mongo-dump": "docker exec mongo0 /bin/bash -c 'mongodump --host localhost:27017 -d n2 -o /dump && cd /dump && tar -zcvf /dump/n2.tar.gz n2' && docker cp mongo0:/dump/n2.tar.gz /root/n2.tar.gz",
+    "mongo-restore": "docker cp /Users/cheney/project/aws/temp/n2.tar.gz mongo0:/root && docker exec mongo0 bin/bash -c 'cd /root && tar -zxvf n2.tar.gz && mongorestore -d n2 --drop /root/n2'",
     "logs": "docker logs server -f"
   },
   "author": "cheneyxu",
