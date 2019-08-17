@@ -78,7 +78,9 @@ cd server
 # 持续构建和容器应用
 pm2 start ci.js -n ci
 npm i && npm run compose-up
-npm run mongo-rd
+npm run mongo-rs
+npm run mongo-in
+db.createUser({user:"root",pwd:"Ab123456",roles:[{role:"root",db:"admin"}]})
 npm run logs
 
 # 调整最大tcp连接量
