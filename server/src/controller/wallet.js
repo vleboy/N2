@@ -46,14 +46,18 @@ async function syncBill(inparam, player) {
         queryBalance.balance = { $gte: Math.abs(inparam.amount) }
     }
     // 若返还，检查投注存在性
-    // if (await mongodb.collection(Util.CollectionEnum.bill).findOne({ sourceId: inparam.sn }, { projection: { id: 1, _id: 0 } })) {
-    //     let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId })
-    //     if (player) {
-    //         return { balance: player.balance }
-    //     } else {
-    //         return { err: true, res: '玩家不存在' }
-    //     }
-    // }
+    let betquery = { sourceId: inparam.betsn }
+    if (!inparam.betsn) {
+        betquery = { sourceRelKey: inparam.businessKey, project: Util.ProjectEnum.Bet }
+    }
+    if (inparam.method != Util.ProjectEnum.Bet && !await mongodb.collection(Util.CollectionEnum.bill).findOne(betquery, { projection: { id: 1, _id: 0 } })) {
+        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId })
+        if (player) {
+            return { balance: player.balance }
+        } else {
+            return { err: true, res: '玩家不存在' }
+        }
+    }
     try {
         // 变更玩家余额
         const res = await mongodb.collection(Util.CollectionEnum.player).findOneAndUpdate(queryBalance, { $inc: { balance: inparam.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
