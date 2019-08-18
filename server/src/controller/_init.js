@@ -49,8 +49,13 @@ router.post('/init', async (ctx, next) => {
 async function createIndex(mongodb) {
     await mongodb.collection(Util.CollectionEnum.agent).createIndex({ id: -1 })
     await mongodb.collection(Util.CollectionEnum.player).createIndex({ id: -1 })
+
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ id: -1 })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ project: 1 })
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceId: 1 }, { unique: true, sparse: true })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceRelKey: 1 }, { sparse: true })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceRelKey: 1, project: 1 }, { sparse: true })
+
     await mongodb.collection(Util.CollectionEnum.review).createIndex({ id: -1 })
     await mongodb.collection(Util.CollectionEnum.message).createIndex({ id: -1 })
 }
