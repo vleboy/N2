@@ -46,16 +46,19 @@ async function syncBill(inparam, player) {
         queryBalance.balance = { $gte: Math.abs(inparam.amount) }
     }
     // 若返还，检查投注存在性
-    let betquery = { sourceId: inparam.betsn }
-    if (!inparam.betsn) {
-        betquery = { sourceRelKey: inparam.businessKey, project: Util.ProjectEnum.Bet }
-    }
-    if (inparam.method != Util.ProjectEnum.Bet && !await mongodb.collection(Util.CollectionEnum.bill).findOne(betquery, { projection: { id: 1, _id: 0 } })) {
-        let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId })
-        if (player) {
-            return { balance: player.balance }
-        } else {
-            return { err: true, res: '玩家不存在' }
+    if (inparam.method != Util.ProjectEnum.Bet) {
+        let betquery = { sourceId: inparam.betsn }
+        if (!inparam.betsn) {
+            betquery = { sourceRelKey: inparam.businessKey, project: Util.ProjectEnum.Bet }
+        }
+        if (!await mongodb.collection(Util.CollectionEnum.bill).findOne(betquery, { projection: { id: 1, _id: 0 } })) {
+            let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId })
+            if (player) {
+                return { balance: player.balance }
+            } else {
+                return { err: true, res: '玩家不存在' }
+            }
+            // TODO 记录未找到投注的日志
         }
     }
     try {
