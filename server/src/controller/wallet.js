@@ -86,7 +86,7 @@ async function syncBill(inparam) {
                 project: inparam.method,
                 preBalance: +res.value.balance.toFixed(2),
                 amount: inparam.amount,
-                balance: NP.plus(res.value.balance, inparam.amount),
+                balance: NP.plus(+res.value.balance.toFixed(2), inparam.amount),
 
                 ownerId: res.value.id,
                 ownerName: res.value.playerName,
