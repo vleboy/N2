@@ -11,10 +11,11 @@
       <div class="notice">
         <van-notice-bar :text="notice" :left-icon="leftIcon" background="transparent" color="#8A8A8A" />
       </div>
-      <div class="operate">
+       <div class="operate">
         <div class="header">
           <div class="left">
-            早上好,请登录
+            <span>早上好,</span>
+            <span>{{playerName}}</span>
           </div>
           <div class="right">
             <div>个人资料</div>
@@ -66,72 +67,72 @@
 
 <script>
 
-import Carousel from './Carousel.vue'
+
 
 export default {
   name: 'home',
-  components: {
-    Carousel
-  },
   data() {
     return {
       notice: '足协杯战线连续第2年上演广州德比战，上赛季半决赛上恒大以两回合5-3的总比分淘汰富力。',
-      leftIcon: require('../assets/images/home/ico_notice.png'),
+      leftIcon: require('../../assets/images/home/ico_notice.png'),
       operateHeader: [
         {
-          img: require('../assets/images/home/icon_wallet_deposit.png'),
+          img: require('../../assets/images/home/icon_wallet_deposit.png'),
           name: '存款'
         },
         {
-          img: require('../assets/images/home/icon_wallet_transfer.png'),
+          img: require('../../assets/images/home/icon_wallet_transfer.png'),
           name: '转账'
         },
         {
-          img: require('../assets/images/home/icon_wallet_withdraw.png'),
+          img: require('../../assets/images/home/icon_wallet_withdraw.png'),
           name: '取款'
         }
       ],
       swipeList: [
         {
-          img: require('../assets/images/home/swipe1.png')
+          img: require('../../assets/images/home/swipe1.png')
         },
         {
-          img: require('../assets/images/home/swipe2.png')
+          img: require('../../assets/images/home/swipe2.png')
         },
         {
-          img: require('../assets/images/home/swipe3.png')
+          img: require('../../assets/images/home/swipe3.png')
         }
       ],
       tabMenuList:[
         {
           name: '真人视讯',
-          img: require('../assets/images/home/icon_sports_darkgolden.png'),
-          actImg: require('../assets/images/home/icon_sports_white.png')
+          img: require('../../assets/images/home/icon_sports_darkgolden.png'),
+          actImg: require('../../assets/images/home/icon_sports_white.png')
         },
         {
           name: '电子游艺',
-          img: require('../assets/images/home/icon_livecasino_darkgolden.png'),
-          actImg: require('../assets/images/home/icon_livecasino_white.png')
+          img: require('../../assets/images/home/icon_livecasino_darkgolden.png'),
+          actImg: require('../../assets/images/home/icon_livecasino_white.png')
         },
         {
           name: '体育竞技',
-          img: require('../assets/images/home/icon_lottery_darkgolden.png'),
-          actImg: require('../assets/images/home/icon_lottery_white.png')
+          img: require('../../assets/images/home/icon_lottery_darkgolden.png'),
+          actImg: require('../../assets/images/home/icon_lottery_white.png')
         },
         {
           name: '棋牌游戏',
-          img: require('../assets/images/home/icon_esports_darkgolden.png'),
-          actImg: require('../assets/images/home/icon_esports_white.png')
+          img: require('../../assets/images/home/icon_esports_darkgolden.png'),
+          actImg: require('../../assets/images/home/icon_esports_white.png')
         }
       ],
-      sideImg1: require('../assets/images/home/side_menu_1_1.png'),
+      sideImg1: require('../../assets/images/home/side_menu_1_1.png'),
       swipeIndex: 0//tab激活下标
     }
   },
   computed: {
     swipeTo() {
-      let num = -(this.swipeIndex * 34)
-      return `translateY(${num}vh)`
+      let num = -(this.swipeIndex * 100)
+      return `translateY(${num}%)`
+    },
+    playerName() {
+      return localStorage.playerNick ? localStorage.playerNick : '请登录'
     }
   },
   methods: {
@@ -147,18 +148,24 @@ export default {
     color: #8A8A8A;
     position: absolute;
     background: #F0F0F0;
+     box-sizing: border-box;  
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
     overflow-y: auto;
     .swipe {
+      height: 30%;
+      overflow: hidden;
       box-sizing: border-box;
       padding: 0 8px;
+      .van-swipe {
+         height: 100%;
+      }
       .van-swipe__track {
         img {
           display: block;
-          height: 34vh;
+          height: 100%;
           width: 100%;
         }
       }
@@ -166,8 +173,10 @@ export default {
     .box {
       box-sizing: border-box;  
       padding: 0 8px;
+      height: 68%;
       .notice {
-        height: 5vh;
+        height: 5%;
+        margin: 1% 0;
         .van-notice-bar {
         box-sizing: border-box;  
         height: 100%;
@@ -177,17 +186,18 @@ export default {
           width: 24px;
           height: 24px;
           margin-right: 4.8px;
-          
+          }
         }
       }
-      }
       .operate {
-        height: 13vh;
+        height: 23%;
+        overflow: hidden;
         background:rgba(255, 255, 255, .4);
         border-radius: 5px;
+        margin-bottom: 1%;
         .header {
           box-sizing: border-box;
-          height: 3vh;
+          height: 30%;
           border-radius: 5px 5px 0 0;
           background: #fff;
           display: flex;
@@ -197,7 +207,9 @@ export default {
           .left {
             display: flex;
             align-items: center;
-            font-size: 12px;
+            span {
+              font-size: 12px;
+            }
           }
           .right {    
             display: flex;
@@ -213,7 +225,7 @@ export default {
           }
         }
         .content {
-          height: 10vh;
+          height: 70%;
           box-sizing: border-box;
           display: flex;
           background: #E1E0E1;
@@ -252,17 +264,19 @@ export default {
         }
       }  
       .tabMenu {
-        height: 36vh;
+        height: 60%;
         display: flex;
         box-sizing: border-box;
-        padding: 1vh 0;
+        margin-top: 2%;
         .left {
+          height: 100%;
           width: 112px;
           margin-right: 6.5px;
           .tabMenuList {
+            height: 100%;
             li {
               border-radius: 5px;
-              height: 8.5vh;
+              height: 25%;
               display: flex;
               justify-content: center;
               align-items: center;
@@ -276,7 +290,7 @@ export default {
               }
             }
             .actMenu {
-              background: url('../assets/images/home/btn_register.png') no-repeat;
+              background: url('../../assets/images/home/btn_register.png') no-repeat;
               background-size: cover;
               color: #fff;
             }
@@ -288,13 +302,14 @@ export default {
           border-radius: 5px;
           overflow: hidden;
           ul {
+            height: 100%;
             transition: all .2s linear;
             li {
-              height: 34vh;
+              height: 100%;
             }
             .swip1 {
               img {
-                height: 34vh;
+                height: 100%;
                 width: 100%;
               }
             }

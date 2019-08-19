@@ -28,7 +28,7 @@ export default {
     top: 0;
     left: 0;
     overflow-y: auto;
-    background: url('../assets/images/background/bg_service.jpg') no-repeat fixed;
+    background: url('../../assets/images/background/bg_service.jpg') no-repeat fixed;
     background-size: cover;
     .box {
       padding: 0 16px;

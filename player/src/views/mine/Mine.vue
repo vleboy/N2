@@ -56,25 +56,26 @@ export default {
   name: 'mine',
   data() {
     return {
-      via: require("../assets/images/mine/icon_default_head_bg.png"),//头像
+      
+      via: require("../../assets/images/mine/icon_default_head_bg.png"),//头像
       nickname: '请登录',//默认请登录
       money: 0,//中心钱包
       //顶部菜单
       topMenu: [
         {
-          img: require("../assets/images/mine/icon_charge.png"),
+          img: require("../../assets/images/mine/icon_charge.png"),
           text: '存款'
         },
         {
-          img: require("../assets/images/mine/icon_tranfer.png"),
+          img: require("../../assets/images/mine/icon_tranfer.png"),
           text: '转账'
         },
         {
-          img: require("../assets/images/mine/ico_withdraw.png"),
+          img: require("../../assets/images/mine/ico_withdraw.png"),
           text: '取款'
         },
         {
-          img: require("../assets/images/mine/icon_discount.png"),
+          img: require("../../assets/images/mine/icon_discount.png"),
           text: 'VIP详情'
         }
       ],
@@ -82,43 +83,43 @@ export default {
       contentMenu: [
         [
           {
-            img: require("../assets/images/mine/icon_home_setting.png"),
+            img: require("../../assets/images/mine/icon_home_setting.png"),
             text: '个人资料'
           },
           {
-            img: require("../assets/images/mine/icon_mine_account.png"),
+            img: require("../../assets/images/mine/icon_mine_account.png"),
             text: '交易记录'
           },
           {
-            img: require("../assets/images/mine/icon_mine_settle.png"),
+            img: require("../../assets/images/mine/icon_mine_settle.png"),
             text: '投注记录'
           }
         ],
         [
           {
-            img: require("../assets/images/mine/gift.png"),
+            img: require("../../assets/images/mine/gift.png"),
             text: '好礼赠送'
           },
           {
-            img: require("../assets/images/mine/icon_mine_about.png"),
+            img: require("../../assets/images/mine/icon_mine_about.png"),
             text: '新手教程'
           },
           {
-            img: require("../assets/images/mine/icon_home_partner.png"),
+            img: require("../../assets/images/mine/icon_home_partner.png"),
             text: '银行卡号'
           }
         ],
         [
           {
-            img: require("../assets/images/mine/ico_new.png"),
+            img: require("../../assets/images/mine/ico_new.png"),
             text: '合营计划'
           },
           {
-            img: require("../assets/images/mine/icon_home_about.png"),
+            img: require("../../assets/images/mine/icon_home_about.png"),
             text: '关于亚博'
           },
           {
-            img: require("../assets/images/mine/icon_mine_unsettle.png"),
+            img: require("../../assets/images/mine/icon_mine_unsettle.png"),
             text: '安全退出'
           }
         ]
@@ -142,7 +143,7 @@ export default {
     top: 0;
     left: 0;
     overflow-y: auto;
-    background: url('../assets/images/background/bg_mine.jpg') no-repeat fixed;
+    background: url('../../assets/images/background/bg_mine.jpg') no-repeat fixed;
     background-size: cover;
     .box {
       padding: 0 16px;

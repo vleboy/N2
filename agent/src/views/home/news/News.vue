@@ -8,7 +8,13 @@
       />
       <van-tabs v-model="active" swipeable title-active-color="#20a0ff" color="#20a0ff">
         <van-tab title="公告消息">
-          <div class="noDada" v-if="isShow">
+          <div class="container" v-for="(item, index) in publicMsg" @click="showDetail(item.msg)">
+            <div class="news">
+              <div class="msg">{{item.msg}}</div>
+              <div class="time">{{item.createAtStr}}</div>
+            </div>
+          </div>
+          <div class="noDada" v-if="show1">
             <van-image
               width="100"
               height="100"
@@ -17,94 +23,83 @@
             <div>暂无消息</div>
           </div>
         </van-tab>
-        <van-tab title="联系我们">
-          <div style="padding:0 12.8px;">
-            <div class="list flex">
-              <div class="flex">
-                <van-image
-                  round
-                  width="30"
-                  height="30"
-                  src="https://img.yzcdn.cn/vant/cat.jpeg"
-                  style="margin-right:16px"
-                  :show-loading="false"
-                />
-                <div>
-                  <div class="flex">
-                    <div style="margin-right:8px">合营部QQ</div>
-                    <div>1线</div>
-                  </div>
-                  <div>87866091</div>
-                </div>
-              </div>
-              <van-button type="info" size="small">复制</van-button>
+        <van-tab title="私信消息">
+          <div class="container" v-for="(item, index) in privateMsg" @click="showDetail(item.msg)">
+            <div class="news">
+              <div class="msg">{{item.msg}}</div>
+              <div class="time">{{item.createAtStr}}</div>
             </div>
-            <div class="list flex">
-              <div class="flex">
-                <van-image
-                  round
-                  width="30"
-                  height="30"
-                  src="https://img.yzcdn.cn/vant/cat.jpeg"
-                  style="margin-right:16px"
-                  :show-loading="false"
-                />
-                <div>
-                  <div class="flex">
-                    <div style="margin-right:8px">合营部QQ</div>
-                    <div>1线</div>
-                  </div>
-                  <div>87866091</div>
-                </div>
-              </div>
-              <van-button type="info" size="small">复制</van-button>
-            </div>
-            <div class="list flex">
-              <div class="flex">
-                <van-image
-                  round
-                  width="30"
-                  height="30"
-                  src="https://img.yzcdn.cn/vant/cat.jpeg"
-                  style="margin-right:16px"
-                  :show-loading="false"
-                />
-                <div>
-                  <div class="flex">
-                    <div style="margin-right:8px">合营部QQ</div>
-                    <div>1线</div>
-                  </div>
-                  <div>87866091</div>
-                </div>
-              </div>
-              <van-button type="info" size="small">复制</van-button>
-            </div>
-         </div>
-        </van-tab>
-        <van-tab title="在线客服">
-          <div class="service">
-            <van-button type="default" size="large">主线客服</van-button>
-            <van-button type="default" size="large">次线客服</van-button>
-          </div> 
+          </div>
+          <div class="noDada" v-if="show2">
+            <van-image
+              width="100"
+              height="100"
+              :src="msg"
+            />
+            <div>暂无消息</div>
+          </div>
         </van-tab>
       </van-tabs>
     </div>
+
+
+
+    <van-dialog
+      v-model="show"
+      title="公告"
+      closeOnClickOverlay
+    >
+      {{msgDetail}}
+    </van-dialog>
   </div>
 </template>
 
 <script>
+import {queryMessage} from '../../../service/index'
 export default {
   data() {
     return {
+      show: false,
       active: 0,
-      isShow: true,//公告消息是否为空
-      msg: require('../../../assets/images/home/nodata-search.png')
+      msg: require('../../../assets/images/home/nodata-search.png'),
+      publicMsg: [],
+      privateMsg: [],
+      msgDetail: ''
     }
+  },
+  computed: {
+    show1() {
+      return this.publicMsg.length == 0 ? true : false
+    },
+    show2() {
+      return this.privateMsg.length == 0 ? true : false
+    }
+  },
+  mounted() {
+   this.getList()
   },
   methods: {
     onClickLeft() {
       this.$router.push('home')
     },
+    getList() {
+      let params1 = {
+        project: 'all'
+      }
+      let params2 = {
+        project: 'private'
+      }
+      queryMessage(params1).then(res => {
+        this.publicMsg = res.res
+      }) 
+      queryMessage(params2).then(res => {
+        this.privateMsg = res.res
+      }) 
+    },
+    showDetail(val) {
+      this.msgDetail = val
+      this.show = true
+    }
   }
 }
 </script>
@@ -122,31 +117,55 @@ export default {
       position: absolute;
       width: 100%;
       background: rgb(236, 236, 236);
-      
-      
-    .noDada {
-      position: absolute;
-      top: 160px;
-      left: 50%;
-      transform: translateX(-50%)
-    }  
-    .list {
-      box-sizing: border-box;
-      border-bottom:1px solid rgb(214, 212, 212);
-      padding: 12.8px;
-      .van-button {
-        border-radius: 20px;
+      .container {
+       box-sizing: border-box;
+       padding: 15px;
+        .news {
+          height: 100px;
+          background: #fff;
+          margin-bottom: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          box-sizing: border-box;
+          padding: 10px;
+          border-radius: 5px;
+          box-shadow: 0px 2px 10px rgb(88, 88, 88);
+          .msg {
+            text-indent:2em;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+          }
+          .time {
+            text-align: right;
+          }
+        }
+      }
+      .noDada {
+        position: absolute;
+        top: 160px;
+        left: 50%;
+        transform: translateX(-50%)
+      }  
+      .list {
+        box-sizing: border-box;
+        border-bottom:1px solid rgb(214, 212, 212);
+        padding: 12.8px;
+        .van-button {
+          border-radius: 20px;
+          padding: 0 16px;
+        }
+      }
+      .service {
         padding: 0 16px;
+        margin-top: 50%;
+        .van-button {
+          border-radius: 10px;
+          margin-bottom: 8px;
+        }
       }
-    }
-    .service {
-      padding: 0 16px;
-      margin-top: 50%;
-      .van-button {
-        border-radius: 10px;
-        margin-bottom: 8px;
-      }
-    }
     }
   }
   /*顶部导航*/

@@ -11,6 +11,7 @@ import auditCenter from '@/pages/audit/auditCenter'
 import adminList from '@/pages/admin/adminList'
 import adminRole from '@/pages/admin/adminRole'
 import configuration from '@/pages/admin/configuration'
+import messageCenter from '@/pages/message/messageCenter'
 
 const loginRouter = {
   path: '/login',
@@ -56,6 +57,7 @@ export const appRouter = [
       { path: 'agentBill', title: '代理账单', name: 'agentBill', component: agentBill },
       { path: 'adminList', title: '管理员列表', name: 'adminList', component: adminList },
       { path: 'adminRole', title: '角色列表', name: 'adminRole', component: adminRole },
+      { path: 'messageCenter', title: '消息中心', name: 'messageCenter', component: messageCenter },
       { path: 'configuration', title: '配置中心', name: 'configuration', component: configuration }
     ]
   },

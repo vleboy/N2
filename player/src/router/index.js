@@ -13,7 +13,7 @@ const RouterConfig = {
 export const router = new Router(RouterConfig)
 
 router.beforeEach((to, from, next) => {
-  let token = window.localStorage.getItem('agentToken')
+  let token = window.localStorage.getItem('playerToken')
   if (token) {
     next()
   } else {

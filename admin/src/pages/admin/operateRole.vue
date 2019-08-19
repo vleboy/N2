@@ -68,6 +68,10 @@ export default {
               expand: false
             },
             {
+              title: "消息中心",
+              expand: false
+            },
+            {
               title: "管理中心",
               expand: false,
               children: [

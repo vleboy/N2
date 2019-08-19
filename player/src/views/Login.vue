@@ -50,15 +50,15 @@ export default {
   methods: {
     login() {
       let params = {
-        userName: this.username,
-        userPwd: bcrypt.hashSync(this.pwd, 10),
+        playerName: this.username,
+        playerPwd: bcrypt.hashSync(this.pwd, 10),
         mobile: true
       }
       logIn(params).then(res => {
         console.log(res)
-        localStorage.setItem("agentToken", res.token);
-        localStorage.userName = res.userName
-        setTimeout(() => localStorage.removeItem("agentToken"), 259200000);
+        localStorage.setItem("playerToken", res.token);
+        localStorage.playerNick = res.playerNick
+        setTimeout(() => localStorage.removeItem("playerToken"), 259200000);
         this.$router.push('/home')
       }).catch(err => {
         this.pwd = ''

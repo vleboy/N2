@@ -19,7 +19,7 @@ const axios = {
       try {
         let res = await fetch(httpType + URL() + url, {
           headers: {
-            'token': window.localStorage.getItem("agentToken") ? window.localStorage.getItem("agentToken") : null
+            'token': window.localStorage.getItem("playerToken") ? window.localStorage.getItem("playerToken") : null
           }
         })
         let obj = await res.json()
@@ -51,7 +51,7 @@ const axios = {
           body: JSON.stringify(data),
           headers: {
             'content-type': 'application/json; charset=utf-8',
-            'token': window.localStorage.getItem("agentToken") ? window.localStorage.getItem("agentToken") : null
+            'token': window.localStorage.getItem("playerToken") ? window.localStorage.getItem("playerToken") : null
           },
           method: 'POST'
         })
@@ -96,44 +96,6 @@ export function httpRequest(method, url, params) {
 
 /* 登录 */
 export async function logIn(params) {
-  return axios.post("/xserver/agent/login", params);
+  return axios.post("/xserver/player/login", params);
 }
 
-/* 首页 */
-//获取首页数据
-export async function getView(params) {
-  return axios.get("/xserver/agent/realtime", params);
-}
-
-//消息
-export async function queryMessage(params) {
-  return axios.get(`/xnosql/message/query`, params);
-}
-
-//取款申请
-export async function createReview(params) {
-  return axios.post("/xserver/system/createReview", params);
-}
-//存款列表
-export async function depositBill(params) {
-  return axios.get("/xnosql/bill/page", params);
-}
-//添加银行卡
-export async function addBankCard(params) {
-  return axios.post("/xserver/bankcard/create", params);
-}
-//删除银行卡
-export async function deleteBankCard(params) {
-  return axios.post(`/xserver/bankcard/delete/${params.cardNo}`, params);
-}
-//获取银行卡列表
-export async function getCardList(params) {
-  return axios.get("/xserver/bankcard/get", params);
-}
-
-
-/* 设置 */
-//修改密码
-export async function updatePwd(params) {
-  return axios.post("/xnosql/agent/update", params);
-}

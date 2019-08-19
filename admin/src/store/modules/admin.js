@@ -24,11 +24,25 @@ export const admin = {
       operate: 'create'
     },
     configInfo: {},
-    auditInfo: {}
+    auditInfo: {},
+
+    //存放数据
+    info: {},
+    //显示抽屉
+    isShowDrawer: false
   },
   mutations: {
     /* 显示抽屉组件 */
-    
+    showDrawer(state, params) {
+      state.isShowDrawer = params
+    },
+    //设置传入数据
+    setDrawerInfo(state, params) {
+      state.info = params
+    },
+
+
+
     showPlayerPoint(state, params) {
       state.playerPoint = params
     },

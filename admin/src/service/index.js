@@ -92,6 +92,11 @@ export async function createAgent(params) {
   return axios.post("/xnosql/agent/create", params);
 }
 
+//返佣接口
+export async function queryConfig(params) {
+  return axios.get("/xnosql/config/query", params);
+}
+
 //停用启用代理
 export async function agentStatus(params) {
   return axios.post("/xnosql/agent/update", params);
@@ -137,6 +142,23 @@ export async function queryAudit(params) {
 export async function operateAudit(params) {
   return axios.post("/xserver/system/handlerReview", params);
 }
+
+/* 消息中心 */
+
+//查询消息
+export async function queryMessage(params) {
+  return axios.get("/xnosql/message/page", params);
+}
+//删除消息
+export async function deleteMessage(params) {
+  return axios.post(`/xnosql/message/delete/${params.id}`, params);
+}
+
+//创建消息
+export async function createMessage(params) {
+  return axios.post("/xnosql/message/create", params);
+}
+
 
 
 /* 管理员中心 */

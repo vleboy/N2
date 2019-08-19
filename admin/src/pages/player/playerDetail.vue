@@ -1,7 +1,7 @@
 <template>
   <div>
     <Drawer
-      title="代理详情"
+      title="玩家详情"
       v-model="showDraw"
       width="320"
       :mask-closable="false"

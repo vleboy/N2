@@ -58,6 +58,18 @@
             <p v-if="!pass" :class="{'regex': !pass}">最多2位小数</p>
           </Col>
         </Row>
+        <!-- 返佣游戏 -->
+        <div v-if="showGameList">
+          <Row class-name="content1" v-for="(item, index) in gameList" :key="index">
+            <Col span="6">{{item.name}}:</Col>
+            <Col span="18">
+              <Input v-model="item.value" placeholder="最多2位小数" :number="true">
+                  <span slot="append">%</span>
+              </Input>
+              <p v-if="!pass" :class="{'regex': !pass}">最多2位小数</p>
+            </Col>
+          </Row>
+        </div>
       </div>
       <div class="demo-drawer-footer">
         <Button style="margin-right: 8px" @click="cancle">取消</Button>
@@ -67,7 +79,7 @@
   </div>
 </template>
 <script>
-import { createAgent } from "../../service/index";
+import { createAgent, queryConfig } from "../../service/index";
 import { log } from 'util';
 export default {
   data() {
@@ -87,6 +99,17 @@ export default {
         paddingBottom: "53px",
         position: "static"
       },
+      gameList: [
+        {code:70000,name:'NA电子',value:''},
+        {code:10300000,name:'MG电子',value:''},
+        {code:1080000,name:'SUN电子',value:''},
+        {code:1160000,name:'PP电子',value:''},
+        {code:1050000,name:'AG真人',value:''},
+        {code:1120000,name:'SUN真人',value:''},
+        {code:1130000,name:'YSB体育',value:''},
+        {code:1170000,name:'NA电竞',value:''},
+        {code:1100000,name:'VG棋牌',value:''}
+      ]
     };
   },
   computed: {
@@ -100,9 +123,24 @@ export default {
         ratio: '占成'
       }
       return radioGroup[this.mode]
+    },
+    showGameList() {
+      return this.mode == 'commission' ? true : false
     }
   },
+  mounted() {
+    this.getConfig()
+  },
   methods: {
+    //获取游戏返佣配置
+    getConfig() {
+      let params = {
+        id: 'commission'
+      }
+      queryConfig(params).then(res => {
+        //console.log(res)
+      })
+    },
     hideDraw() {
       this.initData();
     },
@@ -127,18 +165,23 @@ export default {
         mode: this.mode,
         modeValue: this.modeValue
       };
-    
-      createAgent(prarms).then(res => {
+      if (this.mode == 'commission') {
+        prarms.gameList = this.gameList
+      }
+      console.log(prarms)
+      /* createAgent(prarms).then(res => {
         this.initData();
         this.$Message.success({ content: "创建成功" });
         this.$parent.getList();
-      })
+      }) */
       
     },
     initData() {
       this.userName = "";
       this.userPwd = "";
       this.userNick = "";
+      this.modeValue = ""
+      this.getConfig()
       this.$store.commit("setAgentInfo", {});
       this.$store.commit("showCreateAgent", false);
     },
@@ -176,6 +219,19 @@ export default {
 }
 .content {
   margin: 20px 0;
+  display: flex;
+  align-items: center;
+  .tr {
+    text-align: right;
+  }
+  .tc {
+    display: flex;
+    align-items: center;
+    text-align: center;
+  }
+}
+.content1 {
+  margin: 10px 0;
   display: flex;
   align-items: center;
   .tr {

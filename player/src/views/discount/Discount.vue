@@ -19,7 +19,7 @@
               </div>
             </div>
             <div class="link">
-              <img src="../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
+              <img src="../../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
             </div>
           </div>
         </van-tab>
@@ -40,7 +40,7 @@
               </div>
             </div>
             <div class="link">
-              <img src="../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
+              <img src="../../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
             </div>
           </div>
         </van-tab>
@@ -61,7 +61,7 @@
               </div>
             </div>
             <div class="link">
-              <img src="../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
+              <img src="../../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
             </div>
           </div>
         </van-tab>
@@ -82,7 +82,7 @@
               </div>
             </div>
             <div class="link">
-              <img src="../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
+              <img src="../../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
             </div>
           </div>
         </van-tab>
@@ -103,7 +103,7 @@
               </div>
             </div>
             <div class="link">
-              <img src="../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
+              <img src="../../assets/images/discounts/ic_user_discount_arrow.png" alt="" width="20" height="20">
             </div>
           </div>
         </van-tab>
@@ -124,67 +124,67 @@ export default {
       //全部优惠
       tabsAll: [
         {
-          img: require('../assets/images/discounts/d1.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_newest1.png'),
+          img: require('../../assets/images/discounts/d1.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_newest1.png'),
           time: '2019/07/01 - 2019/07/31',
           label: ['豪门逐鹿', '豪礼盛宴']
         },
         {
-          img: require('../assets/images/discounts/d3.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_daily1.png'),
+          img: require('../../assets/images/discounts/d3.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_daily1.png'),
           time: '长期活动',
           label: ['欢乐送', '保险投注', '亚博免单']
         },
         {
-          img: require('../assets/images/discounts/d5.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_welcome1.png'),
+          img: require('../../assets/images/discounts/d5.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_welcome1.png'),
           time: '长期活动',
           label: ['亚博体育', '50%首存红利', '开户即送']
         },
         {
-          img: require('../assets/images/discounts/d1.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_newest1.png'),
+          img: require('../../assets/images/discounts/d1.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_newest1.png'),
           time: '长期活动',
           label: ['体育连赢8场', '即得12888现金']
         },
         {
-          img: require('../assets/images/discounts/d3.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_daily1.png'),
+          img: require('../../assets/images/discounts/d3.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_daily1.png'),
           time: '长期活动',
           label: ['真人连赢', '好运不停']
         },
         {
-          img: require('../assets/images/discounts/d5.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_newest1.png'),
+          img: require('../../assets/images/discounts/d5.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_newest1.png'),
           time: '长期活动',
           label: ['豪门逐鹿', '豪礼盛宴']
         },
         {
-          img: require('../assets/images/discounts/d1.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_daily1.png'),
+          img: require('../../assets/images/discounts/d1.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_daily1.png'),
           time: '长期活动',
           label: ['欢乐送', '保险投注', '亚博免单']
         },
         {
-          img: require('../assets/images/discounts/d3.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_welcome1.png'),
+          img: require('../../assets/images/discounts/d3.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_welcome1.png'),
           time: '长期活动',
           label: ['亚博体育', '50%首存红利', '开户即送']
         },
         {
-          img: require('../assets/images/discounts/d5.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_newest1.png'),
+          img: require('../../assets/images/discounts/d5.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_newest1.png'),
           time: '长期活动',
           label: ['体育连赢8场', '即得12888现金']
         },
         {
-          img: require('../assets/images/discounts/d1.jpg'),
-          icon: require('../assets/images/discounts/icon_discount_daily1.png'),
+          img: require('../../assets/images/discounts/d1.jpg'),
+          icon: require('../../assets/images/discounts/icon_discount_daily1.png'),
           time: '长期活动',
           label: ['真人连赢', '好运不停']
         },
       ],
-      img: require('../assets/images/discounts/d1.jpg')
+      img: require('../../assets/images/discounts/d1.jpg')
     };
   }
 }
@@ -198,7 +198,7 @@ export default {
     top: 0;
     left: 0;
     overflow-y: auto;
-    background: url('../assets/images/background/bg_discount.jpg') no-repeat fixed;
+    background: url('../../assets/images/background/bg_discount.jpg') no-repeat fixed;
     background-size: cover;
     .box {
       padding: 16px 8px;
