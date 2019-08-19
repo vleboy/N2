@@ -6,6 +6,8 @@ const NP = require('number-precision')
 const Util = require('../util/util.js')
 const Router = require('koa-router')
 const router = new Router()
+// 存储无下注记录
+const RetMap = {}
 
 /**
  * 免转钱包接口
@@ -56,7 +58,14 @@ async function syncBill(inparam) {
         if (!await mongodb.collection(Util.CollectionEnum.bill).findOne(betquery, { projection: { id: 1, _id: 0 } })) {
             let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, _id: 0 } })
             if (player) {
-                return { err: -1, res: '无下注记录', balance: player.balance }
+                if (!RetMap[inparam.sn]) {
+                    RetMap[inparam.sn] = inparam.timestamp
+                }
+                if (Date.now() - RetMap[inparam.sn] > 30 * 60 * 1000) {
+                    return { err: false, res: '确认无下注记录', balance: player.balance }
+                } else {
+                    return { err: -1, res: '无下注记录', balance: player.balance }
+                }
             } else {
                 return { err: -2, res: '玩家不存在' }
             }
