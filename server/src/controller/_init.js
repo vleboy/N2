@@ -78,7 +78,7 @@ async function testTransaction() {
     } catch (error) {
         console.error('事务回滚')
         console.error(error.codeName)
-        console.error(error.errmsg)// sourceId_1
+        console.error(error.errmsg) // sourceId_1
         console.error('错误详情')
         console.error(error)
         await session.abortTransaction()
