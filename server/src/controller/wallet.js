@@ -118,7 +118,7 @@ async function syncBill(inparam) {
             }
         }
         await session.commitTransaction()
-        return { balance: NP.plus(res.value.balance, inparam.amount) }
+        return { balance: NP.plus(+res.value.balance.toFixed(2), inparam.amount) }
     } catch (error) {
         console.error(error)
 
