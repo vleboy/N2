@@ -84,7 +84,7 @@ async function syncBill(inparam) {
                 id: await Util.getSeq('billSeq'),
                 role: Util.RoleEnum.player,
                 project: inparam.method,
-                preBalance: res.value.balance,
+                preBalance: +res.value.balance.toFixed(2),
                 amount: inparam.amount,
                 balance: NP.plus(res.value.balance, inparam.amount),
 
