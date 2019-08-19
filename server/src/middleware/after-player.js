@@ -24,6 +24,9 @@ router.post('/player/create', async (ctx, next) => {
  */
 router.get('/player/page', async (ctx, next) => {
     const token = ctx.tokenVerify
+    for (let item of ctx.body.res) {
+        item.balance = +item.balance.toFixed(2)
+    }
 })
 
 module.exports = router
