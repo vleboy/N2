@@ -44,7 +44,8 @@ async function syncBill(inparam) {
     let queryBalance = { id: +inparam.userId }
     // 如果是投注，需要判断余额
     if (inparam.method == Util.ProjectEnum.Bet) {
-        queryBalance.balance = { $gte: Math.abs(inparam.amount), status: Util.StatusEnum.Enable }
+        queryBalance.balance = { $gte: Math.abs(inparam.amount) }
+        queryBalance.status = Util.StatusEnum.Enable
     }
     // 若返还，检查投注存在性
     else {
