@@ -63,6 +63,7 @@ async function syncBill(inparam) {
                     RetMap[inparam.sn] = inparam.timestamp
                 }
                 if (Date.now() - RetMap[inparam.sn] > 30 * 60 * 1000) {
+                    console.log(Date.now() - RetMap[inparam.sn])
                     return { err: false, res: '确认无下注记录', balance: player.balance }
                 } else {
                     return { err: -1, res: '无下注记录', balance: player.balance }
@@ -121,6 +122,7 @@ async function syncBill(inparam) {
         return { balance: res.value.balance }
     } catch (error) {
         console.error(error)
+
         await session.abortTransaction()
         if (error.errmsg && error.errmsg.indexOf('sourceId_1') != -1) {
             let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, _id: 0 } })
