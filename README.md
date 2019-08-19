@@ -48,7 +48,19 @@ chmod +x /usr/local/bin/docker-compose
 # 5、安装certbot
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum-config-manager --enable rhui-REGION-rhel-server-extras rhui-REGION-rhel-server-optional
+
+# 可选修复
+pip install requests urllib3 pyOpenSSL --force --upgrade
+pip install --upgrade --force-reinstall 'requests==2.6.0'
+
 yum install certbot python2-certbot-nginx
+
+
+docker run -it --rm --name certbot \
+            -v "/etc/letsencrypt:/etc/letsencrypt" \
+            -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+            certbot/certbot --nginx
+
 
 # 6、安装git
 rpm -ivh https://centos7.iuscommunity.org/ius-release.rpm
@@ -66,10 +78,16 @@ cd server
 # 持续构建和容器应用
 pm2 start ci.js -n ci
 npm i && npm run compose-up
-npm run mongo-rd
+npm run mongo-rs
+npm run mongo-in
 npm run logs
+<!-- use admin
+db.createUser({user:"root",pwd:"Ab123456",roles:[{role:"root",db:"admin"}]}) -->
 
 # 调整最大tcp连接量
 ulimit -n
 
-
+# 数据库备份与还原
+1、在远程主机的 N2/server目录下执行npm run mongo-dump
+2、在本地主机的 project/aws目录下执行 ./scpn2.sh
+3、在本地主机的 N2/server目录下执行npm run mongo-restore

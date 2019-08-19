@@ -31,6 +31,9 @@ router.post('/agent/create', async (ctx, next) => {
     if (await mongodb.collection(Util.CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }, { id: inparam.id }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
+    if (inparam.mode == Util.ModeEnum.Commission && !inparam.gameList) {
+        return ctx.body = { err: true, res: '返佣代理需要设置游戏列表' }
+    }
 
     // 查询上级代理
     let parent = inparam.parentId ? await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.parentId }) : {}
