@@ -22,7 +22,7 @@ router.post('/transfer', async (ctx, next) => {
     if (inparam.method == 'auth') {
         let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, playerNick: 1, _id: 0 } })
         if (player) {
-            res.balance = player.balance
+            res.balance = +player.balance.toFixed(2)
             res.userNick = player.playerNick
         } else {
             res.code = -2
@@ -63,9 +63,9 @@ async function syncBill(inparam) {
                     RetMap[inparam.sn] = inparam.timestamp
                 }
                 if (Date.now() - RetMap[inparam.sn] > 30 * 60 * 1000) {
-                    return { err: false, res: '确认无下注记录', balance: player.balance }
+                    return { err: false, res: '确认无下注记录', balance: +player.balance.toFixed(2) }
                 } else {
-                    return { err: -1, res: '无下注记录', balance: player.balance }
+                    return { err: -1, res: '无下注记录', balance: +player.balance.toFixed(2) }
                 }
             } else {
                 return { err: -2, res: '玩家不存在' }
@@ -76,17 +76,17 @@ async function syncBill(inparam) {
     const session = await global.getMongoSession()
     try {
         // 变更玩家余额
-        const res = await mongodb.collection(Util.CollectionEnum.player).findOneAndUpdate(queryBalance, { $inc: { balance: inparam.amount } }, { returnOriginal: false, projection: { id: 1, playerName: 1, playerNick: 1, parentId: 1, parentName: 1, parentNick: 1, balance: 1, _id: 0 }, session })
+        const res = await mongodb.collection(Util.CollectionEnum.player).findOneAndUpdate(queryBalance, { $inc: { balance: inparam.amount } }, { returnOriginal: true, projection: { id: 1, playerName: 1, playerNick: 1, parentId: 1, parentName: 1, parentNick: 1, balance: 1, _id: 0 }, session })
         // 写入流水
-        if (res.value || res.value == 0) {
+        if (res.value) {
             let createAt = Date.now()
             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                 id: await Util.getSeq('billSeq'),
                 role: Util.RoleEnum.player,
                 project: inparam.method,
-                preBalance: NP.minus(res.value.balance, inparam.amount),
+                preBalance: res.value.balance,
                 amount: inparam.amount,
-                balance: res.value.balance,
+                balance: NP.plus(res.value.balance, inparam.amount),
 
                 ownerId: res.value.id,
                 ownerName: res.value.playerName,
@@ -108,24 +108,24 @@ async function syncBill(inparam) {
         } else {
             let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, status: 1, _id: 0 } })
             if (player && player.status == Util.StatusEnum.Enable) {
-                return { err: -2, res: '余额不足', balance: player.balance }
+                return { err: -2, res: '余额不足', balance: +player.balance.toFixed(2) }
             }
             if (player && player.status != Util.StatusEnum.Enable) {
-                return { err: -2, res: '玩家已停用', balance: player.balance }
+                return { err: -2, res: '玩家已停用', balance: +player.balance.toFixed(2) }
             }
             if (!player) {
                 return { err: -2, res: '玩家不存在' }
             }
         }
         await session.commitTransaction()
-        return { balance: res.value.balance }
+        return { balance: NP.plus(res.value.balance, inparam.amount) }
     } catch (error) {
         console.error(error)
 
         await session.abortTransaction()
         if (error.errmsg && error.errmsg.indexOf('sourceId_1') != -1) {
             let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, _id: 0 } })
-            return { err: false, res: '重复流水', balance: player.balance }
+            return { err: false, res: '重复流水', balance: +player.balance.toFixed(2) }
         }
         return { err: -1, res: '服务异常' }
     } finally {
