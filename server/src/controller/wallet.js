@@ -63,7 +63,6 @@ async function syncBill(inparam) {
                     RetMap[inparam.sn] = inparam.timestamp
                 }
                 if (Date.now() - RetMap[inparam.sn] > 30 * 60 * 1000) {
-                    console.log(Date.now() - RetMap[inparam.sn])
                     return { err: false, res: '确认无下注记录', balance: player.balance }
                 } else {
                     return { err: -1, res: '无下注记录', balance: player.balance }
