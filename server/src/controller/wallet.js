@@ -1,7 +1,8 @@
 const config = require('config')
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcryptjs')
+// const jwt = require('jsonwebtoken')
+// const bcrypt = require('bcryptjs')
 const _ = require('lodash')
+const moment = require('moment')
 const NP = require('number-precision')
 const Util = require('../util/util.js')
 const Router = require('koa-router')
@@ -121,7 +122,7 @@ async function syncBill(inparam) {
     } catch (error) {
         console.error(error)
         await session.abortTransaction()
-        if (error.errmsg.indexOf('sourceId_1') != -1) {
+        if (error.errmsg && error.errmsg.indexOf('sourceId_1') != -1) {
             let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, _id: 0 } })
             return { err: false, res: '重复流水', balance: player.balance }
         }
