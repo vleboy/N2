@@ -38,7 +38,7 @@
     "koa-xcontroller": "^1.2.0",
     "koa-xerror": "^1.2.0",
     "koa-xlog": "^1.2.0",
-    "koa-xnosql": "^2.9.9",
+    "koa-xnosql": "^2.10.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "node-cron": "^2.0.3",
