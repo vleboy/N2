@@ -181,10 +181,9 @@ router.get('/realtime', async (ctx, next) => {
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
         data.currentCommission = NP.plus(data.currentCommission, roundValidBetAmount)
         // 累计平台输赢
-        console.log('test1')
-        console.log(round.sourceGameId.toString())
-        console.log('test2')
-        let plat = `${round.sourceGameId.toString().substring(0, round.sourceGameId.toString().length - 2)}00`
+        let sourceGameId = round.sourceGameId.toString()
+        let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
+        console.log(plat)
         platFeeMap[plat] = NP.plus(platFeeMap[plat], roundWinloseAmount)
     }
     // 使用佣金比例计算佣金
