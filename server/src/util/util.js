@@ -95,7 +95,9 @@ const CollectionEnum = {
     subrole: 'subrole',
     bill: 'bill',
     profit: 'profit',
-    config: 'config'
+    config: 'config',
+
+    vround:'vround'
 }
 
 //检查类型
