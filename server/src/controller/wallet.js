@@ -22,6 +22,7 @@ router.post('/transfer', async (ctx, next) => {
     if (inparam.method == 'auth') {
         let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, playerNick: 1, _id: 0 } })
         if (player) {
+            await mongodb.collection(Util.CollectionEnum.player).update({ id: inparam.userId }, { $set: { lastAuthAt: Date.now() } })
             res.balance = +player.balance.toFixed(2)
             res.userNick = player.playerNick
         } else {

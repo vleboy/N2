@@ -18,6 +18,8 @@ router.post('/login', async (ctx, next) => {
     } else if (!bcrypt.compareSync(player.playerPwd, inparam.playerPwd)) {
         ctx.body = { err: true, res: '密码不正确' }
     } else {
+        //更新登录时间 和 IP
+        await mongodb.collection(Util.CollectionEnum.player).update({ playerName: inparam.playerName }, { $set: { lastLoginAt: Date.now(), lastLoginIP: ctx.request.ip } })
         let token = jwt.sign({
             role: player.role,
             id: player.id,

@@ -39,6 +39,8 @@ router.post('/login', async (ctx, next) => {
             return ctx.body = { err: true, res: '角色不存在' }
         }
     }
+    //更新登录时间 和 IP
+    await mongodb.collection(Util.CollectionEnum.agent).update({ userName: inparam.userName }, { $set: { lastLoginAt: Date.now(), lastLoginIP: ctx.request.ip } })
     let token = jwt.sign({
         id: agentInfo.id,
         role: agentInfo.role,
@@ -150,15 +152,24 @@ router.get('/realtime', async (ctx, next) => {
         modeValue: agent.modeValue,           // 业务模式比例
         playerCount: agent.playerCount,       // 玩家数量
         newRegPlayerCount: 0,                 // 新注册玩家数量
-        activePlayerCount: 0,                 // 活跃玩家数量
-        currentWinlose: await currentWinlose(token.id, startTime, endTime),                                     // 当前输赢（当月1号到现在的输赢金额）
-        currentPlatformFee: await currentPlatformFee(token.id, startTime, endTime),                             // 当前平台费（每一类游戏的输赢金额 * 配置表中的比例）
-        currentDeposit: await currentPlayerAmount(token.id, Util.ProjectEnum.Deposit, startTime, endTime),      // 当前存款（当月1号到现在的玩家存款值 * 比例）
-        currentWithdraw: await currentPlayerAmount(token.id, Util.ProjectEnum.Withdraw, startTime, endTime),    // 当前取款（当月1号到现在的玩家取款值 * 比例）
-        currentCommission: await currentCommission(token.id, startTime, endTime)                                // 当前佣金（当月1号到现在的有效投注 * 比例）                      
+        activePlayerCount: 0                  // 活跃玩家数量                                                  
     }
+    let promiseArr = [
+        currentWinlose(token.id, startTime, endTime),                                        // 当前输赢（当月1号到现在的输赢金额）
+        currentPlatformFee(token.id, startTime, endTime),                                    // 当前平台费（每一类游戏的输赢金额 * 配置表中的比例）
+        currentPlayerAmount(token.id, Util.ProjectEnum.Deposit, startTime, endTime),         // 当前存款（当月1号到现在的玩家存款值 * 比例）
+        currentPlayerAmount(token.id, Util.ProjectEnum.Withdraw, startTime, endTime),        // 当前取款（当月1号到现在的玩家取款值 * 比例）
+        currentCommission(token.id, startTime, endTime)                                      // 当前佣金（当月1号到现在的有效投注 * 比例） 
+    ]
+    let res = await Promise.all(promiseArr)
+    data.currentWinlose = res[0]
+    data.currentPlatformFee = res[1]
+    data.currentDeposit = res[2]
+    data.currentWithdraw = res[3]
+    data.currentCommission = res[4]
+    // 当前利润（当前输赢 - 成本）* 业务模式比例
     let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
-    data.currentProfit = (data.currentWinlose - data.currentPlatformFee - data.currentDeposit - data.currentWithdraw - data.currentCommission) * configInfo.value / 100    // 当前利润（当前输赢 - 成本）* 业务模式比例
+    data.currentProfit = (data.currentWinlose - data.currentPlatformFee - data.currentDeposit - data.currentWithdraw - data.currentCommission) * configInfo.value / 100
     ctx.body = data
 })
 
@@ -175,7 +186,7 @@ async function activePlayerCount(agentId) {
 //本月输赢情况
 async function currentWinlose(agentId, startTime, endTime) {
     let totalWinloseAmount = 0
-    let bills = await mongodb.collection(Util.CollectionEnum.viewRound).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }, { projection: { winloseAmount: 1, _id: 0 } }).toArray()
+    let bills = await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }, { projection: { winloseAmount: 1, _id: 0 } }).toArray()
     for (let item of bills) {
         totalWinloseAmount = NP.plus(+totalWinloseAmount.toFixed(2), +item.winloseAmount.toFixed(2))
     }
@@ -185,7 +196,7 @@ async function currentWinlose(agentId, startTime, endTime) {
 //获取平台费
 async function currentPlatformFee(agentId, startTime, endTime) {
     let platAmount = 0
-    let bills = await mongodb.collection(Util.CollectionEnum.viewRound).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }, { projection: { _id: 0, winloseAmount: 1, sourceGameId: 1 } }).toArray()
+    let bills = await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }, { projection: { _id: 0, winloseAmount: 1, sourceGameId: 1 } }).toArray()
     let billGroup = _.groupBy(bills, 'sourceGameId')
     for (let gameId in billGroup) {
         let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: +gameId })
@@ -210,7 +221,7 @@ async function currentPlayerAmount(agentId, project, startTime, endTime) {
 //当前佣金
 async function currentCommission(agentId, startTime, endTime) {
     let totalAmount = 0
-    let bills = await mongodb.collection(Util.CollectionEnum.viewRound).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
+    let bills = await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     for (let item of bills) {
         let betAmount = 0
         for (let bill of item.bills) {
