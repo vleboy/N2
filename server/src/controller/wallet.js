@@ -16,7 +16,6 @@ const RetMap = {}
 router.post('/transfer', async (ctx, next) => {
     const inparam = ctx.request.body
     const mongodb = global.mongodb
-    // 预置返回对象
     let res = { code: 0, msg: '', balance: 0 }
     // auth
     if (inparam.method == 'auth') {
