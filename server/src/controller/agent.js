@@ -151,7 +151,7 @@ router.get('/realtime', async (ctx, next) => {
     let data = {
         mode: agent.mode,                     // 业务模式
         modeValue: agent.modeValue,           // 业务模式比例
-        playerCount: agent.playerCount       // 玩家数量                                                
+        playerCount: agent.playerCount        // 玩家数量                                                
     }
     let promiseArr = [
         currentWinlose(token.id, startTime, endTime),                                        // 当前输赢（当月1号到现在的输赢金额）
@@ -171,8 +171,7 @@ router.get('/realtime', async (ctx, next) => {
     data.newRegPlayerCount = res[5]
     data.activePlayerCount = res[6]
     // 当前利润（当前输赢 - 成本）* 业务模式比例
-    let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
-    data.currentProfit = +((data.currentWinlose - data.currentPlatformFee - data.currentDeposit - data.currentWithdraw - data.currentCommission) * configInfo.value / 100).toFixed(2)
+    data.currentProfit = +((data.currentWinlose - data.currentPlatformFee - data.currentDeposit - data.currentWithdraw - data.currentCommission) * agent.modeValue / 100).toFixed(2)
     ctx.body = data
 })
 
@@ -242,7 +241,8 @@ async function currentCommission(agentId, startTime, endTime) {
         let mixAmount = Math.min(Math.abs(betAmount), Math.abs(+item.winloseAmount.toFixed(2)))              // 洗码量
         totalAmount = NP.plus(totalAmount, mixAmount)
     }
-    return totalAmount
+    let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
+    return +(totalAmount * configInfo.value / 100).toFixed(2)
 }
 
 
