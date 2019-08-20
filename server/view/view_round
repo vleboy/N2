@@ -15,7 +15,8 @@
         'ownerNick': '$ownerNick', 
         'parentId': '$parentId', 
         'parentName': '$parentName', 
-        'parentNick': '$parentNick'
+        'parentNick': '$parentNick', 
+        'sourceGameId': '$sourceGameId'
       }, 
       'winloseAmount': {
         '$sum': '$amount'
@@ -38,6 +39,7 @@
       'parentId': '$_id.parentId', 
       'parentName': '$_id.parentName', 
       'parentNick': '$_id.parentNick', 
+      'sourceGameId': '$_id.sourceGameId', 
       'winloseAmount': 1, 
       'minCreateAt': 1, 
       'maxCreateAt': 1
