@@ -66,6 +66,7 @@
           style="margin-right:5px"
           @click="operateSatus(row)"
         >{{row.status == 0 ? '启用' : '停用'}}</Button>
+        <Button size="small" type="info" ghost @click="edit(row)" style="margin:0 5px">修改</Button>
         <Button size="small" type="info" ghost @click="setPoint(row)">加减点</Button>
         <Button size="small" type="info" ghost style="margin:0 5px" @click="createAgent(row)">创建代理</Button>
         <Button
@@ -80,7 +81,7 @@
     </tree-table>
     <!-- 加减点 -->
     <agentPoint></agentPoint>
-    <createAgent></createAgent>
+    <operateAgent></operateAgent>
     <createPlayer></createPlayer>
     <agentDetail></agentDetail>
     <Spin size="large" fix v-show="spinShow" style="z-index:200;">
@@ -96,13 +97,13 @@ import _ from "lodash";
 import { queryAgent, agentStatus } from "../../service/index";
 
 import agentPoint from "./agentPoint";
-import createAgent from "./createAgent";
+import operateAgent from "./operateAgent";
 import createPlayer from "./createPlayer";
 import agentDetail from "./agentDetail";
 export default {
   components: {
     agentPoint,
-    createAgent,
+    operateAgent,
     createPlayer,
     agentDetail
   },
@@ -186,7 +187,7 @@ export default {
         {
           title: "操作",
           slot: "operate",
-          minWidth: "350",
+          minWidth: "400",
           type: "template",
           template: "operate",
           align: "center",
@@ -257,14 +258,28 @@ export default {
       this.$store.commit("showAgentPoint", true);
       this.$store.commit("setAgentPointInfo", params);
     },
+     edit(row) {
+      row.operate = 'edit'
+      this.$store.commit("showDrawer", true);
+      this.$store.commit("setDrawerInfo", row);
+    },
     //创建直属代理
     createNewAgent() {
-      this.$store.commit("showCreateAgent", true);
+      let params = {
+        id: undefined,
+        operate: 'create'
+      }
+      this.$store.commit("showDrawer", true);
+      this.$store.commit("setDrawerInfo", params);
     },
     //创建代理
     createAgent(row) {
-      this.$store.commit("showCreateAgent", true);
-      this.$store.commit("setAgentInfo", row);
+      let params = {
+        id: row.id,
+        operate: 'create'
+      }
+      this.$store.commit("showDrawer", true);
+      this.$store.commit("setDrawerInfo", params);
     },
     //查看代理详情
     agentDetail(row) {

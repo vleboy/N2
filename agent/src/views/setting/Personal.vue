@@ -6,11 +6,11 @@
         left-arrow
         @click-left="onClickLeft"
       />
+      <van-cell title="用户ID" ize="large"/>
       <van-cell title="用户账号" value="ff88808" size="large"/>
       <van-cell title="用户昵称" size="large"/>
       <van-cell title="邮箱地址" size="large"/>
       <van-cell title="手机号码" size="large"/>
-      <van-cell title="下线用户" value="2" size="large"/>
       <div class="edit">
         <p>如需修改个人信息请联系</p>
         <a href="#">在线客服</a>

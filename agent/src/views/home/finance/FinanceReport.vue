@@ -44,11 +44,11 @@
       /> -->
       <div class="list">
         <div @click="jumpTo('deposit')">
-          <div class="name">存款</div>
+          <div class="name">玩家存款</div>
           <div class="num">{{dataList.currentDeposit}}</div>
         </div>
         <div @click="jumpTo('withdrawal')">
-          <div class="name">取款</div>
+          <div class="name">玩家取款</div>
           <div class="num">{{dataList.currentWithdraw}}</div>
         </div>
       </div>

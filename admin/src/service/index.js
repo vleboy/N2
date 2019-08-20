@@ -92,6 +92,11 @@ export async function createAgent(params) {
   return axios.post("/xnosql/agent/create", params);
 }
 
+//修改代理
+export async function editAgent(params) {
+  return axios.post("/xnosql/agent/update", params);
+}
+
 //返佣接口
 export async function queryConfig(params) {
   return axios.get("/xnosql/config/query", params);

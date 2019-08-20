@@ -24,10 +24,7 @@
         <div class="content">
           <div class="left">
             <div class="see">
-              登录查看
-            </div>
-            <div class="money">
-              中心钱包
+              登录/注册
             </div>
           </div>
           <div class="right">
@@ -79,10 +76,6 @@ export default {
         {
           img: require('../../assets/images/home/icon_wallet_deposit.png'),
           name: '存款'
-        },
-        {
-          img: require('../../assets/images/home/icon_wallet_transfer.png'),
-          name: '转账'
         },
         {
           img: require('../../assets/images/home/icon_wallet_withdraw.png'),

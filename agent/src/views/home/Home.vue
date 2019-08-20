@@ -22,7 +22,7 @@
           </li>
           <li>
             <p>{{dataList.playerCount}}</p>
-            <p>下线用户</p>
+            <p>玩家数量</p>
           </li>
           <li>
             <p>{{dataList.newRegPlayerCount}}</p>
@@ -30,7 +30,7 @@
           </li>
           <li>
             <p>{{dataList.activePlayerCount}}</p>
-            <p>活跃用户</p>
+            <p>活跃玩家</p>
           </li>
         </ul>
       </div>
