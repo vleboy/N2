@@ -20,6 +20,7 @@ const xlog = require('koa-xlog')
 
 // 应用服务
 const app = new Koa()
+app.proxy = true
 app.use(mount(staticRoot, staticServer(__dirname + '/static')))
 app.use(mount('/', cors()))
 app.use(xerror(config.error))

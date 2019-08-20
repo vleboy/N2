@@ -40,7 +40,7 @@ router.post('/login', async (ctx, next) => {
         }
     }
     //更新登录时间 和 IP
-    await mongodb.collection(Util.CollectionEnum.agent).update({ userName: inparam.userName }, { $set: { lastLoginAt: Date.now(), lastLoginIP: ctx.request.ip } })
+    mongodb.collection(Util.CollectionEnum.agent).update({ userName: inparam.userName }, { $set: { lastLoginAt: Date.now(), lastLoginIP: ctx.request.ip } })
     let token = jwt.sign({
         id: agentInfo.id,
         role: agentInfo.role,
