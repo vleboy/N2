@@ -23,7 +23,8 @@ router.post('/login', async (ctx, next) => {
     if (!inparam.mobile && (inparam.code != VerifyCode[inparam.userName].code || VerifyCode[inparam.userName].exp < Date.now())) {
         return ctx.body = { err: true, res: '验证码错误或过期' }
     }
-    let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne({ userName: inparam.userName })
+    let query = inparam.mobile ? { userName: inparam.userName, role: Util.RoleEnum.agent } : { userName: inparam.userName }
+    let agentInfo = await mongodb.collection(Util.CollectionEnum.agent).findOne(query)
     if (!agentInfo) {
         return ctx.body = { err: true, res: '帐号不存在' }
     }
