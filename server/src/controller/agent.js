@@ -155,9 +155,13 @@ router.get('/realtime', async (ctx, next) => {
 
         currentWinlose: 0,                    // 累计输赢
         currentCommission: 0,                 // 佣金
+        currentCommissionFee: 0,              // 佣金费
+        currentPlatform: 0,                   // 平台
         currentPlatformFee: 0,                // 平台费
-        currentDeposit: 0,                    // 存款手续费
-        currentWithdraw: 0                    // 取款手续费
+        currentDeposit: 0,                    // 存款
+        currentDepositFee: 0,                 // 存款手续费
+        currentWithdraw: 0,                   // 取款
+        currentWithdrawFee: 0                 // 取款手续费
     }
     let platFeeMap = {}
     // 获取所有配置
