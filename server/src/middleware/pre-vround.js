@@ -13,7 +13,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 /**
  * 查询游戏记录
  */
-router.get('/view_round/page', async (ctx, next) => {
+router.get('/vround/page', async (ctx, next) => {
     const token = ctx.tokenVerify
     let inparam = ctx.request.query
     if (inparam.ownerId) {
