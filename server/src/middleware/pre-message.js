@@ -68,7 +68,7 @@ router.get('/message/query', async (ctx, next) => {
     if (inparam.project == Util.MsgEnum.Private) {
         inparam.ownerId = token.id
     } else {
-        inparam.project = { $or: [{ project: Util.MsgEnum.NoticeAll }, { project: Util.MsgEnum.NoticeAgent }] }
+        inparam.$or = [{ project: Util.MsgEnum.NoticeAll }, { project: Util.MsgEnum.NoticeAgent }]
     }
     return next()
 })
