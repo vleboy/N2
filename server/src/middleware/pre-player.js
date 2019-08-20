@@ -52,14 +52,14 @@ router.post('/player/update', async (ctx, next) => {
     //     return ctx.body = { err: true, res: '请检查入参' }
     // }
     //只允许更新的参数
-    let diffArr = _.difference(Object.keys(inparam), ['id', 'oldPwd', 'playerPwd', 'status'])
+    let diffArr = _.difference(Object.keys(inparam), ['id', 'oldPwd', 'playerPwd', 'status', 'mode', 'modeValue', 'gameList'])
     if (diffArr.length > 0) {
         return ctx.body = { err: true, res: `以下参数不能更新【${diffArr.join(',')}】` }
     }
     if (inparam.playerPwd && (inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20)) {
         return ctx.body = { err: true, res: '密码长度不合法' }
     }
-    let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id || token.id})
+    let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id || token.id })
     if (!player) {
         return ctx.body = { err: true, res: '玩家不存在' }
     }
