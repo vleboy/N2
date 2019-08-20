@@ -178,17 +178,19 @@ router.get('/realtime', async (ctx, next) => {
 
 //新注册玩家数量
 async function newRegPlayerCount(agentId, startTime, endTime) {
-    return await mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }).count()
+    return await mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastLoginAt: { $gt: startTime, $lt: endTime } }).count()
 }
 
 //活跃玩家数量
 async function activePlayerCount(agentId, startTime, endTime) {
-    let res = await mongodb.collection(Util.CollectionEnum.vround).aggregate([
-        { $match: { parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } } },
-        { $group: { _id: "$ownerId" } },
-        { $group: { _id: null, count: { $sum: 1 } } }, { $project: { _id: 0 } }
-    ])
-    return res.count
+    await mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastAuthAt: { $gt: startTime, $lt: endTime } }).count()
+    //从流水获取玩家活跃
+    // let res = await mongodb.collection(Util.CollectionEnum.vround).aggregate([
+    //     { $match: { parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } } },
+    //     { $group: { _id: "$ownerId" } },
+    //     { $group: { _id: null, count: { $sum: 1 } } }, { $project: { _id: 0 } }
+    // ])
+    // return res.count 
 }
 
 //本月输赢情况
