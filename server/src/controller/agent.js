@@ -151,16 +151,16 @@ router.get('/realtime', async (ctx, next) => {
     let data = {
         mode: agent.mode,                     // 业务模式
         modeValue: agent.modeValue,           // 业务模式比例
-        playerCount: agent.playerCount,       // 玩家数量
-        newRegPlayerCount: 0,                 // 新注册玩家数量
-        activePlayerCount: 0                  // 活跃玩家数量                                                  
+        playerCount: agent.playerCount       // 玩家数量                                                
     }
     let promiseArr = [
         currentWinlose(token.id, startTime, endTime),                                        // 当前输赢（当月1号到现在的输赢金额）
         currentPlatformFee(token.id, startTime, endTime),                                    // 当前平台费（每一类游戏的输赢金额 * 配置表中的比例）
         currentPlayerAmount(token.id, Util.ProjectEnum.Deposit, startTime, endTime),         // 当前存款（当月1号到现在的玩家存款值 * 比例）
         currentPlayerAmount(token.id, Util.ProjectEnum.Withdraw, startTime, endTime),        // 当前取款（当月1号到现在的玩家取款值 * 比例）
-        currentCommission(token.id, startTime, endTime)                                      // 当前佣金（当月1号到现在的有效投注 * 比例） 
+        currentCommission(token.id, startTime, endTime),                                     // 当前佣金（当月1号到现在的有效投注 * 比例） 
+        newRegPlayerCount(token.id, startTime, endTime),                                     // 新注册玩家数量
+        activePlayerCount(token.id, startTime, endTime)                                      // 活跃玩家数量 
     ]
     let res = await Promise.all(promiseArr)
     data.currentWinlose = res[0]
@@ -168,6 +168,8 @@ router.get('/realtime', async (ctx, next) => {
     data.currentDeposit = res[2]
     data.currentWithdraw = res[3]
     data.currentCommission = res[4]
+    data.newRegPlayerCount = res[5]
+    data.activePlayerCount = res[6]
     // 当前利润（当前输赢 - 成本）* 业务模式比例
     let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
     data.currentProfit = (data.currentWinlose - data.currentPlatformFee - data.currentDeposit - data.currentWithdraw - data.currentCommission) * configInfo.value / 100
@@ -175,13 +177,18 @@ router.get('/realtime', async (ctx, next) => {
 })
 
 //新注册玩家数量
-async function newRegPlayerCount(agentId) {
-
+async function newRegPlayerCount(agentId, startTime, endTime) {
+    return await mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }).count()
 }
 
 //活跃玩家数量
-async function activePlayerCount(agentId) {
-
+async function activePlayerCount(agentId, startTime, endTime) {
+    let res = await mongodb.collection(Util.CollectionEnum.vround).aggregate([
+        { $match: { parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } } },
+        { $group: { _id: "$ownerId" } },
+        { $group: { _id: null, count: { $sum: 1 } } }, { $project: { _id: 0 } }
+    ])
+    return res.count
 }
 
 //本月输赢情况
