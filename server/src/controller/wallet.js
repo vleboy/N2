@@ -95,6 +95,7 @@ async function syncBill(inparam) {
                 parentName: res.value.parentName,
                 parentNick: res.value.parentNick,
 
+                sourceIP: inparam.sourceIP,
                 sourceGameId: inparam.gameId,
                 sourceId: inparam.sn,
                 sourceRelKey: inparam.businessKey,
