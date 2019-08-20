@@ -97,7 +97,7 @@ const CollectionEnum = {
     profit: 'profit',
     config: 'config',
 
-    vround:'vround'
+    vround: 'vround'
 }
 
 //检查类型
