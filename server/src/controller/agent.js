@@ -168,8 +168,8 @@ router.get('/realtime', async (ctx, next) => {
     data.currentDeposit = res[2]
     data.currentWithdraw = res[3]
     data.currentCommission = res[4]
-    data.newRegPlayerCount = res[5]
-    data.activePlayerCount = res[6]
+    data.newRegPlayerCount = res[5] || 0
+    data.activePlayerCount = res[6] || 0
     // 当前利润（当前输赢 - 成本）* 业务模式比例
     let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
     data.currentProfit = (data.currentWinlose - data.currentPlatformFee - data.currentDeposit - data.currentWithdraw - data.currentCommission) * configInfo.value / 100
