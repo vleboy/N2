@@ -209,7 +209,7 @@ async function currentPlatformFee(agentId, startTime, endTime) {
     let bills = await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agentId, minCreateAt: { $gt: startTime, $lt: endTime } }, { projection: { _id: 0, winloseAmount: 1, sourceGameId: 1 } }).toArray()
     let billGroup = _.groupBy(bills, 'sourceGameId')
     for (let gameId in billGroup) {
-        let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: +gameId })
+        let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: gameId.toString() })
         for (let item of billGroup[gameId]) {
             platAmount = NP.plus(+platAmount.toFixed(2), (+item.winloseAmount.toFixed(2)) * (configInfo.value) / 100)
         }
