@@ -12,7 +12,7 @@ router.post('/init', async (ctx, next) => {
     if (!await mongodb.collection(Util.CollectionEnum.agent).findOne({ userName: 'admin' })) {
         // 创建集合
         for (let key in Util.CollectionEnum) {
-            await mongodb.dropCollection(Util.CollectionEnum[key])
+            // await mongodb.dropCollection(Util.CollectionEnum[key])
             await mongodb.createCollection(Util.CollectionEnum[key])
         }
         // 创建索引
