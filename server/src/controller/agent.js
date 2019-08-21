@@ -257,7 +257,7 @@ router.get('/platformFeeDetail', async (ctx, next) => {
     for (let bill of bills) {
         let sourceGameId = bill.sourceGameId.toString()
         let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
-        platFeeMap[plat] =(platFeeMap[plat] || platFeeMap[plat] == 0) ? NP.plus(platFeeMap[plat], roundWinloseAmount) : roundWinloseAmount
+        platFeeMap[plat] = (platFeeMap[plat] || platFeeMap[plat] == 0) ? NP.plus(platFeeMap[plat], +bill.winloseAmount.toFixed(2)) : +bill.winloseAmount.toFixed(2)
     }
     // 使用平台费比例计算平台费
     let platFeeArr = []
@@ -298,7 +298,7 @@ router.get('/commissionFeeDetail', async (ctx, next) => {
     let endTime = inparam.endTime || Date.now()
     let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
     // 查询时间范围内的游戏记录
-    let rounds =await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, bills: 1, winloseAmount: 1, minCreateAt: 1, _id: 0 } }).toArray()
+    let rounds = await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, bills: 1, winloseAmount: 1, minCreateAt: 1, _id: 0 } }).toArray()
     rounds.map((round) => {
         let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(round.winloseAmount))
