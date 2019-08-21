@@ -224,4 +224,16 @@ function getActivePlayerCount(agentId, startTime, endTime) {
     return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastAuthAt: { $gt: startTime, $lt: endTime } }).count()
 }
 
+/**
+ * 第三方平台费详细
+ */
+router.get('/platformFeeDetail', async (ctx, next) => {
+})
+
+/**
+ * 存取通道费列表
+ */
+router.get('/channelFeeDetail', async (ctx, next) => {
+})
+
 module.exports = router
