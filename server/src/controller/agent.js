@@ -159,7 +159,7 @@ function tree(treeArray, array) {
 router.get('/realtime', async (ctx, next) => {
     const token = ctx.tokenVerify
     const mongodb = global.mongodb
-    let inparam = ctx.body.query
+    let inparam = ctx.request.body
     // 默认获取本月1号到当前时间
     let startTime = inparam.startTime || moment().month(moment().month()).startOf('month').valueOf()
     let endTime = inparam.endTime || Date.now()
