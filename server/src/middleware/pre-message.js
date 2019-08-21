@@ -67,8 +67,11 @@ router.get('/message/query', async (ctx, next) => {
     const token = ctx.tokenVerify
     if (inparam.project == Util.MsgEnum.Private) {
         inparam.ownerId = token.id
-    } else {
+    } else if (token.role == Util.RoleEnum.agent) {
         inparam.$or = [{ project: Util.MsgEnum.NoticeAll }, { project: Util.MsgEnum.NoticeAgent }]
+        delete inparam.project
+    } else if (token.role == Util.RoleEnum.player) {
+        inparam.$or = [{ project: Util.MsgEnum.NoticeAll }, { project: Util.MsgEnum.NoticePlayer }]
         delete inparam.project
     }
     return next()
