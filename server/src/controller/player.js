@@ -32,9 +32,9 @@ router.post('/login', async (ctx, next) => {
             modeValue: player.modeValue,
             playerNick: player.playerNick,
             playerName: player.playerName,
-            parentId: agentInfo.parentId,
-            parentName: agentInfo.parentName,
-            parentNick: agentInfo.parentNick,
+            parentId: player.parentId,
+            parentName: player.parentName,
+            parentNick: player.parentNick,
             token
         }
     }
