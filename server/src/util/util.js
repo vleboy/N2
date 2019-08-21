@@ -198,8 +198,8 @@ module.exports = {
 
     GameStrEnum,
 
-    n1RegPlayer,
-    n1Transfer,
+    // n1RegPlayer,
+    // n1Transfer,
 
     checkType,
     getSeq
