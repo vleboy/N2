@@ -222,7 +222,7 @@ router.get('/realtime', async (ctx, next) => {
     // 使用手续费比例计算存取手续费
     data.currentDepositFee = +(data.currentDeposit * _.find(configArr, o => o.id == 'deposit').value / 100).toFixed(2)
     data.currentWithdrawFee = +(data.currentWithdraw * _.find(configArr, o => o.id == 'withdraw').value / 100).toFixed(2)
-
+    data.currentWinlose *= -1  // 总输赢取反
     // 当前利润（当前输赢 - 成本）* 业务模式比例
     data.currentProfit = +((data.currentWinlose - data.currentCommissionFee - data.currentPlatformFee - data.currentDepositFee - data.currentWithdrawFee) * agent.modeValue / 100).toFixed(2)
 
