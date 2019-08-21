@@ -307,4 +307,11 @@ router.get('/commissionFeeDetail', async (ctx, next) => {
     })
     ctx.body = rounds
 })
+
+/**
+ * 玩家报表
+ */
+router.get('/playerReport', async (ctx, next) => {
+})
+
 module.exports = router

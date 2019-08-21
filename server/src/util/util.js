@@ -116,71 +116,71 @@ async function getSeq(seqName) {
     return +`${moment().utcOffset(8).format('YYMMDD')}${_.padStart(res.value.seqValue.toString(), 10, '0')}`
 }
 
-// 向N1注册玩家
-async function n1RegPlayer(userName, nickname) {
-    try {
-        let res = await axios.post(`https://${config.n1.domain}/dev/player/register`, {
-            buId: config.n1.buId,
-            apiKey: config.n1.apiKey,
-            userName,
-            nickname,
-            userPwd: "123456",
-        })
-        if (res.data.code == 0) {
-            return { err: false }
-        } else {
-            return { err: true, res: res.data.msg }
-        }
-    } catch (error) {
-        return { err: true, res: '网络不稳定，请稍候重试' }
-    }
-}
+// // 向N1注册玩家
+// async function n1RegPlayer(userName, nickname) {
+//     try {
+//         let res = await axios.post(`https://${config.n1.domain}/dev/player/register`, {
+//             buId: config.n1.buId,
+//             apiKey: config.n1.apiKey,
+//             userName,
+//             nickname,
+//             userPwd: "123456",
+//         })
+//         if (res.data.code == 0) {
+//             return { err: false }
+//         } else {
+//             return { err: true, res: res.data.msg }
+//         }
+//     } catch (error) {
+//         return { err: true, res: '网络不稳定，请稍候重试' }
+//     }
+// }
 
-// 向N1玩家转点
-async function n1Transfer(userName, action, amount) {
-    let sn = `${123456}_${userName}_${Date.now()}】`
-    try {
-        let res = await axios.post(`https://${config.n1.domain}/dev/merchant/player`, {
-            method: "OPERATE_PLAYER_BALANCE",
-            buId: config.n1.buId,
-            apiKey: config.n1.apiKey,
-            userName,
-            action,
-            amount,
-            sn
-        })
-        if (res.data.code == 0) {
-            return { err: false }
-        } else {
-            console.error('N1充值/提现失败')
-            console.error(res.data)
-            return { err: true, res: res.data.msg }
-        }
-    } catch (error) {
-        return await checkSn(sn)
-    }
-}
+// // 向N1玩家转点
+// async function n1Transfer(userName, action, amount) {
+//     let sn = `${123456}_${userName}_${Date.now()}】`
+//     try {
+//         let res = await axios.post(`https://${config.n1.domain}/dev/merchant/player`, {
+//             method: "OPERATE_PLAYER_BALANCE",
+//             buId: config.n1.buId,
+//             apiKey: config.n1.apiKey,
+//             userName,
+//             action,
+//             amount,
+//             sn
+//         })
+//         if (res.data.code == 0) {
+//             return { err: false }
+//         } else {
+//             console.error('N1充值/提现失败')
+//             console.error(res.data)
+//             return { err: true, res: res.data.msg }
+//         }
+//     } catch (error) {
+//         return await checkSn(sn)
+//     }
+// }
 
-// 向N1检查充值/提现是否成功
-async function checkSn(sn) {
-    try {
-        let res = await axios.post(`https://${config.n1.domain}/dev/merchant/player`, {
-            method: "QUERY_PLAYER_SN",
-            buId: config.n1.buId,
-            apiKey: config.n1.apiKey,
-            sn
-        })
-        if (res.data.code == 0) {
-            return res.data.isExist
-        } else {
-            console.error('N1检查SN失败')
-            console.error(res.data)
-            checkSn(sn)
-        }
-    } catch (error) {
-        checkSn(sn)
-    }
-}
+// // 向N1检查充值/提现是否成功
+// async function checkSn(sn) {
+//     try {
+//         let res = await axios.post(`https://${config.n1.domain}/dev/merchant/player`, {
+//             method: "QUERY_PLAYER_SN",
+//             buId: config.n1.buId,
+//             apiKey: config.n1.apiKey,
+//             sn
+//         })
+//         if (res.data.code == 0) {
+//             return res.data.isExist
+//         } else {
+//             console.error('N1检查SN失败')
+//             console.error(res.data)
+//             checkSn(sn)
+//         }
+//     } catch (error) {
+//         checkSn(sn)
+//     }
+// }
 
 module.exports = {
     ProjectEnum,
