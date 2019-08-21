@@ -11,10 +11,12 @@ cron.schedule('0 */5 * * * *', async () => {
 })
 
 // 每月的一号两点统计（上月的利润）0 0 2 1 * *
-cron.schedule('0 0 2 1 * *', async () => {
+cron.schedule('*/20 * * * * *', async () => {
     //构造时间
-    let startTime = moment().month(moment().month() - 1).startOf('month').valueOf()
-    let endTime = moment().month(moment().month() - 1).endOf('month').valueOf()
+    let startTime = moment().month(moment().month() ).startOf('month').valueOf()
+    let endTime = moment().month(moment().month() ).endOf('month').valueOf()
+    let month = moment(startTime).format('YYMM')
+    await global.mongodb.collection(Util.CollectionEnum.profit).remove({ month })
     // 获取所有配置
     let configArr = await global.mongodb.collection(Util.CollectionEnum.config).find().toArray()
     //获取所有代理
@@ -25,13 +27,13 @@ cron.schedule('0 0 2 1 * *', async () => {
 })
 
 //净利润
-async function currentProfit(agent, configArr, startTime, endTime) {
+async function currentProfit(agent, configArr, startTime, endTime, month) {
     let data = {
         project: Util.ProjectEnum.Profit,     // 类型  
         role: agent.role,                     // 角色
-        agentId: agent.id,                    // ID
-        userName: agent.userName,             // 账号
-        userNick: agent.userNick,             // 昵称
+        ownerId: agent.id,                    // ID
+        ownerName: agent.userName,             // 账号
+        ownerNick: agent.userNick,             // 昵称
         mode: agent.mode,                     // 业务模式
         modeValue: agent.modeValue,           // 业务模式比例
 
@@ -92,7 +94,7 @@ async function currentProfit(agent, configArr, startTime, endTime) {
     if (data.currentProfit > 0) {
         data.id = await Util.getSeq('profitSeq')   // 流水号
         data.createAt = Date.now()
-        data.month = moment(Date.now() - 1 * 24 * 60 * 60 * 1000).format('YYYY-MM')
+        data.month = month
         global.mongodb.collection(Util.CollectionEnum.profit).insertOne(data)
     }
 }
