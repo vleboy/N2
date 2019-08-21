@@ -181,8 +181,6 @@ export default {
     sub() {
       this.formatMode();
       let params = {
-        userName: this.userName,
-        userNick: this.userNick,
         mobile: this.mobile,
         email: this.email,
         mode: this.mode,
@@ -194,6 +192,8 @@ export default {
       }
       if (this.$store.state.admin.agentInfo.operate == "create") {
         params.userPwd = this.userPwd;
+        params.userName = this.userName
+        params.userNick = this.userNick
         createAgent(params).then(res => {
           this.initData();
           this.$Message.success({ content: "创建成功" });

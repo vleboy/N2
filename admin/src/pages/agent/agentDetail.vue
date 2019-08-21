@@ -64,7 +64,7 @@
         <Row class-name="content1" v-for="(item, index) in gameList" :key="index" v-if="showMode">
           <Col span="6" class-name="tc">{{item.name}}:</Col>
           <Col span="18">
-            <Input disabled v-model="item.value" placeholder="最多2位小数" :number="true">
+            <Input disabled v-model="item.value" :number="true">
               <span slot="append">%</span>
             </Input>
           </Col>

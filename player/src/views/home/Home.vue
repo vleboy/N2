@@ -87,7 +87,7 @@ export default {
         },
         {
           img: require('../../assets/images/home/icon_wallet_withdraw.png'),
-          name: '信息'
+          name: '消息'
         }
       ],
       swipeList: [
