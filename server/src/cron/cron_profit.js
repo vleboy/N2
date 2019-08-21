@@ -96,5 +96,7 @@ async function currentProfit(agent, configArr, startTime, endTime) {
     // 当前利润（当前输赢 - 成本）* 业务模式比例
     data.currentProfit = +((data.currentWinlose - data.currentCommissionFee - data.currentPlatformFee - data.currentDepositFee - data.currentWithdrawFee) * agent.modeValue / 100).toFixed(2)
     // 写入发放表
-    global.mongodb.collection(Util.CollectionEnum.profit).insertOne(data)
+    if (data.currentProfit >= 0) {
+        global.mongodb.collection(Util.CollectionEnum.profit).insertOne(data)
+    }
 }
