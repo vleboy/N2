@@ -203,7 +203,7 @@ router.get('/realtime', async (ctx, next) => {
         // 累计平台输赢
         let sourceGameId = round.sourceGameId.toString()
         let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
-        platFeeMap[plat] = platFeeMap[plat] ? NP.plus(platFeeMap[plat], roundWinloseAmount) : 0
+        platFeeMap[plat] = (platFeeMap[plat] || platFeeMap[plat] == 0) ? NP.plus(platFeeMap[plat], roundWinloseAmount) : roundWinloseAmount
     }
     // 使用佣金比例计算佣金
     data.currentCommissionFee = +(data.currentCommission * _.find(configArr, o => o.id == 'commission').value / 100).toFixed(2)
