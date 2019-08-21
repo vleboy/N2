@@ -236,4 +236,9 @@ router.get('/platformFeeDetail', async (ctx, next) => {
 router.get('/channelFeeDetail', async (ctx, next) => {
 })
 
+/**
+ * 佣金费列表
+ */
+router.get('/commissionFeeDetail', async (ctx, next) => {
+})
 module.exports = router
