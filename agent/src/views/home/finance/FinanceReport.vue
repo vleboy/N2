@@ -44,18 +44,18 @@
       /> -->
       <div class="list">
         <div @click="jumpTo('deposit')">
-          <div class="name">玩家存款</div>
-          <div class="num">{{dataList.currentDeposit}}</div>
+          <div class="name">存款通道费</div>
+          <div class="num">{{dataList.currentDepositFee}}</div>
         </div>
         <div @click="jumpTo('withdrawal')">
-          <div class="name">玩家取款</div>
-          <div class="num">{{dataList.currentWithdraw}}</div>
+          <div class="name">取款通道费</div>
+          <div class="num">{{dataList.currentWithdrawFee}}</div>
         </div>
       </div>
       <div class="list">
         <div>
           <div class="name">红利加返水</div>
-          <div class="num">{{dataList.currentCommission}}</div>
+          <div class="num">{{dataList.currentCommissionFee}}</div>
         </div>
         <div>
           <div class="name">平台费</div>

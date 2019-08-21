@@ -26,8 +26,8 @@ const axios = {
         if (obj.err) {
           Notify({
             message: obj.res,
-            duration: 1000,
-            background: 'red'
+            duration: 5000,
+            background: 'red',
           });
          
           reject(obj)

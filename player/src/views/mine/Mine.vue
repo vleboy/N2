@@ -126,7 +126,7 @@ export default {
         message: '确定退出当前账号?'
         }).then(() => {
           localStorage.clear();
-          this.$router.push({ name: "login" });
+          this.$router.push({ name: "home" });
         }).catch(err => {
           return
         })

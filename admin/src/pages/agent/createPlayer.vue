@@ -27,7 +27,7 @@
             <Input :maxlength="max20" v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
           </Col>
         </Row>
-        <Row class-name="content">
+        <Row class-name="content" v-if="showMode">
           <Col span="6" class-name="tc">返佣比例:</Col>
           <Col span="18">
             <Input v-model="modeValue" placeholder="最多2位小数" :number="true">
@@ -36,7 +36,7 @@
             <p v-if="!pass" :class="{'regex': !pass}">最多2位小数</p>
           </Col>
         </Row>
-        <Row class-name="content1" v-for="(item, index) in gameList" :key="index">
+        <Row class-name="content1" v-for="(item, index) in gameList" :key="index" v-if="showMode">
           <Col span="6" class-name="tc">{{item.name}}:</Col>
           <Col span="18">
             <Input v-model="item.value" placeholder="最多2位小数" :number="true">
@@ -78,6 +78,9 @@ export default {
     listenshowDraw() {
       return this.$store.state.admin.createPlayer;
     },
+    showMode() {
+      return this.$store.state.admin.agentInfo.mode == 'commission' ? true : false
+    }
   },
   methods: {
     hideDraw() {
@@ -101,11 +104,13 @@ export default {
         playerName: this.userName,
         playerPwd: this.userPwd,
         playerNick: this.userNick,
-        mode: 'commission',
-        modeValue: this.modeValue,
-        gameList: this.gameList
-      };
-      /* if (this.pass) { */
+      }
+      if (this.$store.state.admin.agentInfo.mode == 'commission') {
+        prarms.mode = 'commission',
+        prarms.modeValue = this.modeValue,
+        prarms.gameList = this.gameList
+      }
+      if (this.pass) {
         createPlayer(prarms).then(res => {
           this.initData()
           this.$Message.success({content: '创建成功'})
@@ -113,7 +118,7 @@ export default {
         }).catch(err => {
           //this.initData()
         })
-      /* } */
+       } 
     },
     initData() {
       this.userName = ''
