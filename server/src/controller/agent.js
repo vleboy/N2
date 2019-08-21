@@ -253,8 +253,7 @@ router.get('/platformFeeDetail', async (ctx, next) => {
     // 获取所有配置
     let configArr = await mongodb.collection(Util.CollectionEnum.config).find().toArray()
     // 查询时间范围内的游戏记录
-    let bills = mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, _id: 0 } }).toArray()
-    console.log(bills)
+    let bills = await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, _id: 0 } }).toArray()
     for (let bill of bills) {
         let sourceGameId = bill.sourceGameId.toString()
         let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
@@ -299,7 +298,7 @@ router.get('/commissionFeeDetail', async (ctx, next) => {
     let endTime = inparam.endTime || Date.now()
     let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
     // 查询时间范围内的游戏记录
-    let rounds = mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, bills: 1, winloseAmount: 1, minCreateAt: 1, _id: 0 } }).toArray()
+    let rounds =await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, bills: 1, winloseAmount: 1, minCreateAt: 1, _id: 0 } }).toArray()
     rounds.map((round) => {
         let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(round.winloseAmount))
