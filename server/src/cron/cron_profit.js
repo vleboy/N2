@@ -11,10 +11,10 @@ cron.schedule('0 */5 * * * *', async () => {
 })
 
 // 每月的一号两点统计（上月的利润）0 0 2 1 * *
-cron.schedule('*/20 * * * * *', async () => {
+cron.schedule('0 0 2 1 * *', async () => {
     //构造时间
-    let startTime = moment().month(moment().month()).startOf('month').valueOf()
-    let endTime = moment().month(moment().month()).endOf('month').valueOf()
+    let startTime = moment().month(moment().month() - 1).startOf('month').valueOf()
+    let endTime = moment().month(moment().month() - 1).endOf('month').valueOf()
     // 获取所有配置
     let configArr = await global.mongodb.collection(Util.CollectionEnum.config).find().toArray()
     //获取所有代理
@@ -92,7 +92,7 @@ async function currentProfit(agent, configArr, startTime, endTime) {
     if (data.currentProfit > 0) {
         data.id = await Util.getSeq('profitSeq')   // 流水号
         data.createAt = Date.now()
-        data.month = moment(Date.now() - 1 * 24 * 60 * 60 * 1000).format('YYYY-MM-DD')
+        data.month = moment(Date.now() - 1 * 24 * 60 * 60 * 1000).format('YYYY-MM')
         global.mongodb.collection(Util.CollectionEnum.profit).insertOne(data)
     }
 }
