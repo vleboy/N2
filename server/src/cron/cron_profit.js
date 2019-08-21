@@ -10,11 +10,11 @@ cron.schedule('0 */5 * * * *', async () => {
     let endTime = Date.now()
 })
 
-// 月结
+// 每月的一号两点统计（上月的利润）0 0 2 1 * *
 cron.schedule('*/20 * * * * *', async () => {
     //构造时间
-    let startTime = moment().month(moment().month() ).startOf('month').valueOf()
-    let endTime = moment().month(moment().month() ).endOf('month').valueOf()
+    let startTime = moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = moment().month(moment().month()).endOf('month').valueOf()
     // 获取所有配置
     let configArr = await global.mongodb.collection(Util.CollectionEnum.config).find().toArray()
     //获取所有代理
@@ -27,7 +27,6 @@ cron.schedule('*/20 * * * * *', async () => {
 //净利润
 async function currentProfit(agent, configArr, startTime, endTime) {
     let data = {
-        id: await Util.getSeq('profitSeq'),   // 流水号
         project: Util.ProjectEnum.Profit,     // 类型  
         role: agent.role,                     // 角色
         agentId: agent.id,                    // ID
@@ -52,14 +51,8 @@ async function currentProfit(agent, configArr, startTime, endTime) {
     let p1 = global.mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agent.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     // 查询玩家存款和取款    
     let p2 = global.mongodb.collection(Util.CollectionEnum.bill).find({ parentId: agent.id, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
-    // 注册玩家数
-    let p3 = global.mongodb.collection(Util.CollectionEnum.player).find({ parentId: agent.id, lastLoginAt: { $gte: startTime, $lte: endTime } }).count()
-    // 活跃玩家数
-    let p4 = global.mongodb.collection(Util.CollectionEnum.player).find({ parentId: agent.id, lastAuthAt: { $gte: startTime, $lte: endTime } }).count()
     // 并发请求
-    let [rounds, bills, newRegPlayerCount, activePlayerCount] = await Promise.all([p1, p2, p3, p4])
-    data.newRegPlayerCount = newRegPlayerCount
-    data.activePlayerCount = activePlayerCount
+    let [rounds, bills] = await Promise.all([p1, p2])
     // 遍历所有游戏记录
     for (let round of rounds) {
         // 当局输赢
@@ -97,6 +90,9 @@ async function currentProfit(agent, configArr, startTime, endTime) {
     data.currentProfit = +((data.currentWinlose - data.currentCommissionFee - data.currentPlatformFee - data.currentDepositFee - data.currentWithdrawFee) * agent.modeValue / 100).toFixed(2)
     // 写入发放表
     if (data.currentProfit > 0) {
+        data.id = await Util.getSeq('profitSeq')   // 流水号
+        data.createAt = Date.now()
+        data.month = moment(Date.now() - 1 * 24 * 60 * 60 * 1000).format('YYYY-MM-DD')
         global.mongodb.collection(Util.CollectionEnum.profit).insertOne(data)
     }
 }
