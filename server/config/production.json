@@ -45,6 +45,8 @@
                 "/xnosql/config/query",
                 "/xnosql/config/update",
                 "/xnosql/vround/page",
+                "/xnosql/profit/page",
+                "/xserver/profit/update",
                 "/xserver/system/create",
                 "/xserver/system/handlerReview",
                 "/xserver/system/handlerPoint"
@@ -74,7 +76,10 @@
                 "/xnosql/bill/page",
                 "/xnosql/message/query",
                 "/xnosql/vround/page",
-                "/xserver/system/createReview"
+                "/xserver/system/createReview",
+                "/xserver/bankcard/create",
+                "/xserver/bankcard/get",
+                "/xserver/bankcard/delete"
             ]
         },
         "cors": true,
