@@ -330,7 +330,7 @@ router.get('/getBalance', async (ctx, next) => {
     }
     let data = { balance: agent.balance, lastMonthBalance: bills[0].balance }
     data.historyBalance = data.balance - data.lastMonthBalance
-    return data
+    ctx.body = data
 })
 
 
