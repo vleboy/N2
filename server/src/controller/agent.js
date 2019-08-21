@@ -315,4 +315,23 @@ router.get('/commissionFeeDetail', async (ctx, next) => {
 router.get('/playerReport', async (ctx, next) => {
 })
 
+/**
+ * 查询可提现金额接口
+ */
+router.get('/getBalance', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    let agent = await global.mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { balance: 1, _id: 0 } })
+    if (!agent) {
+        return ctx.body = { err: true, res: '代理不存在' }
+    }
+    let bills = await global.mongodb.collection(Util.CollectionEnum.bill).find({ role: Util.RoleEnum.agent, project: Util.ProjectEnum.Profit }, { projection: { balance: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
+    if (bills.length == 0) {
+        bills = [{ balance: 0 }]
+    }
+    let data = { balance: agent.balance, lastMonthBalance: bills[0].balance }
+    data.historyBalance = data.balance - data.lastMonthBalance
+    return data
+})
+
+
 module.exports = router

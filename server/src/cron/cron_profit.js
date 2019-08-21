@@ -28,10 +28,11 @@ cron.schedule('0 */5 * * * *', async () => {
 async function currentProfit(agent, configArr, startTime, endTime) {
     let data = {
         id: await Util.getSeq('profitSeq'),   // 流水号
-        role: agent.role,                      // 角色
-        agentId: agent.id,                     // ID
-        userName: agent.userName,              // 账号
-        userNick: agent.userNick,              // 昵称
+        project: Util.ProjectEnum.Profit,     // 类型  
+        role: agent.role,                     // 角色
+        agentId: agent.id,                    // ID
+        userName: agent.userName,             // 账号
+        userNick: agent.userNick,             // 昵称
         mode: agent.mode,                     // 业务模式
         modeValue: agent.modeValue,           // 业务模式比例
 
@@ -43,6 +44,7 @@ async function currentProfit(agent, configArr, startTime, endTime) {
         currentDepositFee: 0,                 // 存款手续费
         currentWithdraw: 0,                   // 取款
         currentWithdrawFee: 0,                // 取款手续费
+        currentProfit: 0,                     // 纯利润
         status: 0                             // 当前profit状态（0未发放，1已发放）
     }
     let platFeeMap = {}
