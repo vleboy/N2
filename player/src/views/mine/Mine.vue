@@ -18,7 +18,7 @@
             <p>&yen</p>
             <p>{{formatMoney}}</p>
           </div>
-          <div>中心钱包</div>
+          <div>钱包余额</div>
         </div>
         <div class="split"></div>
         <div class="right">
@@ -34,16 +34,15 @@
     </div>
     <div class="container">
       <div class="list" v-for="val in contentMenu">
-        <div v-for="item in val">
+        <div v-for="item in val" @click="operate(item)">
           <div>
-            <div >
+            <div>
               <van-image :src="item.img" :show-loading="false" />
               <p>{{item.text}}</p>
             </div>
           </div>
         </div>
       </div>
-
     </div>
    </div>
   </div>
@@ -67,10 +66,6 @@ export default {
           text: '存款'
         },
         {
-          img: require("../../assets/images/mine/icon_tranfer.png"),
-          text: '转账'
-        },
-        {
           img: require("../../assets/images/mine/ico_withdraw.png"),
           text: '取款'
         },
@@ -84,51 +79,58 @@ export default {
         [
           {
             img: require("../../assets/images/mine/icon_home_setting.png"),
-            text: '个人资料'
+            text: '个人资料',
+            name: ''
           },
           {
             img: require("../../assets/images/mine/icon_mine_account.png"),
-            text: '交易记录'
+            text: '交易记录',
+            name: ''
           },
           {
             img: require("../../assets/images/mine/icon_mine_settle.png"),
-            text: '投注记录'
+            text: '投注记录',
+            name: 'betRecord'
           }
         ],
         [
           {
-            img: require("../../assets/images/mine/gift.png"),
-            text: '好礼赠送'
-          },
-          {
-            img: require("../../assets/images/mine/icon_mine_about.png"),
-            text: '新手教程'
+            img: require("../../assets/images/mine/icon_home_about.png"),
+            text: '关于YIBO',
+            name: 'about'
           },
           {
             img: require("../../assets/images/mine/icon_home_partner.png"),
-            text: '银行卡号'
-          }
-        ],
-        [
-          {
-            img: require("../../assets/images/mine/ico_new.png"),
-            text: '合营计划'
-          },
-          {
-            img: require("../../assets/images/mine/icon_home_about.png"),
-            text: '关于亚博'
+            text: '银行卡号',
+            name: 'bank'
           },
           {
             img: require("../../assets/images/mine/icon_mine_unsettle.png"),
-            text: '安全退出'
+            text: '安全退出',
+            name: 'logout'
           }
-        ]
+        ],
       ]
     }
   },
   computed: {
     formatMoney() {
       return this.money.toFixed(2)
+    }
+  },
+  methods:{
+    operate(item) {
+      if (item.name == 'logout') {
+        this.$dialog.confirm({
+        title: '退出当前账号',
+        message: '确定退出当前账号?'
+        }).then(() => {
+          localStorage.clear();
+          this.$router.push({ name: "login" });
+        }).catch(err => {
+          return
+        })
+      }
     }
   }
 }
@@ -240,7 +242,7 @@ export default {
             display: flex;
             align-items: center;
             div {
-              margin: 0 16px;
+              margin: 0 10px;
             }
           }
           div:nth-child(2)::before {

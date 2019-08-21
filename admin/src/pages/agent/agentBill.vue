@@ -151,9 +151,6 @@ export default {
       data: []
     };
   },
-  mounted() {
-    this.search();
-  },
   methods: {
     createAtConfig(row) {
       return dayjs(row.createAt).format("YY-MM-DD HH:mm:ss");

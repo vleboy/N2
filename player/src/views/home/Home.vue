@@ -23,7 +23,10 @@
         </div>
         <div class="content">
           <div class="left">
-            <div class="see">
+            <div v-if="isLogin">
+              {{playerName}}
+            </div>
+            <div class="see" @click="login" v-else>
               登录/注册
             </div>
           </div>
@@ -126,11 +129,17 @@ export default {
     },
     playerName() {
       return localStorage.playerNick ? localStorage.playerNick : '请登录'
+    },
+    isLogin() {
+      return localStorage.playerNick ? true : false
     }
   },
   methods: {
     changeMenu(index) {
       this.swipeIndex = index
+    },
+    login() {
+      this.$router.push({name: 'login'})
     }
   }
 }

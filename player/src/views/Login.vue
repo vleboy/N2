@@ -19,6 +19,7 @@
           style="margin-top:30px"
         />
         <van-button type="info" size="large" :disabled="logInStatus" @click="login">登&emsp;录</van-button>
+        <p @click="toHome">先去逛逛</p>
       </div>
     </div>
   </div>
@@ -58,11 +59,14 @@ export default {
         console.log(res)
         localStorage.setItem("playerToken", res.token);
         localStorage.playerNick = res.playerNick
-        setTimeout(() => localStorage.removeItem("playerToken"), 259200000);
+        /* setTimeout(() => localStorage.removeItem("playerToken"), 259200000); */
         this.$router.push('/home')
       }).catch(err => {
         this.pwd = ''
       })
+    },
+    toHome() {
+      this.$router.push('/home')
     }
   }
 }

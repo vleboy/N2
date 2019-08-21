@@ -180,7 +180,6 @@ export default {
     sub() {
       this.formatMode();
       let params = {
-        parentId: this.$store.state.admin.info.id,
         userName: this.userName,
         userNick: this.userNick,
         mobile: this.mobile,
@@ -190,6 +189,7 @@ export default {
       };
       if (this.mode == "commission") {
         params.gameList = this.gameList;
+        params.parentId = this.$store.state.admin.info.id
       }
       if (this.$store.state.admin.info.operate == "create") {
         params.userPwd = this.userPwd;
@@ -234,7 +234,7 @@ export default {
         if (this.showDraw == true) {
           if (this.$store.state.admin.info.operate == "create") {
             this.ratioDisabled =
-              this.$store.state.admin.info.id == undefined ? true : false;
+              this.$store.state.admin.info.id == undefined ? false : true;
             this.gameList = commissionGameList();
             this.inputDisabled = false;
           } else {

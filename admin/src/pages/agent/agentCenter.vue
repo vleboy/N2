@@ -136,7 +136,7 @@ export default {
         {
           title: "昵称",
           slot: "userNick",
-          minWidth: "auto",
+          minWidth: "100",
           type: "template",
           template: "userNick",
           align: "center",
@@ -146,6 +146,7 @@ export default {
           title: "玩家数量",
           slot: "playerCount",
           align: "center",
+          minWidth: 'auto',
           type: "template",
           template: "playerCount",
           headerAlign: "center"
@@ -339,7 +340,7 @@ export default {
   height: 20px;
 }
 /deep/ .zk-table__cell-inner {
-  padding: 0px 12px;
+  padding: 0px 0px;
 }
 /deep/ .zk-table__footer-row,
 /deep/.zk-table__header-row {

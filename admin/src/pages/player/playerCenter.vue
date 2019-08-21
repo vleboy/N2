@@ -88,7 +88,10 @@ export default {
     playerPoint
   },
   beforeRouteEnter(to, from, next) {
+    console.log(from)
     next(vm => {
+      console.log('next')
+      console.log(vm)
       if (from.name == 'agentCenter' && vm.$route.params.parentId != undefined) {
         vm.parentId = vm.$route.params.parentId
         vm.search()
@@ -174,10 +177,6 @@ export default {
       startKey: ''//用于分页
     };
   },
-  computed: {},
-  mounted() {
-    this.search();
-  },
   methods: {
     //页码改变
     changepage(val) {
@@ -225,7 +224,7 @@ export default {
       })
     },
     search() {
-      console.log('player')
+      console.log(1111111111)
       this.initPage()
       this.getList()
     },
