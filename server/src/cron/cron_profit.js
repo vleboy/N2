@@ -11,7 +11,7 @@ cron.schedule('0 */5 * * * *', async () => {
 })
 
 // 月结
-cron.schedule('0 */5 * * * *', async () => {
+cron.schedule('*/20 * * * * *', async () => {
     //构造时间
     let startTime = moment().month(moment().month() - 1).startOf('month').valueOf()
     let endTime = moment().month(moment().month() - 1).endOf('month').valueOf()
