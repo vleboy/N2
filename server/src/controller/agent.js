@@ -154,9 +154,9 @@ router.get('/realtime', async (ctx, next) => {
         playerCount: agent.playerCount,       // 玩家数量
 
         currentWinlose: 0,                    // 累计输赢
+        currentPlatformFee: 0,                // 平台费
         currentCommission: 0,                 // 佣金
         currentCommissionFee: 0,              // 佣金费
-        currentPlatformFee: 0,                // 平台费
         currentDeposit: 0,                    // 存款
         currentDepositFee: 0,                 // 存款手续费
         currentWithdraw: 0,                   // 取款
@@ -191,7 +191,7 @@ router.get('/realtime', async (ctx, next) => {
         platFeeMap[plat] = platFeeMap[plat] ? NP.plus(platFeeMap[plat], roundWinloseAmount) : 0
     }
     // 使用佣金比例计算佣金
-    data.currentCommission = +(data.currentCommission * _.find(configArr, o => o.id == 'commission').value / 100).toFixed(2)
+    data.currentCommissionFee = +(data.currentCommission * _.find(configArr, o => o.id == 'commission').value / 100).toFixed(2)
     // 使用平台费比例计算平台费
     for (let plat in platFeeMap) {
         data.currentPlatformFee = NP.plus(data.currentPlatformFee, +(platFeeMap[plat] * _.find(configArr, o => o.id == plat).value / 100).toFixed(2))
@@ -205,11 +205,11 @@ router.get('/realtime', async (ctx, next) => {
         }
     }
     // 使用手续费比例计算存取手续费
-    data.currentDeposit = +(data.currentDeposit * _.find(configArr, o => o.id == 'deposit').value / 100).toFixed(2)
-    data.currentWithdraw = +(data.currentWithdraw * _.find(configArr, o => o.id == 'withdraw').value / 100).toFixed(2)
+    data.currentDepositFee = +(data.currentDeposit * _.find(configArr, o => o.id == 'deposit').value / 100).toFixed(2)
+    data.currentWithdrawFee = +(data.currentWithdraw * _.find(configArr, o => o.id == 'withdraw').value / 100).toFixed(2)
 
     // 当前利润（当前输赢 - 成本）* 业务模式比例
-    data.currentProfit = +((data.currentWinlose - data.currentCommission - data.currentPlatformFee - data.currentDeposit - data.currentWithdraw) * agent.modeValue / 100).toFixed(2)
+    data.currentProfit = +((data.currentWinlose - data.currentCommissionFee - data.currentPlatformFee - data.currentDepositFee - data.currentWithdrawFee) * agent.modeValue / 100).toFixed(2)
 
     ctx.body = data
 })
