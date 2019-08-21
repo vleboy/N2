@@ -254,6 +254,7 @@ router.get('/platformFeeDetail', async (ctx, next) => {
     let configArr = await mongodb.collection(Util.CollectionEnum.config).find().toArray()
     // 查询时间范围内的游戏记录
     let bills = mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, _id: 0 } }).toArray()
+    console.log(bills)
     for (let bill of bills) {
         let sourceGameId = bill.sourceGameId.toString()
         let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
