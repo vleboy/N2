@@ -276,7 +276,7 @@ router.get('/channelFeeDetail', async (ctx, next) => {
     let inparam = ctx.request.query
     let startTime = inparam.startTime || moment().month(moment().month()).startOf('month').valueOf()
     let endTime = inparam.endTime || Date.now()
-    if (inparam.project != Util.ProjectEnum.Deposit || inparam.project != Util.ProjectEnum.Withdraw) {
+    if (inparam.project != Util.ProjectEnum.Deposit && inparam.project != Util.ProjectEnum.Withdraw) {
         return ctx.body = { err: true, res: '未知操作' }
     }
     let bills = await mongodb.collection(Util.CollectionEnum.bill).find({ parentId: token.id, project: inparam.project, createAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, amount: 1, createAt: 1, _id: 0 } }).toArray()
