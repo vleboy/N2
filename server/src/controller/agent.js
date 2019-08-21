@@ -231,29 +231,80 @@ router.get('/realtime', async (ctx, next) => {
 
 //新注册玩家数量
 function getNewRegPlayerCount(agentId, startTime, endTime) {
-    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastLoginAt: { $gt: startTime, $lt: endTime } }).count()
+    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastLoginAt: { $gte: startTime, $lte: endTime } }).count()
 }
 
 //活跃玩家数量
 function getActivePlayerCount(agentId, startTime, endTime) {
-    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastAuthAt: { $gt: startTime, $lt: endTime } }).count()
+    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastAuthAt: { $gte: startTime, $lte: endTime } }).count()
 }
 
 /**
  * 第三方平台费详细
  */
 router.get('/platformFeeDetail', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    const mongodb = global.mongodb
+    let inparam = ctx.request.query
+    let startTime = inparam.startTime || moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = inparam.endTime || Date.now()
+    let platFeeMap = {}
+    // 获取所有配置
+    let configArr = await mongodb.collection(Util.CollectionEnum.config).find().toArray()
+    // 查询时间范围内的游戏记录
+    let bills = mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, _id: 0 } }).toArray()
+    for (let bill of bills) {
+        let sourceGameId = bill.sourceGameId.toString()
+        let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
+        platFeeMap[plat] = platFeeMap[plat] ? NP.plus(platFeeMap[plat], +bill.winloseAmount.toFixed(2)) : 0
+    }
+    // 使用平台费比例计算平台费
+    let platFeeArr = []
+    for (let plat in platFeeMap) {
+        platFeeArr.push({ gameId: plat, platFee: +(platFeeMap[plat] * _.find(configArr, o => o.id == plat).value / 100).toFixed(2) })
+    }
+    ctx.body = platFeeArr
 })
 
 /**
  * 存取通道费列表
  */
 router.get('/channelFeeDetail', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    const mongodb = global.mongodb
+    let inparam = ctx.request.query
+    let startTime = inparam.startTime || moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = inparam.endTime || Date.now()
+    if (inparam.project != Util.ProjectEnum.Deposit || inparam.project != Util.ProjectEnum.Withdraw) {
+        return ctx.body = { err: true, res: '未知操作' }
+    }
+    let bills = await mongodb.collection(Util.CollectionEnum.bill).find({ parentId: token.id, project: inparam.project, createAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, amount: 1, createAt: 1, _id: 0 } }).toArray()
+    let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: inparam.project })
+    bills.map((item) => {
+        item.channelFee = +(item.amount * configInfo.value / 100).toFixed(4)
+    })
+    ctx.body = bills
 })
 
 /**
  * 佣金费列表
  */
 router.get('/commissionFeeDetail', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    const mongodb = global.mongodb
+    let inparam = ctx.request.query
+    let startTime = inparam.startTime || moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = inparam.endTime || Date.now()
+    let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
+    // 查询时间范围内的游戏记录
+    let rounds = mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, bills: 1, winloseAmount: 1, minCreateAt: 1, _id: 0 } }).toArray()
+    rounds.map((round) => {
+        let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
+        let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(round.winloseAmount))
+        round.commissionFee = +(roundValidBetAmount * configInfo.value / 100).toFixed(2)
+        delete round.bills
+        delete round.winloseAmount
+    })
+    ctx.body = rounds
 })
 module.exports = router
