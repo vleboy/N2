@@ -1,0 +1,59 @@
+[
+  {
+    '$match': {
+      'sourceRelKey': {
+        '$ne': null
+      }
+    }
+  }, {
+    '$group': {
+      '_id': {
+        'sourceRelKey': '$sourceRelKey', 
+        'role': '$role', 
+        'ownerId': '$ownerId', 
+        'ownerName': '$ownerName', 
+        'ownerNick': '$ownerNick', 
+        'parentId': '$parentId', 
+        'parentName': '$parentName', 
+        'parentNick': '$parentNick', 
+        'sourceGameId': '$sourceGameId'
+      }, 
+      'winloseAmount': {
+        '$sum': '$amount'
+      }, 
+      'minCreateAt': {
+        '$min': '$createAt'
+      }, 
+      'maxCreateAt': {
+        '$max': '$createAt'
+      }
+    }
+  }, {
+    '$project': {
+      '_id': 0, 
+      'sourceRelKey': '$_id.sourceRelKey', 
+      'role': '$_id.role', 
+      'ownerId': '$_id.ownerId', 
+      'ownerName': '$_id.ownerName', 
+      'ownerNick': '$_id.ownerNick', 
+      'parentId': '$_id.parentId', 
+      'parentName': '$_id.parentName', 
+      'parentNick': '$_id.parentNick', 
+      'sourceGameId': '$_id.sourceGameId', 
+      'winloseAmount': 1, 
+      'minCreateAt': 1, 
+      'maxCreateAt': 1
+    }
+  }, {
+    '$sort': {
+      'minCreateAt': -1
+    }
+  }, {
+    '$lookup': {
+      'from': 'bill', 
+      'localField': 'sourceRelKey', 
+      'foreignField': 'sourceRelKey', 
+      'as': 'bills'
+    }
+  }
+]

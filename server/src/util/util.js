@@ -79,6 +79,12 @@ const MsgStrEnum = {
     noticePlayer: '玩家公告',
     private: '私信'
 }
+
+// 游戏枚举
+const GameStrEnum = {
+    '70001': '',
+}
+
 //数据库集合枚举
 const CollectionEnum = {
     _seq: '_seq',
@@ -89,7 +95,9 @@ const CollectionEnum = {
     subrole: 'subrole',
     bill: 'bill',
     profit: 'profit',
-    config: 'config'
+    config: 'config',
+
+    vround: 'vround'
 }
 
 //检查类型
@@ -187,6 +195,8 @@ module.exports = {
 
     MsgEnum,
     MsgStrEnum,
+
+    GameStrEnum,
 
     n1RegPlayer,
     n1Transfer,

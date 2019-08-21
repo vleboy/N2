@@ -18,13 +18,25 @@ router.post('/login', async (ctx, next) => {
     } else if (!bcrypt.compareSync(player.playerPwd, inparam.playerPwd)) {
         ctx.body = { err: true, res: '密码不正确' }
     } else {
+        //更新登录时间 和 IP
+        mongodb.collection(Util.CollectionEnum.player).update({ playerName: inparam.playerName }, { $set: { lastLoginAt: Date.now(), lastLoginIP: ctx.request.ip } })
         let token = jwt.sign({
             role: player.role,
             id: player.id,
             playerName: player.playerName,
             playerNick: player.playerNick
         }, config.auth.secret)
-        ctx.body = { id: player.id, playerNick: player.playerNick, token }
+        ctx.body = {
+            id: player.id,
+            mode: player.mode,
+            modeValue: player.modeValue,
+            playerNick: player.playerNick,
+            playerName: player.playerName,
+            parentId: agentInfo.parentId,
+            parentName: agentInfo.parentName,
+            parentNick: agentInfo.parentNick,
+            token
+        }
     }
 })
 

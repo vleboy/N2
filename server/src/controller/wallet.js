@@ -16,23 +16,23 @@ const RetMap = {}
 router.post('/transfer', async (ctx, next) => {
     const inparam = ctx.request.body
     const mongodb = global.mongodb
-    // 预置返回对象
     let res = { code: 0, msg: '', balance: 0 }
-    // 查询对应玩家
+    // auth
     if (inparam.method == 'auth') {
         let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, playerNick: 1, _id: 0 } })
         if (player) {
+            mongodb.collection(Util.CollectionEnum.player).update({ id: inparam.userId }, { $set: { lastAuthAt: Date.now() } })
             res.balance = +player.balance.toFixed(2)
             res.userNick = player.playerNick
         } else {
-            res.code = -2
-            res.msg = '玩家不存在'
+            res = { code: -2, msg: '玩家不存在', balance: 0 }
         }
-    } else {
+    }
+    // bet/win/refund 
+    else {
         let balanceRes = await syncBill(inparam)
         if (balanceRes.err) {
-            res.code = balanceRes.err
-            res.msg = balanceRes.res
+            res = { code: balanceRes.err, msg: balanceRes.res, balance: 0 }
         } else {
             res.balance = balanceRes.balance
         }
@@ -95,6 +95,7 @@ async function syncBill(inparam) {
                 parentName: res.value.parentName,
                 parentNick: res.value.parentNick,
 
+                sourceIP: inparam.sourceIP,
                 sourceGameId: inparam.gameId,
                 sourceId: inparam.sn,
                 sourceRelKey: inparam.businessKey,
@@ -107,21 +108,21 @@ async function syncBill(inparam) {
             }, { session })
         } else {
             let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, status: 1, _id: 0 } })
-            if (player && player.status == Util.StatusEnum.Enable) {
-                return { err: -2, res: '余额不足', balance: +player.balance.toFixed(2) }
-            }
-            if (player && player.status != Util.StatusEnum.Enable) {
-                return { err: -2, res: '玩家已停用', balance: +player.balance.toFixed(2) }
-            }
             if (!player) {
                 return { err: -2, res: '玩家不存在' }
+            }
+            // 投注检查返回错误
+            if (player.status == Util.StatusEnum.Enable) {
+                return { err: -2, res: '余额不足', balance: +player.balance.toFixed(2) }
+            }
+            if (player.status != Util.StatusEnum.Enable) {
+                return { err: -2, res: '玩家已停用', balance: +player.balance.toFixed(2) }
             }
         }
         await session.commitTransaction()
         return { balance: NP.plus(+res.value.balance.toFixed(2), inparam.amount) }
     } catch (error) {
         console.error(error)
-
         await session.abortTransaction()
         if (error.errmsg && error.errmsg.indexOf('sourceId_1') != -1) {
             let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: +inparam.userId }, { projection: { balance: 1, _id: 0 } })

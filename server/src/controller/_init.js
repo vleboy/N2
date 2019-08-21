@@ -53,6 +53,11 @@ async function createIndex(mongodb) {
 
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ id: -1 })
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ project: 1 })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ createAt: 1 })
+
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ ownerId: 1, createAt: 1 })
+    await mongodb.collection(Util.CollectionEnum.bill).createIndex({ parentId: 1, createAt: 1 })
+
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceId: 1 }, { unique: true, sparse: true })
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceRelKey: 1 }, { sparse: true })
     await mongodb.collection(Util.CollectionEnum.bill).createIndex({ sourceRelKey: 1, project: 1 }, { sparse: true })
