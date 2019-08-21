@@ -13,16 +13,16 @@ cron.schedule('0 */5 * * * *', async () => {
 // 每月的一号两点统计（上月的利润）0 0 2 1 * *
 cron.schedule('*/20 * * * * *', async () => {
     //构造时间
-    let startTime = moment().month(moment().month() ).startOf('month').valueOf()
-    let endTime = moment().month(moment().month() ).endOf('month').valueOf()
+    let startTime = moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = moment().month(moment().month()).endOf('month').valueOf()
     let month = moment(startTime).format('YYMM')
-    await global.mongodb.collection(Util.CollectionEnum.profit).remove({ month })
+    await global.mongodb.collection(Util.CollectionEnum.profit).deleteMany({ month })
     // 获取所有配置
     let configArr = await global.mongodb.collection(Util.CollectionEnum.config).find().toArray()
     //获取所有代理
     let agents = await global.mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { id: 1, role: 1, userName: 1, userNick: 1, mode: 1, modeValue: 1, _id: 0 } }).toArray()
     for (let agent of agents) {
-        currentProfit(agent, configArr, startTime, endTime)
+        currentProfit(agent, configArr, startTime, endTime, month)
     }
 })
 
