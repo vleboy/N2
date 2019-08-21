@@ -159,10 +159,11 @@ function tree(treeArray, array) {
 router.get('/realtime', async (ctx, next) => {
     const token = ctx.tokenVerify
     const mongodb = global.mongodb
+    let inparam = ctx.body.query
+    // 默认获取本月1号到当前时间
+    let startTime = inparam.startTime || moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = inparam.endTime || Date.now()
     let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { mode: 1, modeValue: 1, playerCount: 1, agentCount: 1, _id: 0 } })
-    //构造时间
-    let startTime = moment().month(moment().month()).startOf('month').valueOf()
-    let endTime = Date.now()
     let data = {
         mode: agent.mode,                     // 业务模式
         modeValue: agent.modeValue,           // 业务模式比例
