@@ -12,6 +12,9 @@ router.get('/get', async (ctx, next) => {
     const collectionName = token.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
 
     let user = await mongodb.collection(collectionName).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
+    if (!user) {
+        return ctx.body = { err: true, res: '用户不存在' }
+    }
     ctx.body = user.bankCards
 })
 
@@ -25,6 +28,9 @@ router.post('/create', async (ctx, next) => {
     const collectionName = token.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
 
     let user = await mongodb.collection(collectionName).findOne({ id: token.id }, { projection: { bankCards: 1, _id: 0 } })
+    if (!user) {
+        return ctx.body = { err: true, res: '用户不存在' }
+    }
     user.bankCards.push(inparam)
     await mongodb.collection(collectionName).updateOne({ id: token.id }, { $set: { bankCards: user.bankCards } })
     ctx.body = { err: false, res: '操作成功' }
