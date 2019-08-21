@@ -257,7 +257,7 @@ router.get('/platformFeeDetail', async (ctx, next) => {
     for (let bill of bills) {
         let sourceGameId = bill.sourceGameId.toString()
         let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
-        platFeeMap[plat] = platFeeMap[plat] ? NP.plus(platFeeMap[plat], +bill.winloseAmount.toFixed(2)) : 0
+        platFeeMap[plat] =(platFeeMap[plat] || platFeeMap[plat] == 0) ? NP.plus(platFeeMap[plat], roundWinloseAmount) : roundWinloseAmount
     }
     // 使用平台费比例计算平台费
     let platFeeArr = []
