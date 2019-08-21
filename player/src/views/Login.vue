@@ -59,6 +59,7 @@ export default {
         console.log(res)
         localStorage.setItem("playerToken", res.token);
         localStorage.playerNick = res.playerNick
+        localStorage.playerInfo = JSON.stringify(res)
         /* setTimeout(() => localStorage.removeItem("playerToken"), 259200000); */
         this.$router.push('/home')
       }).catch(err => {

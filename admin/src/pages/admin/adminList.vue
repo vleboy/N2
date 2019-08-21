@@ -98,8 +98,6 @@ export default {
       let params = {
         id: row.id
       }
-      console.log(params);
-      
       this.$Modal.confirm({
           title: '管理员管理',
           content: `确定删除该管理员?`,

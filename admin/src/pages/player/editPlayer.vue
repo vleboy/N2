@@ -1,7 +1,7 @@
 <template>
   <div>
     <Drawer
-      title="创建玩家"
+      title="修改玩家"
       v-model="showDraw"
       width="320"
       :mask-closable="false"
@@ -12,22 +12,22 @@
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家账号:</Col>
           <Col span="18">
-            <Input :maxlength="max20" v-model="userName" placeholder="3-20位" style="width: 100%" />
+            <Input disabled :maxlength="max20" v-model="userName" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家昵称:</Col>
           <Col span="18">
-            <Input :maxlength="max20" v-model="userNick" placeholder="3-20位" style="width: 100%" />
+            <Input disabled :maxlength="max20" v-model="userNick" placeholder="3-20位" style="width: 100%" />
           </Col>
         </Row>
         <Row class-name="content">
           <Col span="6" class-name="tc">玩家密码:</Col>
           <Col span="18">
-            <Input :maxlength="max20" v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
+            <Input disabled :maxlength="max20" v-model="userPwd" placeholder="6-20位"  type="password" style="width: 100%" />
           </Col>
         </Row>
-        <Row class-name="content" v-if="showMode">
+        <Row class-name="content">
           <Col span="6" class-name="tc">返佣比例:</Col>
           <Col span="18">
             <Input v-model="modeValue" placeholder="最多2位小数" :number="true">
@@ -36,7 +36,7 @@
             <p v-if="!pass" :class="{'regex': !pass}">最多2位小数</p>
           </Col>
         </Row>
-        <Row class-name="content1" v-for="(item, index) in gameList" :key="index" v-if="showMode">
+        <Row class-name="content1" v-for="(item, index) in gameList" :key="index">
           <Col span="6" class-name="tc">{{item.name}}:</Col>
           <Col span="18">
             <Input v-model="item.value" placeholder="最多2位小数" :number="true">
@@ -53,8 +53,7 @@
   </div>
 </template>
 <script>
-import { commissionGameList } from "../../config/getGameList";
-import { createPlayer, queryConfig } from "../../service/index";
+import { editPlayer} from "../../service/index";
 export default {
   data() {
     return {
@@ -72,30 +71,18 @@ export default {
       },
       gameList: '',
       modeValue: '',
-      rate: ''
     };
   },
   computed: {
     listenshowDraw() {
-      return this.$store.state.admin.createPlayer;
+      return this.$store.state.admin.editPlayer;
     },
-    showMode() {
-      return this.$store.state.admin.agentInfo.mode == 'commission' ? true : false
-    }
   },
   mounted() {
-    this.getConfig();
+    
   },
   methods: {
-    //获取游戏返佣配置
-    getConfig() {
-      let params = {
-        id: "commission"
-      };
-      queryConfig(params).then(res => {
-        this.rate = res.res[0].value;
-      });
-    },
+    
     hideDraw() {
       this.initData()
     },
@@ -113,21 +100,16 @@ export default {
     sub() {
       this.formatMode()
       let prarms = {
-        parentId: this.$store.state.admin.agentInfo.id,
-        playerName: this.userName,
-        playerPwd: this.userPwd,
-        playerNick: this.userNick,
-      }
-      if (this.$store.state.admin.agentInfo.mode == 'commission') {
-        prarms.mode = 'commission',
-        prarms.modeValue = this.modeValue,
-        prarms.gameList = this.gameList
+        id: this.$store.state.admin.playerInfo.id,
+        mode: 'commission',
+        modeValue: this.modeValue,
+        gameList: this.gameList
       }
       if (this.pass) {
-        createPlayer(prarms).then(res => {
+        editPlayer(prarms).then(res => {
           this.initData()
-          this.$Message.success({content: '创建成功'})
-          this.$parent.getList()
+          this.$Message.success({content: '修改成功'})
+          this.$parent.search()
         }).catch(err => {
           //this.initData()
         })
@@ -139,18 +121,21 @@ export default {
       this.userNick = ''
       this.modeValue = ''
       this.pass = true;
-      this.$store.commit('setAgentInfo', {
+      this.$store.commit('setPlayerInfo', {
         
       })
-      this.$store.commit("showCreatePlayer", false);
+      this.$store.commit("showEditPlayer", false);
     }
   },
   watch: {
     listenshowDraw: {
       handler: function(val, oldVal) {
         this.showDraw = val;
-        this.gameList = commissionGameList()
-        this.modeValue = this.rate
+        this.gameList = this.$store.state.admin.playerInfo.gameList
+        this.modeValue = this.$store.state.admin.playerInfo.modeValue
+        this.userName = this.$store.state.admin.playerInfo.parentName
+        this.userPwd = '******'
+        this.userNick = this.$store.state.admin.playerInfo.playerNick
       }
     }
   }

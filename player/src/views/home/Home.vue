@@ -31,7 +31,7 @@
             </div>
           </div>
           <div class="right">
-            <div class="menu" v-for="(item, index) in operateHeader" :key="index">
+            <div class="menu" v-for="(item, index) in operateHeader" :key="index" @click="jumpTo(item.routeName)">
               <img :src="item.img" alt="" >
               <div class="name">{{item.name}}</div>
             </div>
@@ -52,7 +52,7 @@
         </div>
         <div class="right">
           <ul ref="swipe" :style="{transform: swipeTo}">
-            <li style="background:red" class="swip1">
+            <li class="swip1">
               <img :src="sideImg1" alt="">
             </li>
             <li style="background:yellow">2</li>
@@ -82,7 +82,12 @@ export default {
         },
         {
           img: require('../../assets/images/home/icon_wallet_withdraw.png'),
-          name: '取款'
+          name: '取款',
+          routeName: 'withdrawalApplication'
+        },
+        {
+          img: require('../../assets/images/home/icon_wallet_withdraw.png'),
+          name: '信息'
         }
       ],
       swipeList: [
@@ -140,6 +145,9 @@ export default {
     },
     login() {
       this.$router.push({name: 'login'})
+    },
+    jumpTo(name) {
+      this.$router.push({name})
     }
   }
 }

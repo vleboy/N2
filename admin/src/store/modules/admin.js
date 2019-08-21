@@ -2,8 +2,9 @@ export const admin = {
   state: {
     playerPoint: false,
     agentPoint: false,
-    createAgent: false,
+    operateAgent: false,
     createPlayer: false,
+    editPlayer: false,
     agentDetail: false,
     playerDetail: false,
     createRole: false,
@@ -49,11 +50,14 @@ export const admin = {
     showAgentPoint(state, params) {
       state.agentPoint = params
     },
-    showCreateAgent(state, params) {
-      state.createAgent = params
+    showOperateAgent(state, params) {
+      state.operateAgent = params
     },
     showCreatePlayer(state, params) {
       state.createPlayer = params
+    },
+    showEditPlayer(state, params) {
+      state.editPlayer = params
     },
     showAgentDetail(state, params) {
       state.agentDetail = params

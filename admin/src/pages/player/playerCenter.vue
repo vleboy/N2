@@ -52,15 +52,17 @@
           >{{row.status == 0 ? '已停用' : '已启用'}}</Tag>
         </template>
         <template #operate="{row}">
-          <Button
+          <div class="btn">
+            <Button
             size="small"
             :type="row.status == 0 ? 'info' : 'error'"
             ghost
-            style="margin-right:5px"
             @click="operateSatus(row)"
           >{{row.status == 0 ? '启用' : '停用'}}</Button>
-          <Button size="small" type="info" ghost @click="setPoint(row)" style="margin-right:5px">加减点</Button>
+          <Button size="small" type="info" ghost @click="setPoint(row)" >加减点</Button>
           <Button size="small" type="info" ghost @click="playerDetail(row)">查看详情</Button>
+          <Button size="small" type="info" ghost  @click="edit(row) "v-if="row.mode == 'commission'">修改</Button>
+          </div>
         </template>
       </Table>
     </div>
@@ -68,6 +70,7 @@
       <Page :current="currentPage" :total="totalPage" :page-size="pageSize" @on-change="changepage"/>
     </div>
     <playerPoint></playerPoint>
+    <editPlayer></editPlayer>
     <playerDetail></playerDetail>
     <Spin size="large" fix v-show="spinShow" style="z-index:200;">
       <Icon type="ios-loading" size="64" class="demo-spin-icon-load"></Icon>
@@ -81,17 +84,19 @@ import dayjs from "dayjs";
 import { queryPlayer, playerStatus } from "../../service/index";
 import playerDetail from './playerDetail'
 import playerPoint from './playerPoint'
+import editPlayer from './editPlayer'
 import _ from 'lodash'
 export default {
   components: {
     playerDetail,
-    playerPoint
+    playerPoint,
+    editPlayer
   },
   beforeRouteEnter(to, from, next) {
-    console.log(from)
+
     next(vm => {
-      console.log('next')
-      console.log(vm)
+
+
       if (from.name == 'agentCenter' && vm.$route.params.parentId != undefined) {
         vm.parentId = vm.$route.params.parentId
         vm.search()
@@ -167,7 +172,7 @@ export default {
           title: "操作",
           slot: "operate",
           align: "center",
-          minWidth: 80
+          minWidth: 120
         }
       ],
       //分页相关
@@ -224,7 +229,6 @@ export default {
       })
     },
     search() {
-      console.log(1111111111)
       this.initPage()
       this.getList()
     },
@@ -279,6 +283,10 @@ export default {
       this.$store.commit('showPlayerDetail', true)
       this.$store.commit('setPlayerInfo', row)
     },
+    edit(row) {
+      this.$store.commit('showEditPlayer', true)
+      this.$store.commit('setPlayerInfo', row)
+    }
   }
 }
 </script>
@@ -309,6 +317,13 @@ export default {
     }
     .ivu-table-small td {
       height: 26px;
+    }
+    .btn {
+      display: flex;
+      justify-content: start;
+      button {
+        margin-right: 5px;
+      }
     }
   }
 }

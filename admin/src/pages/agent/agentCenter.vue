@@ -207,7 +207,6 @@ export default {
       return dayjs(row.createdAt).format("YY-MM-DD");
     },
     search() {
-      console.log('agent')
       this.getList();
     },
     reset() {
@@ -261,8 +260,8 @@ export default {
     },
      edit(row) {
       row.operate = 'edit'
-      this.$store.commit("showDrawer", true);
-      this.$store.commit("setDrawerInfo", row);
+      this.$store.commit("setAgentInfo", row);
+      this.$store.commit("showOperateAgent", true);
     },
     //创建直属代理
     createNewAgent() {
@@ -270,8 +269,8 @@ export default {
         id: undefined,
         operate: 'create'
       }
-      this.$store.commit("showDrawer", true);
-      this.$store.commit("setDrawerInfo", params);
+      this.$store.commit("setAgentInfo", params);
+      this.$store.commit("showOperateAgent", true);
     },
     //创建代理
     createAgent(row) {
@@ -279,8 +278,8 @@ export default {
         id: row.id,
         operate: 'create'
       }
-      this.$store.commit("showDrawer", true);
-      this.$store.commit("setDrawerInfo", params);
+      this.$store.commit("setAgentInfo", params);
+      this.$store.commit("showOperateAgent", true);
     },
     //查看代理详情
     agentDetail(row) {

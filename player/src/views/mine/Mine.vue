@@ -10,7 +10,8 @@
         <div class="via">
           <van-image round :src="via" :show-loading="false" />
         </div>
-        <div class="nickname">{{nickname}}</div>
+        <div class="nickname" v-if="isLogin">{{nickname}}</div>
+        <div class="nickname" v-else @click="toLogin">请登录</div>
       </div>
       <div class="content">
         <div class="left">
@@ -55,9 +56,7 @@ export default {
   name: 'mine',
   data() {
     return {
-      
       via: require("../../assets/images/mine/icon_default_head_bg.png"),//头像
-      nickname: '请登录',//默认请登录
       money: 0,//中心钱包
       //顶部菜单
       topMenu: [
@@ -110,13 +109,20 @@ export default {
             name: 'logout'
           }
         ],
-      ]
+      ],
+      isLogin: false
     }
   },
   computed: {
     formatMoney() {
       return this.money.toFixed(2)
-    }
+    },
+    nickname() {
+      return localStorage.playerNick//默认请登录
+    } 
+  },
+  mounted() {
+    this.isLogin = localStorage.playerNick == undefined ? false : true
   },
   methods:{
     operate(item) {
@@ -131,6 +137,9 @@ export default {
           return
         })
       }
+    },
+    toLogin() {
+      this.$router.push({name: 'login'})
     }
   }
 }
@@ -202,10 +211,11 @@ export default {
             }
           }
           .right {
+            flex: 1;
             display: flex;
-            padding-left: 16px;
+            justify-content: space-around;
             .list {
-              margin-right: 11.2px;
+              
               .van-image {
                 width: 32px;
                 height: 32px;

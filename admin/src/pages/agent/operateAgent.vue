@@ -1,7 +1,7 @@
 <template>
   <div>
     <Drawer
-      title="创建代理"
+      :title="title"
       v-model="showDraw"
       width="320"
       :mask-closable="false"
@@ -109,6 +109,7 @@ import { log } from "util";
 export default {
   data() {
     return {
+      title: '',
       max20: 20,
       showDraw: false,
       userName: "",
@@ -136,7 +137,7 @@ export default {
   },
   computed: {
     listenshowDraw() {
-      return this.$store.state.admin.isShowDrawer;
+      return this.$store.state.admin.operateAgent;
     },
     rateConfig() {
       let radioGroup = {
@@ -189,9 +190,9 @@ export default {
       };
       if (this.mode == "commission") {
         params.gameList = this.gameList;
-        params.parentId = this.$store.state.admin.info.id
+        params.parentId = this.$store.state.admin.agentInfo.id
       }
-      if (this.$store.state.admin.info.operate == "create") {
+      if (this.$store.state.admin.agentInfo.operate == "create") {
         params.userPwd = this.userPwd;
         createAgent(params).then(res => {
           this.initData();
@@ -213,14 +214,14 @@ export default {
       this.modeValue = "";
       this.mobile = "";
       this.email = "";
+      this.mode = 'rebate'
       this.rebateDisabled = false;
       this.commissionDisabled = false;
       this.ratioDisabled = false;
       this.inputDisabled = false;
-      console.log(this.inputDisabled);
       this.getConfig();
-      this.$store.commit("setDrawerInfo", {});
-      this.$store.commit("showDrawer", false);
+      this.$store.commit("setAgentInfo", {});
+      this.$store.commit("showOperateAgent", false);
     },
     changeRadio(val) {
       this.modeValue = val == "commission" ? this.rate : "";
@@ -232,37 +233,38 @@ export default {
         this.showDraw = val;
         //判断 创建 / 修改
         if (this.showDraw == true) {
-          if (this.$store.state.admin.info.operate == "create") {
-            this.ratioDisabled =
-              this.$store.state.admin.info.id == undefined ? false : true;
+          if (this.$store.state.admin.agentInfo.operate == "create") {
+            this.ratioDisabled = this.$store.state.admin.agentInfo.id == undefined ? false : true;
             this.gameList = commissionGameList();
             this.inputDisabled = false;
+            this.title = '创建代理'
           } else {
-            this.userName = this.$store.state.admin.info.userName;
+            this.userName = this.$store.state.admin.agentInfo.userName;
             this.userPwd = "******";
-            this.userNick = this.$store.state.admin.info.userNick;
-            this.mobile = this.$store.state.admin.info.mobile;
-            this.email = this.$store.state.admin.info.email;
+            this.userNick = this.$store.state.admin.agentInfo.userNick;
+            this.mobile = this.$store.state.admin.agentInfo.mobile;
+            this.email = this.$store.state.admin.agentInfo.email;
             this.inputDisabled = true;
-            switch (this.$store.state.admin.info.mode) {
+            this.title = '修改代理'
+            switch (this.$store.state.admin.agentInfo.mode) {
               case "rebate":
-                this.commissionDisabled = true;
+                this.commissionDisabled = true;                                                                                                                                                                                                        
                 this.ratioDisabled = true;
                 this.mode = "rebate";
                 break;
               case "commission":
-                break;
                 this.rebateDisabled = true;
                 this.ratioDisabled = true;
                 this.mode = "commission";
-                this.gameList = this.$store.state.admin.info.gameList;
+                this.gameList = this.$store.state.admin.agentInfo.gameList;
+                break;
               default:
                 this.rebateDisabled = true;
                 this.commissionDisabled = true;
                 this.mode = "ratio";
                 break;
             }
-            this.modeValue = this.$store.state.admin.info.modeValue;
+            this.modeValue = this.$store.state.admin.agentInfo.modeValue;
           }
         }
       }

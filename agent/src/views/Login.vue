@@ -58,6 +58,7 @@ export default {
         console.log(res)
         localStorage.setItem("agentToken", res.token);
         localStorage.userName = res.userName
+        localStorage.agentInfo = JSON.stringify(res)
         setTimeout(() => localStorage.removeItem("agentToken"), 259200000);
         this.$router.push('/home')
       }).catch(err => {

@@ -26,7 +26,7 @@ const axios = {
         if (obj.err) {
           Notify({
             message: obj.res,
-            duration: 1000,
+            duration: 5000,
             background: 'red'
           });
          
@@ -37,7 +37,7 @@ const axios = {
       } catch (error) {
         Notify({
           message: '网络连接错误',
-          duration: 1000,
+          duration: 5000,
           background: 'red'
         });
         reject(error)
@@ -59,7 +59,7 @@ const axios = {
         if (obj.err) {
           Notify({
             message: obj.res,
-            duration: 1000,
+            duration: 5000,
             background: 'red'
           });
 
@@ -70,7 +70,7 @@ const axios = {
       } catch (error) {
         Notify({
           message: '网络连接错误',
-          duration: 1000,
+          duration: 5000,
           background: 'red'
         });
         reject(error)
@@ -99,3 +99,21 @@ export async function logIn(params) {
   return axios.post("/xserver/player/login", params);
 }
 
+/* 首页 */
+
+//取款申请
+export async function createReview(params) {
+  return axios.post("/xserver/system/createReview", params);
+}
+//添加银行卡
+export async function addBankCard(params) {
+  return axios.post("/xserver/bankcard/create", params);
+}
+//删除银行卡
+export async function deleteBankCard(params) {
+  return axios.post(`/xserver/bankcard/delete/${params.cardNo}`, params);
+}
+//获取银行卡列表
+export async function getCardList(params) {
+  return axios.get("/xserver/bankcard/get", params);
+}

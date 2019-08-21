@@ -95,7 +95,6 @@ export default {
       setPoints(prarms).then(res => {
         this.initData()
         this.$Message.success({content: res.res})
-        console.log(this.$parent)
         this.$parent.search()
       })
     },

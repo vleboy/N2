@@ -137,3 +137,5 @@ export async function getCardList(params) {
 export async function updatePwd(params) {
   return axios.post("/xnosql/agent/update", params);
 }
+
+//个人信息

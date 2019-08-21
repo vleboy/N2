@@ -124,6 +124,11 @@ export async function createPlayer(params) {
   return axios.post("/xnosql/player/create", params);
 }
 
+//修改玩家
+export async function editPlayer(params) {
+  return axios.post("/xnosql/player/update", params);
+}
+
 //停用启用玩家
 export async function playerStatus(params) {
   return axios.post("/xnosql/player/update", params);

@@ -33,6 +33,22 @@
             <span>{{createAtConfig(playerInfo.createAt)}}</span>
           </Col>
         </Row>
+        <Row class-name="content" v-if="showMode">
+          <Col span="6" class-name="tc">返佣比例:</Col>
+          <Col span="18">
+            <Input disabled v-model="playerInfo.modeValue" placeholder="最多2位小数" :number="true">
+              <span slot="append">%</span>
+            </Input>
+          </Col>
+        </Row>
+        <Row class-name="content1" v-for="(item, index) in gameList" :key="index" v-if="showMode">
+          <Col span="6" class-name="tc">{{item.name}}:</Col>
+          <Col span="18">
+            <Input disabled v-model="item.value" placeholder="最多2位小数" :number="true">
+              <span slot="append">%</span>
+            </Input>
+          </Col>
+        </Row>
         <div class-name="content" v-for="(item, index) in playerInfo.bankCards" :key="index" style="border-top:1px solid #fff">
           <Row class-name="content">
             <Col span="6" class-name="tc">开户行:</Col>
@@ -64,6 +80,7 @@ export default {
   data() {
     return {
       showDraw: false,
+      gameList: [],
       styles: {
         height: "calc(100% - 55px)",
         overflow: "auto",
@@ -78,6 +95,9 @@ export default {
     },
     playerInfo() {
       return this.$store.state.admin.playerInfo
+    },
+    showMode() {
+      return this.$store.state.admin.playerInfo.mode == 'commission' ? true : false
     }
   },
   methods: {
@@ -104,6 +124,7 @@ export default {
     listenshowDraw: {
       handler: function(val, oldVal) {
         this.showDraw = val;
+        this.gameList = this.$store.state.admin.playerInfo.gameList
       }
     }
   }
@@ -114,6 +135,17 @@ export default {
 
 .content {
   margin: 20px 0;
+  display: flex;
+  align-items: center;
+  .tr {
+    text-align: right;
+  }
+  .tc {
+    text-align: center;
+  }
+}
+.content1 {
+  margin: 10px 0;
   display: flex;
   align-items: center;
   .tr {
