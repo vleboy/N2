@@ -52,7 +52,22 @@ router.post('/login', async (ctx, next) => {
         subrole: agentInfo.subrole,
         permissions: subrole.permissions
     }, config.auth.secret)
-    ctx.body = { id: agentInfo.id, role: agentInfo.role, subrole: agentInfo.subrole, permissions: subrole.permissions, userName: agentInfo.userName, userNick: agentInfo.userNick, token }
+    ctx.body = {
+        id: agentInfo.id,
+        role: agentInfo.role,
+        subrole: agentInfo.subrole,
+        permissions: subrole.permissions,
+        mode: agentInfo.mode,
+        modeValue: agentInfo.modeValue,
+        userName: agentInfo.userName,
+        userNick: agentInfo.userNick,
+        mobile: agentInfo.mobile,
+        email: agentInfo.email,
+        parentId: agentInfo.parentId,
+        parentName: agentInfo.parentName,
+        parentNick: agentInfo.parentNick,
+        token
+    }
 })
 
 /**

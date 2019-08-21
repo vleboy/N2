@@ -26,7 +26,17 @@ router.post('/login', async (ctx, next) => {
             playerName: player.playerName,
             playerNick: player.playerNick
         }, config.auth.secret)
-        ctx.body = { id: player.id, playerNick: player.playerNick, token }
+        ctx.body = {
+            id: player.id,
+            mode: player.mode,
+            modeValue: player.modeValue,
+            playerNick: player.playerNick,
+            playerName: player.playerName,
+            parentId: agentInfo.parentId,
+            parentName: agentInfo.parentName,
+            parentNick: agentInfo.parentNick,
+            token
+        }
     }
 })
 
