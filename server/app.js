@@ -9,7 +9,7 @@ const cors = require('@koa/cors')
 const koaBody = require('koa-body')
 const mount = require('koa-mount')
 const staticServer = require('koa-static')
-const cron = require('./src/cron/cron_profit.js')
+// const cron = require('./src/cron/cron_profit.js')
 
 // 应用中间件
 const xcontroller = require('koa-xcontroller')
