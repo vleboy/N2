@@ -18,7 +18,7 @@ cron.schedule('*/20 * * * * *', async () => {
     // 获取所有配置
     let configArr = await global.mongodb.collection(Util.CollectionEnum.config).find().toArray()
     //获取所有代理
-    let agents = await global.mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { id: 1, role: 1, userName: 1, userNick: 1, mode: 1, modeValue: 1, _id: 0 } }).toArray
+    let agents = await global.mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { id: 1, role: 1, userName: 1, userNick: 1, mode: 1, modeValue: 1, _id: 0 } }).toArray()
     for (let agent of agents) {
         currentProfit(agent, configArr, startTime, endTime)
     }
