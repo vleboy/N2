@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const moment = require('moment')
+const NP = require('number-precision')
 const axios = require('axios')
 const config = require('config')
 
