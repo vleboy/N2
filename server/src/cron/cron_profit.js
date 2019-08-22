@@ -32,20 +32,20 @@ async function currentProfit(agent, configArr, startTime, endTime, month) {
         project: Util.ProjectEnum.Profit,     // 类型  
         role: agent.role,                     // 角色
         ownerId: agent.id,                    // ID
-        ownerName: agent.userName,             // 账号
-        ownerNick: agent.userNick,             // 昵称
+        ownerName: agent.userName,            // 账号
+        ownerNick: agent.userNick,            // 昵称
         mode: agent.mode,                     // 业务模式
         modeValue: agent.modeValue,           // 业务模式比例
 
-        currentWinlose: 0,                    // 累计输赢
-        currentPlatformFee: 0,                // 平台费
-        currentCommission: 0,                 // 佣金
-        currentCommissionFee: 0,              // 佣金费
-        currentDeposit: 0,                    // 存款
-        currentDepositFee: 0,                 // 存款手续费
-        currentWithdraw: 0,                   // 取款
-        currentWithdrawFee: 0,                // 取款手续费
-        currentProfit: 0,                     // 纯利润
+        winlose: 0,                           // 累计输赢
+        platformFee: 0,                       // 平台费
+        commission: 0,                        // 佣金
+        commissionFee: 0,                     // 佣金费
+        deposit: 0,                           // 存款
+        depositFee: 0,                        // 存款手续费
+        withdraw: 0,                          // 取款
+        withdrawFee: 0,                       // 取款手续费
+        profit: 0,                            // 纯利润
         status: 0                             // 当前profit状态（0未发放，1已发放）
     }
     let platFeeMap = {}
