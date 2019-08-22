@@ -13,8 +13,8 @@ cron.schedule('0 */5 * * * *', async () => {
 // 每月的一号零点统计（上月的利润）0 1 0 1 * *
 cron.schedule('0 1 0 1 * *', async () => {
     //构造时间
-    let startTime = moment().month(moment().month()-1).startOf('month').valueOf()
-    let endTime = moment().month(moment().month()-1).endOf('month').valueOf()
+    let startTime = moment().month(moment().month() - 1).startOf('month').valueOf()
+    let endTime = moment().month(moment().month() - 1).endOf('month').valueOf()
     let month = moment(startTime).format('YYMM')
     await global.mongodb.collection(Util.CollectionEnum.profit).deleteMany({ month })
     // 获取所有配置
@@ -52,7 +52,7 @@ async function currentProfit(agent, configArr, startTime, endTime, month) {
     // 查询时间范围内的游戏记录
     let p1 = global.mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agent.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     // 查询玩家存款和取款    
-    let p2 = global.mongodb.collection(Util.CollectionEnum.review).find({ parentId: agent.id,status:Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
+    let p2 = global.mongodb.collection(Util.CollectionEnum.review).find({ parentId: agent.id, status: Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
     // 并发请求
     let [rounds, bills] = await Promise.all([p1, p2])
     // 遍历所有游戏记录
@@ -87,7 +87,8 @@ async function currentProfit(agent, configArr, startTime, endTime, month) {
     // 使用手续费比例计算存取手续费
     data.currentDepositFee = +(data.currentDeposit * _.find(configArr, o => o.id == 'deposit').value / 100).toFixed(2)
     data.currentWithdrawFee = +(data.currentWithdraw * _.find(configArr, o => o.id == 'withdraw').value / 100).toFixed(2)
-    data.currentWinlose *= -1  // 代理页面显示（总输赢取反）
+    data.currentWinlose *= -1           // 总输赢取反(玩家输，代理赢)
+    data.currentPlatformFee *= -1       //平台费取反（玩家输，平台赢利）
     // 当前利润（当前输赢 - 成本）* 业务模式比例
     data.currentProfit = +((data.currentWinlose - data.currentCommissionFee - data.currentPlatformFee - data.currentDepositFee - data.currentWithdrawFee) * agent.modeValue / 100).toFixed(2)
     // 写入发放表
