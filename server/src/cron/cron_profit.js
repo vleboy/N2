@@ -93,7 +93,7 @@ async function currentProfit(agent, configArr, startTime, endTime, month) {
     data.currentProfit = +((data.currentWinlose - data.currentCommissionFee - data.currentPlatformFee - data.currentDepositFee - data.currentWithdrawFee) * agent.modeValue / 100).toFixed(2)
     // 写入发放表
     if (data.currentProfit > 0) {
-        data.id = await Util.getSeq('profitSeq')   // 流水号
+        data.id = await Util.getSeq('profitSeq')   
         data.createAt = Date.now()
         data.month = month
         global.mongodb.collection(Util.CollectionEnum.profit).insertOne(data)

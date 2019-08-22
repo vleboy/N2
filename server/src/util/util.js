@@ -128,6 +128,26 @@ async function getSeq(seqName) {
     return +`${moment().utcOffset(8).format('YYMMDD')}${_.padStart(res.value.seqValue.toString(), 10, '0')}`
 }
 
+// 检查用户合法性
+async function checkHandlerPoint(inparam) {
+    const collectionName = inparam.role == RoleEnum.agent ? CollectionEnum.agent : CollectionEnum.player
+    const user = await global.mongodb.collection(collectionName).findOne({ id: inparam.id })
+    if (!user || user.status == 0) {
+        throw { err: true, res: '帐号不存在或被停用' }
+    }
+    const id = user.id
+    let ownerName = user.userName
+    let ownerNick = user.userNick
+    const parentId = user.parentId
+    const parentName = user.parentName
+    const parentNick = user.parentNick
+    if (inparam.role == RoleEnum.player) {
+        ownerName = user.playerName
+        ownerNick = user.playerNick
+    }
+    return { id, ownerName, ownerNick, parentId, parentName, parentNick }
+}
+
 // // 向N1注册玩家
 // async function n1RegPlayer(userName, nickname) {
 //     try {
@@ -215,5 +235,6 @@ module.exports = {
     // n1Transfer,
 
     checkType,
-    getSeq
+    getSeq,
+    checkHandlerPoint
 }

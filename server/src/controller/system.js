@@ -51,7 +51,7 @@ router.post('/handlerPoint', async (ctx, next) => {
         queryBalance.balance = { $gte: Math.abs(amount) }
     }
     // 检查代理/玩家是否满足操作条件
-    const owner = await checkHandlerPoint(inparam)
+    const owner = await Util.checkHandlerPoint(inparam)
     // 点数处理事务
     const session = await global.getMongoSession()
     try {
@@ -113,7 +113,7 @@ router.post('/createReview', async (ctx, next) => {
         queryBalance.balance = { $gte: Math.abs(amount) }
     }
     // 检查代理/玩家是否满足操作条件
-    const owner = await checkHandlerPoint(inparam)
+    const owner = await Util.checkHandlerPoint(inparam)
     let createAt = Date.now()
     // 充值申请
     if (inparam.project == Util.ProjectEnum.Deposit) {
@@ -213,7 +213,7 @@ router.post('/handlerReview', async (ctx, next) => {
     }
     // 检查代理或玩家是否正常
     const collectionName = reviewInfo.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
-    const owner = await checkHandlerPoint({ id: reviewInfo.proposerId, role: reviewInfo.role })
+    const owner = await Util.checkHandlerPoint({ id: reviewInfo.proposerId, role: reviewInfo.role })
     let createAt = Date.now()
     // 拒绝该订单
     if (inparam.status == Util.ReviewEnum.Refuse) {
@@ -224,7 +224,7 @@ router.post('/handlerReview', async (ctx, next) => {
             try {
                 // TODO 玩家点数与N1同步
                 // 变更余额
-                const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+                const res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 // 写入流水，更新请求单为拒绝状态
                 let billId = await Util.getSeq('billSeq')
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
@@ -261,7 +261,7 @@ router.post('/handlerReview', async (ctx, next) => {
             try {
                 // TODO 玩家点数与N1同步
                 // 变更余额
-                const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+                const res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
                 // 写入流水，更新请求单为同意状态
                 const billId = await Util.getSeq('billSeq')
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
@@ -296,24 +296,5 @@ router.post('/handlerReview', async (ctx, next) => {
     ctx.body = { err: false, res: '操作成功' }
 })
 
-// 检查用户合法性
-async function checkHandlerPoint(inparam) {
-    const collectionName = inparam.role == Util.RoleEnum.agent ? Util.CollectionEnum.agent : Util.CollectionEnum.player
-    const user = await mongodb.collection(collectionName).findOne({ id: inparam.id })
-    if (!user || user.status == 0) {
-        throw { err: true, res: '帐号不存在或被停用' }
-    }
-    const id = user.id
-    let ownerName = user.userName
-    let ownerNick = user.userNick
-    const parentId = user.parentId
-    const parentName = user.parentName
-    const parentNick = user.parentNick
-    if (inparam.role == Util.RoleEnum.player) {
-        ownerName = user.playerName
-        ownerNick = user.playerNick
-    }
-    return { id, ownerName, ownerNick, parentId, parentName, parentNick }
-}
 
 module.exports = router
