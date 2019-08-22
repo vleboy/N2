@@ -12,7 +12,7 @@
       </div>
       <div class="amount">
         <p>净输赢(元)</p>
-        <p>{{dataList.currentProfit}}</p>
+        <p>{{dataList.profit}}</p>
       </div>
       <div class="detail">
         <ul>

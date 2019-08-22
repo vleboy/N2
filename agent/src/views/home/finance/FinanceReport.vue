@@ -45,22 +45,32 @@
       <div class="list">
         <div @click="jumpTo('deposit')">
           <div class="name">存款通道费</div>
-          <div class="num">{{dataList.depositFee}}</div>
+          <div class="num">
+            {{dataList.depositFee || 0}}
+            <van-button type="default">查看详情</van-button>
+          </div>
         </div>
         <div @click="jumpTo('withdrawal')">
           <div class="name">取款通道费</div>
-          <div class="num">{{dataList.withdrawFee}}</div>
+          <div class="num">
+            {{dataList.withdrawFee}}
+            <van-button type="default">查看详情</van-button>
+          </div>
         </div>
       </div>
       <div class="list">
         <div>
           <div class="name">红利加返水</div>
-          <div class="num">{{dataList.commissionFee}}</div>
+          <div class="num">
+            {{dataList.commissionFee}}
+            <van-button type="default">查看详情</van-button>
+          </div>
         </div>
         <div @click="jumpTo('platform')">
           <div class="name">平台费</div>
           <div class="num">
-            <div>{{dataList.platformFee}}</div>
+            {{dataList.platformFee}}
+            <van-button type="default">查看详情</van-button>
           </div>
         </div>
       </div>
@@ -68,7 +78,8 @@
         <div @click="jumpTo('winLoseAll')">
           <div class="name">总输赢</div>
           <div class="num">
-            <div>{{dataList.winlose}}</div>
+            {{dataList.winlose}}
+            <van-button type="default">查看详情</van-button>
           </div>
         </div>
         <div>
