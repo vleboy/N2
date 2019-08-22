@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="container">
-      <div>
+      <!-- <div>
         <van-image
           width="100"
           height="100"
@@ -23,19 +23,49 @@
         />
         <div class="msg">暂无相关数据</div>
         <van-button type="info" size="normal" plain>点击重试</van-button>
-      </div>
+      </div> -->
+      <table>
+          <tr>
+            <th>发放金额</th>
+            <th>发放时间</th>
+            <th>操作</th>
+          </tr>
+          <tr v-for="(item, index) in dataList">
+            <td>{{item.profit}}</td>
+            <td>{{createAtConfig(item.createAt)}}</td>
+            <td>查看详情</td>
+          </tr>
+        </table>
     </div>
   </div>
 </template>
 
 <script>
+import {commissionPage} from '../../../service/index'
+import dayjs from 'dayjs'
 export default {
   data() {
     return {
-      noData: require('../../../assets/images/home/no_data.jpg')
+      noData: require('../../../assets/images/home/no_data.jpg'),
+      startKey: '',
+      dataList: [],
     }
   },
+  mounted() {
+    this.getList()
+  },
   methods: {
+    createAtConfig(val) {
+      return dayjs(val).format("YY-MM-DD")
+    },
+    getList() {
+      if (this.startKey != null) {
+        commissionPage().then(res => {
+          this.startKey = res.startKey
+          this.dataList = this.dataList.concat(res.res)
+        })
+      }
+    },
     onClickLeft() {
       this.$router.push('home')
     }
@@ -87,7 +117,7 @@ export default {
     }
     .container {
       display: flex;
-      margin-top: 40%;
+      margin-top: 20%;
       justify-content: center;
       .msg {
         text-align:
@@ -99,6 +129,23 @@ export default {
         padding: 0 32px;
         border-radius: 20px;
         
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        tr {
+          height: 50px;
+          &:nth-child(2n) {
+              background: #FBFBFB;
+            }
+          th {
+            font-weight: normal;
+          }
+          td {
+            
+          }
+        }
       }
     }
     /*顶部导航*/

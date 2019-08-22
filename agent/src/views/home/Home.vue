@@ -62,7 +62,7 @@
           <div>取款申请</div>
         </div>
         <div class="split"></div>
-        <div @click="jump('/userInfo')">
+        <div @click="jump('/playerReport')">
           <van-image
             :show-loading="false"
             :src="img_user"

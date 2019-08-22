@@ -126,6 +126,21 @@ export async function commissionBill(params) {
 export async function platformBill(params) {
   return axios.get("/xserver/agent/platformFeeDetail", params);
 }
+//总输赢
+export async function winLosePage(params) {
+  return axios.get("/xnosql/vround/page", params);
+}
+
+//佣金报表
+
+export async function commissionPage(params) {
+  return axios.get("/xnosql/profit/page", params);
+}
+
+//玩家报表
+export async function playerReport(params) {
+  return axios.get("/xserver/agent/playerReport", params);
+}
 
 
 //添加银行卡

@@ -18,6 +18,11 @@ import FinanceReport from '../views/home/finance/FinanceReport.vue'
 import Deposit from '../views/home/finance/Deposit.vue'
 import Withdrawal from '../views/home/finance/Withdrawal.vue'
 import Platform from '../views/home/finance/Platform.vue'
+import WinLoseAll from '../views/home/finance/WinLoseAll.vue'
+
+
+import PlayerReport from '../views/home/playerReport/PlayerReport.vue'
+
 
 import UserInfo from '../views/home/user/UserInfo.vue'
 import AddBankCard from '../views/home/withdrawal/AddBankCard.vue'
@@ -122,6 +127,16 @@ const otherRouter = [
     path: '/platform',
     name: 'platform',
     component: Platform
+  },
+  {
+    path: '/winLoseAll',
+    name: 'winLoseAll',
+    component: WinLoseAll
+  },
+  {
+    path: '/playerReport',
+    name: 'playerReport',
+    component: PlayerReport
   }
 ]
 

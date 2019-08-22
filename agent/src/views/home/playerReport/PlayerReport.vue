@@ -2,12 +2,19 @@
   <div class="home">
     <div class="top">
       <van-nav-bar
-        title="财务报表"
+        title="玩家报表"
         left-arrow
         @click-left="onClickLeft"
         :border="false"
         />
       <div class="detail">
+        <van-field
+          v-model="username"
+          clearable
+          left-icon="contact"
+          placeholder="请输入用户名"
+          :border="false"
+        />
         <div class="time">
           <div>
             <span class="fs14">2019-07-01</span>
@@ -25,7 +32,6 @@
           <van-button type="default" size="small">查询</van-button>
         </div>
       </div>
-      
     </div>
     <div class="container">
       <!-- <van-datetime-picker
@@ -42,55 +48,32 @@
         @change="getStartTime"
         v-if="showModel1"
       /> -->
-      <div class="list">
-        <div @click="jumpTo('deposit')">
-          <div class="name">存款通道费</div>
-          <div class="num">{{dataList.depositFee}}</div>
-        </div>
-        <div @click="jumpTo('withdrawal')">
-          <div class="name">取款通道费</div>
-          <div class="num">{{dataList.withdrawFee}}</div>
-        </div>
-      </div>
-      <div class="list">
-        <div>
-          <div class="name">红利加返水</div>
-          <div class="num">{{dataList.commissionFee}}</div>
-        </div>
-        <div @click="jumpTo('platform')">
-          <div class="name">平台费</div>
-          <div class="num">
-            <div>{{dataList.platformFee}}</div>
-          </div>
-        </div>
-      </div>
-      <div class="list">
-        <div @click="jumpTo('winLoseAll')">
-          <div class="name">总输赢</div>
-          <div class="num">
-            <div>{{dataList.winlose}}</div>
-          </div>
-        </div>
-        <div>
-          <div class="name">净输赢</div>
-          <div class="num">{{dataList.profit}}</div>
-        </div>
-      </div>
-    </div>
-    <div class="footer">
-      <p>提示:</p>
-      <p>总输赢,净输赢中正数表示公司盈利,负数表示公司亏损.每天数据只做普通参考,并不做诗句佣金派发标准</p>
+      <table>
+          <tr>
+            <th>账号</th>
+            <th>输赢</th>
+            <th>存款</th>
+            <th>取款</th>
+          </tr>
+          <tr v-for="(item, index) in data">
+            <td>{{item.playerName}}</td>
+            <td>{{item.winloseAmount}}</td>
+            <td>{{item.deposit}}</td>
+            <td>{{item.withdraw}}</td>
+          </tr>
+        </table>
     </div>
   </div>
 </template>
 
 <script>
-import { getView } from '../../../service/index'
+import {playerReport} from '../../../service/index'
 export default {
   data() {
     return {
       noData: require('../../../assets/images/home/no_data.jpg'),
       currentDate: new Date(),
+      data: '',
       st: '',
       et: '',
       startTime: '2233',
@@ -98,13 +81,18 @@ export default {
       startWeek: '2233',
       endWeek: '',
       showModel1: false,
-      dataList: []
+      username: ''
     }
   },
   mounted() {
-    this.getData()
+    this.getList()
   },
   methods: {
+    getList() {
+      playerReport().then(res => {
+        this.data = res
+      })
+    },
     onClickLeft() {
       this.$router.push('home')
     },
@@ -120,15 +108,6 @@ export default {
     getStartTime(e) {
       //console.log(e.getValues())
       this.st = e.getValues().join('-')
-    },
-    getData() {
-      getView().then(res => {
-        this.dataList = res
-      })
-    },
-    /* 路由跳转 */
-    jumpTo(name) {
-      this.$router.push({name})
     }
   }
 }
@@ -137,27 +116,31 @@ export default {
 
 <style lang="less" scoped>
   .home {
-    font-size: 16px;
+    
     .top {
       box-sizing: border-box;
       background: #6cbfff;
-      height: 130px;
+      height: 160px;
       padding: 30px 8px;
       position: relative;
       
       .detail {
         box-sizing: border-box;
         padding: 8px 8px;
-        height: 90px;
+        height: 140px;
         background: #fff;
         position: absolute;
         width: 92%;
-        bottom: -45px;
+        bottom: -70px;
         border-radius: 5px;
         left: 50%;
         transform: translateX(-50%);
         box-shadow: 0px 8px 10px #bebebe;
+        .van-cell {
+          padding: 5px 5px;
+        }
         .time {
+          margin: 15px 0;
           display: flex;
           justify-content: space-around;
           align-items: center;
@@ -182,7 +165,7 @@ export default {
       /* display: flex;
       justify-content: space-around;
       background: blue; */
-      margin-top: 70px;
+      margin-top: 90px;
       .list {
         display: flex;
         align-items: center;
@@ -220,22 +203,23 @@ export default {
         }
       }
     }
-    .footer {
-      box-sizing: border-box;
-      padding: 0 21px;
-      margin-top: 16px;
-      p {
-        margin: 0;
-        color: #515151;
-        &:first-child {
-          font-size: 16px;
-        }
-        &:last-child {
-          font-size: 12.8px;
-          margin-top: 5px;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: center;
+        tr {
+          height: 50px;
+          &:nth-child(2n) {
+              background: #FBFBFB;
+            }
+          th {
+            font-weight: normal;
+          }
+          td {
+            
+          }
         }
       }
-    }
     /*顶部导航*/
   .van-nav-bar {
     height: 50px;

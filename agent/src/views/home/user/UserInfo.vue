@@ -48,14 +48,20 @@
         @change="getStartTime"
         v-if="showModel1"
       /> -->
-      <Table :columns="column1" :data="userList" :stripe="true">
-        <!-- <template slot-scope="{row, index}" slot="winLose">
-          {{1321564321}}
-        </template> -->
-        <template v-slot:name="{ winLose }">
-          1231
-        </template>
-      </Table>
+      <table>
+          <tr>
+            <th>账号</th>
+            <th>输赢</th>
+            <th>存款</th>
+            <th>取款</th>
+          </tr>
+          <tr v-for="(item, index) in data">
+            <td>{{item.playerName}}</td>
+            <td>{{item.winloseAmount}}</td>
+            <td>{{item.deposit}}</td>
+            <td>{{item.withdraw}}</td>
+          </tr>
+        </table>
     </div>
   </div>
 </template>
