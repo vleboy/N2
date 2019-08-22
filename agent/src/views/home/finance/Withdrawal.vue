@@ -2,20 +2,22 @@
   <div class="personal">
     <div class="box">
       <van-nav-bar
-        title="取款"
+        title="取款通道费"
         left-arrow
         @click-left="onClickLeft"
       />
       <div class="table">
         <table>
           <tr>
-            <th>操作金额</th>
-            <th>余额</th>
+            <th>操作人</th>
+            <th>金额</th>
+            <th>通道费</th>
             <th>时间</th>
           </tr>
           <tr v-for="(item, index) in data">
+            <td>{{item.ownerName}}</td>
             <td :style="{color:amountConfig(item.amount)}">{{item.amount}}</td>
-            <td>{{item.balance}}</td>
+            <td>{{item.channelFee}}</td>
             <td>{{createAtConfig(item.createAt)}}</td>
           </tr>
         </table>
@@ -53,7 +55,7 @@ export default {
         project: 'withdraw'
       }
       depositBill(params).then(res => {
-        this.data = res.res
+        this.data = res
       }).catch(err => {
 
       })

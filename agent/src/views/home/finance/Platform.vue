@@ -2,23 +2,19 @@
   <div class="personal">
     <div class="box">
       <van-nav-bar
-        title="存款通道费"
+        title="平台费"
         left-arrow
         @click-left="onClickLeft"
       />
       <div class="table">
         <table>
           <tr>
-            <th>操作人</th>
-            <th>金额</th>
-            <th>通道费</th>
-            <th>时间</th>
+            <th>平台</th>
+            <th>平台费</th>
           </tr>
           <tr v-for="(item, index) in data">
-            <td>{{item.ownerName}}</td>
-            <td :style="{color:amountConfig(item.amount)}">{{item.amount}}</td>
-            <td>{{item.channelFee}}</td>
-            <td>{{createAtConfig(item.createAt)}}</td>
+            <td>{{item.plat}}</td>
+            <td :style="{color:amountConfig(item.platFee).color}">{{amountConfig(item.platFee).platFee}}</td>
           </tr>
         </table>
       </div>
@@ -27,7 +23,7 @@
 </template>
 
 <script>
-import {depositBill} from '../../../service/index'
+import {platformBill} from '../../../service/index'
 import dayjs from 'dayjs'
 export default {
   data() {
@@ -43,10 +39,10 @@ export default {
   methods: {
     amountConfig(val) {
       let color =  val > 0 ? 'green' : 'red'
-      let amount = val > 0 ? `+${val}` : `-${val}`
+      let platFee = val > 0 ? `+${val}` : `${val}`
       return {
         color,
-        amount
+        platFee
       }
     },
     createAtConfig(val) {
@@ -56,13 +52,8 @@ export default {
       this.$router.push('/financeReport')
     },
     getList() {
-      let params = {
-        project: 'deposit'
-      }
-      depositBill(params).then(res => {
+      platformBill().then(res => {
         this.data = res
-      }).catch(err => {
-
       })
     },
   }

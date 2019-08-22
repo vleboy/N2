@@ -57,11 +57,10 @@
           <div class="name">红利加返水</div>
           <div class="num">{{dataList.currentCommissionFee}}</div>
         </div>
-        <div>
+        <div @click="jumpTo('platform')">
           <div class="name">平台费</div>
           <div class="num">
             <div>{{dataList.currentPlatformFee}}</div>
-            <van-button type="default" size="small">查看详情</van-button>
           </div>
         </div>
       </div>
@@ -70,7 +69,6 @@
           <div class="name">总输赢</div>
           <div class="num">
             <div>{{dataList.currentWinlose}}</div>
-            <van-button type="default" size="small">查看详情</van-button>
           </div>
         </div>
         <div>

@@ -13,10 +13,13 @@ import CommissionReport from '../views/home/commission/CommissionReport.vue'
 import WithdrawalRecord from '../views/home/withdrawal/WithdrawalRecord.vue'
 import News from '../views/home/news/News.vue'
 import WithdrawalApplication from '../views/home/withdrawal/WithdrawalApplication.vue'
+
 import FinanceReport from '../views/home/finance/FinanceReport.vue'
-import UserInfo from '../views/home/user/UserInfo.vue'
 import Deposit from '../views/home/finance/Deposit.vue'
 import Withdrawal from '../views/home/finance/Withdrawal.vue'
+import Platform from '../views/home/finance/Platform.vue'
+
+import UserInfo from '../views/home/user/UserInfo.vue'
 import AddBankCard from '../views/home/withdrawal/AddBankCard.vue'
 
 import Login from '../views/Login.vue'
@@ -114,6 +117,11 @@ const otherRouter = [
     path: '/addBankCard',
     name: 'addBankCard',
     component: AddBankCard
+  },
+  {
+    path: '/platform',
+    name: 'platform',
+    component: Platform
   }
 ]
 

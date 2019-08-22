@@ -117,3 +117,7 @@ export async function deleteBankCard(params) {
 export async function getCardList(params) {
   return axios.get("/xserver/bankcard/get", params);
 }
+//消息
+export async function queryMessage(params) {
+  return axios.get(`/xnosql/message/query`, params);
+}

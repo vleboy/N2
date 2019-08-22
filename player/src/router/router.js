@@ -6,12 +6,15 @@ import Discount from '../views/discount/Discount.vue'
 import Login from '../views/Login.vue'
 import WithdrawalApplication from '../views/home/withdrawal/WithdrawalApplication.vue'
 import AddBankCard from '../views/home/withdrawal/AddBankCard.vue'
+import DepositApplication from '../views/home/deposit/DepositApplication.vue'
+import Message from '../views/home/message/Message.vue'
+
 
 const mainRouter = {
   path: '/',
   name: 'main',
   component: Main,
-  redirect: 'mine',
+  redirect: 'home',
   children: [
     {
       path: 'home',
@@ -51,6 +54,16 @@ const otherRouter = [
     path: '/addBankCard',
     name: 'addBankCard',
     component: AddBankCard
+  },
+  {
+    path: '/depositApplication',
+    name: 'depositApplication',
+    component: DepositApplication
+  },
+  {
+    path: '/message',
+    name: 'message',
+    component: Message
   }
 ]
 

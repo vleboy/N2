@@ -114,10 +114,20 @@ export async function queryMessage(params) {
 export async function createReview(params) {
   return axios.post("/xserver/system/createReview", params);
 }
-//存款列表
+//存取款通道费
 export async function depositBill(params) {
-  return axios.get("/xnosql/bill/page", params);
+  return axios.get("/xserver/agent/channelFeeDetail", params);
 }
+//红利加返水
+export async function commissionBill(params) {
+  return axios.get("/xserver/agent/commissionFeeDetail", params);
+}
+//平台费详情
+export async function platformBill(params) {
+  return axios.get("/xserver/agent/platformFeeDetail", params);
+}
+
+
 //添加银行卡
 export async function addBankCard(params) {
   return axios.post("/xserver/bankcard/create", params);

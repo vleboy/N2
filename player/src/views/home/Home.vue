@@ -78,7 +78,8 @@ export default {
       operateHeader: [
         {
           img: require('../../assets/images/home/icon_wallet_deposit.png'),
-          name: '存款'
+          name: '存款',
+          routeName: 'depositApplication'
         },
         {
           img: require('../../assets/images/home/icon_wallet_withdraw.png'),
@@ -87,7 +88,8 @@ export default {
         },
         {
           img: require('../../assets/images/home/icon_wallet_withdraw.png'),
-          name: '消息'
+          name: '消息',
+          routeName: 'message'
         }
       ],
       swipeList: [
