@@ -191,7 +191,7 @@ router.get('/realtime', async (ctx, next) => {
     data.newRegPlayerCount = newRegPlayerCount
     data.activePlayerCount = activePlayerCount
     //统计金额
-    Util.agentFee(rounds, bills, configArr, data)
+    Util.calcRebateFee(rounds, bills, configArr, data)
     ctx.body = data
 })
 

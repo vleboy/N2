@@ -150,7 +150,7 @@ async function checkHandlerPoint(inparam) {
 }
 
 //获取代理相关费用
-function agentFee(rounds, bills, configArr, data) {
+function calcRebateFee(rounds, bills, configArr, data) {
     let platFeeMap = {}
     // 遍历所有游戏记录
     for (let round of rounds) {
@@ -274,11 +274,8 @@ module.exports = {
     GameStrEnum,
     PlatStrEnum,
 
-    // n1RegPlayer,
-    // n1Transfer,
-
-    checkType,
     getSeq,
+    checkType,
     checkHandlerPoint,
-    agentFee
+    calcRebateFee
 }

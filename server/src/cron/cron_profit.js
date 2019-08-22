@@ -57,7 +57,7 @@ async function profit(agent, configArr, startTime, endTime, month) {
     // 并发请求
     let [rounds, bills] = await Promise.all([p1, p2])
     // 统计数据
-    Util.agentFee(rounds, bills, configArr, data)
+    Util.calcRebateFee(rounds, bills, configArr, data)
     // 写入发放表
     if (data.profit > 0) {
         data.id = await Util.getSeq('profitSeq')
