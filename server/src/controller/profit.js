@@ -27,15 +27,15 @@ router.post('/update', async (ctx, next) => {
     const session = await global.getMongoSession()
     try {
         // 变更余额
-        const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: profitInfo.id }, { $inc: { balance: Math.abs(profitInfo.currentProfit) * -1 } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+        const res = await global.mongodb.collection(collectionName).findOneAndUpdate({ id: profitInfo.id }, { $inc: { balance: Math.abs(profitInfo.currentProfit) } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
         // 写入流水，更新发放单为同意状态
         const billId = await Util.getSeq('billSeq')
         await mongodb.collection(Util.CollectionEnum.bill).insertOne({
             id: billId,
             role: profitInfo.role,
             project: Util.ProjectEnum.Profit,
-            preBalance: NP.minus(res.value.balance, Math.abs(profitInfo.currentProfit) * -1),
-            amount:  Math.abs(profitInfo.currentProfit) * -1,
+            preBalance: NP.minus(res.value.balance, Math.abs(profitInfo.currentProfit)),
+            amount:  Math.abs(profitInfo.currentProfit),
             balance: res.value.balance,
             ownerId: owner.id,
             ownerName: owner.ownerName,
