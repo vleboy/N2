@@ -169,14 +169,14 @@ router.get('/realtime', async (ctx, next) => {
         modeValue: agent.modeValue,           // 业务模式比例
         playerCount: agent.playerCount,       // 玩家数量
 
-        currentWinlose: 0,                    // 累计输赢
-        currentPlatformFee: 0,                // 平台费
-        currentCommission: 0,                 // 佣金
-        currentCommissionFee: 0,              // 佣金费
-        currentDeposit: 0,                    // 存款
-        currentDepositFee: 0,                 // 存款手续费
-        currentWithdraw: 0,                   // 取款
-        currentWithdrawFee: 0                 // 取款手续费
+        winlose: 0,                           // 累计输赢
+        platformFee: 0,                       // 平台费
+        commission: 0,                        // 佣金
+        commissionFee: 0,                     // 佣金费
+        deposit: 0,                           // 存款
+        depositFee: 0,                        // 存款手续费
+        withdraw: 0,                          // 取款
+        withdrawFee: 0                        // 取款手续费
     }
     // 获取所有配置
     let p1 = mongodb.collection(Util.CollectionEnum.config).find().toArray()
