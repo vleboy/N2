@@ -52,7 +52,7 @@ async function currentProfit(agent, configArr, startTime, endTime, month) {
     // 查询时间范围内的游戏记录
     let p1 = global.mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agent.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     // 查询玩家存款和取款    
-    let p2 = global.mongodb.collection(Util.CollectionEnum.bill).find({ parentId: agent.id, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
+    let p2 = global.mongodb.collection(Util.CollectionEnum.review).find({ parentId: agent.id,status:Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
     // 并发请求
     let [rounds, bills] = await Promise.all([p1, p2])
     // 遍历所有游戏记录

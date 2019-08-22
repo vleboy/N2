@@ -184,7 +184,7 @@ router.get('/realtime', async (ctx, next) => {
     // 查询时间范围内的游戏记录
     let p2 = mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     // 查询玩家存款和取款    
-    let p3 = mongodb.collection(Util.CollectionEnum.bill).find({ parentId: token.id, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
+    let p3 = mongodb.collection(Util.CollectionEnum.review).find({ parentId: token.id,status:Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
     let p4 = getNewRegPlayerCount(token.id, startTime, endTime)
     let p5 = getActivePlayerCount(token.id, startTime, endTime)
     // 并发请求
