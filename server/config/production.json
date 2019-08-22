@@ -62,6 +62,7 @@
                 "/xserver/agent/commissionFeeDetail",
                 "/xserver/agent/playerReport",
                 "/xserver/agent/getBalance",
+                "/xserver/agent/playerReport",
                 "/xserver/bill/transfer",
                 "/xnosql/player/create",
                 "/xnosql/player/get/",

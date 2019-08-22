@@ -184,7 +184,7 @@ router.get('/realtime', async (ctx, next) => {
     // 查询时间范围内的游戏记录
     let p2 = mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     // 查询玩家存款和取款    
-    let p3 = mongodb.collection(Util.CollectionEnum.review).find({ parentId: token.id,status:Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
+    let p3 = mongodb.collection(Util.CollectionEnum.review).find({ parentId: token.id, status: Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
     let p4 = getNewRegPlayerCount(token.id, startTime, endTime)
     let p5 = getActivePlayerCount(token.id, startTime, endTime)
     // 并发请求
@@ -313,6 +313,34 @@ router.get('/commissionFeeDetail', async (ctx, next) => {
  * 玩家报表
  */
 router.get('/playerReport', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    let inparam = ctx.request.query
+    let startTime = inparam.startTime || moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = inparam.endTime || Date.now()
+    // 查询局表
+    let p1 = global.mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, winloseAmount: 1, _id: 0 } }).toArray()
+    // 查询审核表
+    let p2 = global.mongodb.collection(Util.CollectionEnum.review).find({ parentId: token.id, status: Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, proposerName: 1, amount: 1, _id: 0 } }).toArray()
+    let [rounds, reviews] = await Promise.all([p1, p2])
+    let winloseMap = {}, depositMap = {}, withdrawMap = {}
+    // 获取玩家输赢金额
+    for (let round of rounds) {
+        winloseMap[round.ownerName] = winloseMap[round.ownerName] ? NP.plus(winloseMap[round.ownerName], +round.winloseAmount.toFixed(2)) : +round.winloseAmount.toFixed(2)
+    }
+    // 获取玩家存取款金额
+    for (let review of reviews) {
+        if (review.project == Util.ProjectEnum.Deposit) {
+            depositMap[review.proposerName] = depositMap[review.proposerName] ? NP.plus(depositMap[review.proposerName], review.amount) : review.amount
+        } else {
+            withdrawMap[review.proposerName] = withdrawMap[review.proposerName] ? NP.plus(withdrawMap[review.proposerName], review.amount) : review.amount
+        }
+    }
+    let playerNames = _.union(Object.keys(winloseMap), Object.keys(depositMap), Object.keys(withdrawMap))
+    let data = []
+    for (let playerName of playerNames) {
+        data.push({ playerName, winloseAmount: winloseMap[playerName] ? winloseMap[playerName] : 0, deposit: depositMap[playerName] ? depositMap[playerName] : 0, withdraw: withdrawMap[playerName] ? withdrawMap[playerName] : 0 })
+    }
+    ctx.body = data
 })
 
 /**
