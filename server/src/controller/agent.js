@@ -259,6 +259,8 @@ router.get('/platformFeeDetail', async (ctx, next) => {
         let sourceGameId = bill.sourceGameId.toString()
         let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
         platFeeMap[plat] = platFeeMap[plat] ? NP.plus(platFeeMap[plat], +bill.winloseAmount.toFixed(2)) : +bill.winloseAmount.toFixed(2)
+        // 取反
+        platFeeMap[plat] *= -1
     }
     // 使用平台费比例计算平台费
     let platFeeArr = []
@@ -283,7 +285,7 @@ router.get('/channelFeeDetail', async (ctx, next) => {
     let bills = await mongodb.collection(Util.CollectionEnum.bill).find({ parentId: token.id, project: inparam.project, createAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, amount: 1, createAt: 1, _id: 0 } }).toArray()
     let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: inparam.project })
     bills.map((item) => {
-        item.channelFee = +(item.amount * configInfo.value / 100).toFixed(4)
+        item.channelFee = +(Math.abs(item.amount) * configInfo.value / 100).toFixed(4)
     })
     ctx.body = bills
 })
