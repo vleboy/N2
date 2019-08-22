@@ -296,7 +296,7 @@ router.get('/playerReport', async (ctx, next) => {
     let playerNames = _.union(Object.keys(winloseMap), Object.keys(depositMap), Object.keys(withdrawMap))
     let data = []
     for (let playerName of playerNames) {
-        data.push({ playerName, winloseAmount: winloseMap[playerName] ? winloseMap[playerName] : 0, deposit: depositMap[playerName] ? depositMap[playerName] : 0, withdraw: withdrawMap[playerName] ? withdrawMap[playerName] : 0 })
+        data.push({ playerName, winloseAmount: winloseMap[playerName] || 0, deposit: depositMap[playerName] || 0, withdraw: withdrawMap[playerName] || 0 })
     }
     ctx.body = data
 })
