@@ -11,10 +11,10 @@ cron.schedule('0 */5 * * * *', async () => {
 })
 
 // 每月的一号零点统计（上月的利润）0 1 0 1 * *
-cron.schedule('0 1 0 1 * *', async () => {
+cron.schedule('*/10 * * * * *', async () => {
     //构造时间
-    let startTime = moment().month(moment().month() - 1).startOf('month').valueOf()
-    let endTime = moment().month(moment().month() - 1).endOf('month').valueOf()
+    let startTime = moment().month(moment().month()).startOf('month').valueOf()
+    let endTime = moment().month(moment().month()).endOf('month').valueOf()
     let month = moment(startTime).format('YYMM')
     await global.mongodb.collection(Util.CollectionEnum.profit).deleteMany({ month })
     // 获取所有配置
@@ -93,7 +93,7 @@ async function profit(agent, configArr, startTime, endTime, month) {
     data.profit = +((data.winlose - data.commissionFee - data.platformFee - data.depositFee - data.withdrawFee) * agent.modeValue / 100).toFixed(2)
     // 写入发放表
     if (data.profit > 0) {
-        data.id = await Util.getSeq('profitSeq')   
+        data.id = await Util.getSeq('profitSeq')
         data.createAt = Date.now()
         data.month = month
         global.mongodb.collection(Util.CollectionEnum.profit).insertOne(data)
