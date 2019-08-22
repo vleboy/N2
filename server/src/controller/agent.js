@@ -301,8 +301,8 @@ router.get('/commissionFeeDetail', async (ctx, next) => {
     let rounds = await mongodb.collection(Util.CollectionEnum.vround).find({ parentId: token.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, bills: 1, winloseAmount: 1, minCreateAt: 1, _id: 0 } }).toArray()
     rounds.map((round) => {
         let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
-        let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(round.winloseAmount))
-        round.commissionFee = +(roundValidBetAmount * configInfo.value / 100).toFixed(2)
+        round.commission = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(round.winloseAmount))
+        round.commissionFee = +(round.commission * configInfo.value / 100).toFixed(2)
         delete round.bills
         delete round.winloseAmount
     })
