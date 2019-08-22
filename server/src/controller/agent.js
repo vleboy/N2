@@ -178,7 +178,6 @@ router.get('/realtime', async (ctx, next) => {
         currentWithdraw: 0,                   // 取款
         currentWithdrawFee: 0                 // 取款手续费
     }
-    let platFeeMap = {}
     // 获取所有配置
     let p1 = mongodb.collection(Util.CollectionEnum.config).find().toArray()
     // 查询时间范围内的游戏记录
@@ -191,43 +190,8 @@ router.get('/realtime', async (ctx, next) => {
     let [configArr, rounds, bills, newRegPlayerCount, activePlayerCount] = await Promise.all([p1, p2, p3, p4, p5])
     data.newRegPlayerCount = newRegPlayerCount
     data.activePlayerCount = activePlayerCount
-    // 遍历所有游戏记录
-    for (let round of rounds) {
-        // 当局输赢
-        let roundWinloseAmount = +round.winloseAmount.toFixed(2)
-        // 累计输赢
-        data.currentWinlose = NP.plus(data.currentWinlose, roundWinloseAmount)
-        // 累计有效投注
-        let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
-        let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
-        data.currentCommission = NP.plus(data.currentCommission, roundValidBetAmount)
-        // 累计平台输赢
-        let sourceGameId = round.sourceGameId.toString()
-        let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
-        platFeeMap[plat] = platFeeMap[plat] ? NP.plus(platFeeMap[plat], roundWinloseAmount) : roundWinloseAmount
-    }
-    // 使用佣金比例计算佣金
-    data.currentCommissionFee = +(data.currentCommission * _.find(configArr, o => o.id == 'commission').value / 100).toFixed(2)
-    // 使用平台费比例计算平台费
-    for (let plat in platFeeMap) {
-        data.currentPlatformFee = NP.plus(data.currentPlatformFee, +(platFeeMap[plat] * _.find(configArr, o => o.id == plat).value / 100).toFixed(2))
-    }
-    // 累计玩家存取款
-    for (let bill of bills) {
-        if (bill.project == Util.ProjectEnum.Deposit) {
-            data.currentDeposit = NP.plus(data.currentDeposit, Math.abs(bill.amount))
-        } else {
-            data.currentWithdraw = NP.plus(data.currentWithdraw, Math.abs(bill.amount))
-        }
-    }
-    // 使用手续费比例计算存取手续费
-    data.currentDepositFee = +(data.currentDeposit * _.find(configArr, o => o.id == 'deposit').value / 100).toFixed(2)
-    data.currentWithdrawFee = +(data.currentWithdraw * _.find(configArr, o => o.id == 'withdraw').value / 100).toFixed(2)
-    data.currentWinlose *= -1           // 总输赢取反
-    data.currentPlatformFee *= -1       // 平台费取反
-    // 当前利润（当前输赢 - 成本）* 业务模式比例
-    data.currentProfit = +((data.currentWinlose - data.currentCommissionFee - data.currentPlatformFee - data.currentDepositFee - data.currentWithdrawFee) * agent.modeValue / 100).toFixed(2)
-
+    //统计金额
+    Util.agentFee(rounds, bills, configArr, data)
     ctx.body = data
 })
 

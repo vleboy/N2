@@ -48,49 +48,14 @@ async function profit(agent, configArr, startTime, endTime, month) {
         profit: 0,                            // 纯利润
         status: 0                             // 当前profit状态（0未发放，1已发放）
     }
-    let platFeeMap = {}
     // 查询时间范围内的游戏记录
     let p1 = global.mongodb.collection(Util.CollectionEnum.vround).find({ parentId: agent.id, minCreateAt: { $gte: startTime, $lte: endTime } }, { projection: { sourceGameId: 1, winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     // 查询玩家存款和取款    
     let p2 = global.mongodb.collection(Util.CollectionEnum.review).find({ parentId: agent.id, status: Util.ReviewEnum.Agree, $or: [{ project: Util.ProjectEnum.Deposit }, { project: Util.ProjectEnum.Withdraw }], createAt: { $gte: startTime, $lte: endTime } }, { projection: { project: 1, amount: 1, _id: 0 } }).toArray()
     // 并发请求
     let [rounds, bills] = await Promise.all([p1, p2])
-    // 遍历所有游戏记录
-    for (let round of rounds) {
-        // 当局输赢
-        let roundWinloseAmount = +round.winloseAmount.toFixed(2)
-        // 累计输赢
-        data.winlose = NP.plus(data.winlose, roundWinloseAmount)
-        // 累计有效投注
-        let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
-        let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
-        data.commission = NP.plus(data.commission, roundValidBetAmount)
-        // 累计平台输赢
-        let sourceGameId = round.sourceGameId.toString()
-        let plat = `${sourceGameId.substring(0, sourceGameId.length - 2)}00`
-        platFeeMap[plat] = (platFeeMap[plat] || platFeeMap[plat] == 0) ? NP.plus(platFeeMap[plat], roundWinloseAmount) : roundWinloseAmount
-    }
-    // 使用佣金比例计算佣金
-    data.commissionFee = +(data.commission * _.find(configArr, o => o.id == 'commission').value / 100).toFixed(2)
-    // 使用平台费比例计算平台费
-    for (let plat in platFeeMap) {
-        data.platformFee = NP.plus(data.platformFee, +(platFeeMap[plat] * _.find(configArr, o => o.id == plat).value / 100).toFixed(2))
-    }
-    // 累计玩家存取款
-    for (let bill of bills) {
-        if (bill.project == Util.ProjectEnum.Deposit) {
-            data.deposit = NP.plus(data.deposit, Math.abs(bill.amount))
-        } else {
-            data.withdraw = NP.plus(data.withdraw, Math.abs(bill.amount))
-        }
-    }
-    // 使用手续费比例计算存取手续费
-    data.depositFee = +(data.deposit * _.find(configArr, o => o.id == 'deposit').value / 100).toFixed(2)
-    data.withdrawFee = +(data.withdraw * _.find(configArr, o => o.id == 'withdraw').value / 100).toFixed(2)
-    data.winlose *= -1           // 总输赢取反(玩家输，代理赢)
-    data.platformFee *= -1       //平台费取反（玩家输，平台赢利）
-    // 当前利润（当前输赢 - 成本）* 业务模式比例
-    data.profit = +((data.winlose - data.commissionFee - data.platformFee - data.depositFee - data.withdrawFee) * agent.modeValue / 100).toFixed(2)
+    // 统计数据
+    Util.agentFee(rounds, bills, configArr, data)
     // 写入发放表
     if (data.profit > 0) {
         data.id = await Util.getSeq('profitSeq')
