@@ -136,6 +136,9 @@ router.post('/createReview', async (ctx, next) => {
     }
     // 提现申请 
     else if (inparam.project == Util.ProjectEnum.Withdraw) {
+        if (!inparam.cardBank || !inparam.cardName || !inparam.cardNo) {
+            return ctx.body = { err: true, res: '请选择银行卡' }
+        }
         const session = await global.getMongoSession()
         try {
             // TODO 玩家点数与N1同步
