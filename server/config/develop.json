@@ -71,6 +71,7 @@
                 "/xnosql/bill/page",
                 "/xnosql/message/query",
                 "/xnosql/vround/page",
+                "/xnosql/profit/page",
                 "/xserver/system/createReview",
                 "/xserver/bankcard/create",
                 "/xserver/bankcard/get",
