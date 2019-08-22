@@ -14,7 +14,21 @@ const log = require('tracer').colorConsole({ level: config.log.level })
  */
 router.get('/vround/page', async (ctx, next) => {
     const token = ctx.tokenVerify
-    ctx.body.res.forEach(o => { o.sourceGameIdStr = Util.GameStrEnum[o.sourceGameId] })
+    if (ctx.request.commission == Util.ModeEnum.Commission) {
+        let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
+        ctx.body.res.map((round) => {
+            let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
+            round.commission = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(round.winloseAmount))
+            round.commissionFee = +(round.commission * configInfo.value / 100).toFixed(2)
+            round.sourceGameIdStr = Util.GameStrEnum[round.sourceGameId]
+            delete round.bills
+        })
+    } else {
+        ctx.body.res.map((round) => {
+            round.sourceGameIdStr = Util.GameStrEnum[round.sourceGameId]
+            delete round.bills
+        })
+    }
 })
 
 module.exports = router

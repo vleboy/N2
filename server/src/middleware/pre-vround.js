@@ -22,6 +22,10 @@ router.get('/vround/page', async (ctx, next) => {
     if (inparam.project == 'all') {
         delete inparam.project
     }
+    if (inparam.type == Util.ModeEnum.Commission) {
+        ctx.request.commission = Util.ModeEnum.Commission
+        delete inparam.type
+    }
     // 代理APP，查看自己玩家的游戏记录
     if (token.role == Util.RoleEnum.agent) {
         inparam.parentId = token.id
