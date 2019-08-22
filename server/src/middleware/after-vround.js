@@ -15,6 +15,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
 router.get('/vround/page', async (ctx, next) => {
     const token = ctx.tokenVerify
     console.log(ctx.body.res)
+    
     if (ctx.request.commission == Util.ModeEnum.Commission) {
         let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
         ctx.body.res.map((round) => {
