@@ -46,7 +46,7 @@ router.post('/update', async (ctx, next) => {
             createAt,
             createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
         }, { session })
-        await mongodb.collection(Util.CollectionEnum.profit).update({ id: profitInfo.id }, { $set: { billId, status: inparam.status, profitId: token.id, profitName: token.userName, profitNick: token.userNick, profitAt: createAt, profitAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } }, { session })
+        await mongodb.collection(Util.CollectionEnum.profit).updateOne({ id: profitInfo.id }, { $set: { billId, status: inparam.status, profitId: token.id, profitName: token.userName, profitNick: token.userNick, profitAt: createAt, profitAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } }, { session })
         await session.commitTransaction()
     } catch (error) {
         console.error(error)

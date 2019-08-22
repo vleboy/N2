@@ -14,7 +14,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
  */
 router.post('/player/create', async (ctx, next) => {
     let inparam = ctx.request.body
-    mongodb.collection(Util.CollectionEnum.agent).update({ id: inparam.parentId }, { $inc: { playerCount: 1 } })
+    mongodb.collection(Util.CollectionEnum.agent).updateOne({ id: inparam.parentId }, { $inc: { playerCount: 1 } })
     ctx.body = { id: inparam.id, createAt: inparam.createAt }
 })
 

@@ -19,7 +19,7 @@ router.post('/login', async (ctx, next) => {
         ctx.body = { err: true, res: '密码不正确' }
     } else {
         //更新登录时间 和 IP
-        mongodb.collection(Util.CollectionEnum.player).update({ playerName: inparam.playerName }, { $set: { lastLoginAt: Date.now(), lastLoginIP: ctx.request.ip } })
+        mongodb.collection(Util.CollectionEnum.player).updateOne({ playerName: inparam.playerName }, { $set: { lastLoginAt: Date.now(), lastLoginIP: ctx.request.ip } })
         let token = jwt.sign({
             role: player.role,
             id: player.id,

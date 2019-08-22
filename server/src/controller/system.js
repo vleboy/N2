@@ -218,7 +218,7 @@ router.post('/handlerReview', async (ctx, next) => {
     // 拒绝该订单
     if (inparam.status == Util.ReviewEnum.Refuse) {
         if (reviewInfo.project == Util.ProjectEnum.Deposit) {
-            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } })
+            await mongodb.collection(Util.CollectionEnum.review).updateOne({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } })
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
             const session = await global.getMongoSession()
             try {
@@ -243,7 +243,7 @@ router.post('/handlerReview', async (ctx, next) => {
                     createAt,
                     createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
                 }, { session })
-                await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { billId: null, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } }, { session })
+                await mongodb.collection(Util.CollectionEnum.review).updateOne({ id: inparam.id }, { $set: { billId: null, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } }, { session })
                 await session.commitTransaction()
             } catch (error) {
                 console.error(error)
@@ -280,7 +280,7 @@ router.post('/handlerReview', async (ctx, next) => {
                     createAt,
                     createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
                 }, { session })
-                await mongodb.collection(Util.CollectionEnum.review).update({ id: reviewInfo.id }, { $set: { billId, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } }, { session })
+                await mongodb.collection(Util.CollectionEnum.review).updateOne({ id: reviewInfo.id }, { $set: { billId, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } }, { session })
                 await session.commitTransaction()
             } catch (error) {
                 console.error(error)
@@ -290,7 +290,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 await session.endSession()
             }
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
-            await mongodb.collection(Util.CollectionEnum.review).update({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } })
+            await mongodb.collection(Util.CollectionEnum.review).updateOne({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } })
         }
     }
     ctx.body = { err: false, res: '操作成功' }
