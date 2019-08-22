@@ -262,7 +262,7 @@ router.get('/platformFeeDetail', async (ctx, next) => {
     // 使用平台费比例计算平台费
     let platFeeArr = []
     for (let plat in platFeeMap) {
-        platFeeArr.push({ gameId: plat, platFee: +(platFeeMap[plat] * _.find(configArr, o => o.id == plat).value / 100).toFixed(2) })
+        platFeeArr.push({ plat: Util.PlatStrEnum[+plat], platFee: +(platFeeMap[plat] * _.find(configArr, o => o.id == plat).value / 100).toFixed(2) })
     }
     ctx.body = platFeeArr
 })

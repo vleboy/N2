@@ -82,7 +82,11 @@ const MsgStrEnum = {
 
 // 游戏枚举
 const GameStrEnum = {
-    '70001': '',
+    70001: '',
+}
+// 平台枚举
+const PlatStrEnum = {
+    70000: 'NA电子'
 }
 
 //数据库集合枚举
@@ -197,6 +201,7 @@ module.exports = {
     MsgStrEnum,
 
     GameStrEnum,
+    PlatStrEnum,
 
     // n1RegPlayer,
     // n1Transfer,
