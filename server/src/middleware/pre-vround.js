@@ -35,6 +35,7 @@ router.get('/vround/page', async (ctx, next) => {
     if (inparam.startKey) {
         inparam.startKey = +inparam.startKey
     }
+    inparam.sortBy = 'minCreateAt'
     inparam.findOption = { projection: { _id: 0 } }
     return next()
 })
