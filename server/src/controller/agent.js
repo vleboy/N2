@@ -237,10 +237,11 @@ router.get('/channelFeeDetail', async (ctx, next) => {
     if (inparam.project != Util.ProjectEnum.Deposit && inparam.project != Util.ProjectEnum.Withdraw) {
         return ctx.body = { err: true, res: '未知操作' }
     }
-    let bills = await mongodb.collection(Util.CollectionEnum.review).find({ parentId: token.id, status: Util.ReviewEnum.Agree, project: inparam.project, createAt: { $gte: startTime, $lte: endTime } }, { projection: { ownerName: 1, amount: 1, createAt: 1, _id: 0 } }).toArray()
+    let bills = await mongodb.collection(Util.CollectionEnum.review).find({ parentId: token.id, status: Util.ReviewEnum.Agree, project: inparam.project, createAt: { $gte: startTime, $lte: endTime } }, { projection: { proposerName: 1, amount: 1, createAt: 1, _id: 0 } }).toArray()
     let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: inparam.project })
     bills.map((item) => {
         item.channelFee = +(Math.abs(item.amount) * configInfo.value / 100).toFixed(4)
+        item.ownerName = item.proposerName
     })
     ctx.body = bills
 })
