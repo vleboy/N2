@@ -25,6 +25,7 @@ router.get('/vround/page', async (ctx, next) => {
     // 代理APP，查看自己玩家的游戏记录
     if (token.role == Util.RoleEnum.agent) {
         inparam.parentId = token.id
+        inparam.limit = 30
     }
     // 设置分页参数
     if (inparam.startKey) {

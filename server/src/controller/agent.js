@@ -231,16 +231,6 @@ router.get('/realtime', async (ctx, next) => {
     ctx.body = data
 })
 
-//新注册玩家数量
-function getNewRegPlayerCount(agentId, startTime, endTime) {
-    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastLoginAt: { $gte: startTime, $lte: endTime } }).count()
-}
-
-//活跃玩家数量
-function getActivePlayerCount(agentId, startTime, endTime) {
-    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastAuthAt: { $gte: startTime, $lte: endTime } }).count()
-}
-
 /**
  * 第三方平台费详细
  */
@@ -365,5 +355,13 @@ router.get('/getBalance', async (ctx, next) => {
     ctx.body = data
 })
 
+//新注册玩家数量
+function getNewRegPlayerCount(agentId, startTime, endTime) {
+    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastLoginAt: { $gte: startTime, $lte: endTime } }).count()
+}
 
+//活跃玩家数量
+function getActivePlayerCount(agentId, startTime, endTime) {
+    return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastAuthAt: { $gte: startTime, $lte: endTime } }).count()
+}
 module.exports = router
