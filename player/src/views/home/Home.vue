@@ -2,7 +2,7 @@
   <div class="home">
     <div class="swipe">
       <van-swipe :autoplay="3000" indicator-color="white">
-        <van-swipe-item v-for="(item, index) in swipeList" :key="index">
+        <van-swipe-item v-for="(item, index) in swipeList" :key="index" @click="jumpToGame">
           <img :src="item.img" alt="">
         </van-swipe-item>
       </van-swipe>
@@ -25,6 +25,7 @@
           <div class="left">
             <div v-if="isLogin">
               {{playerName}}
+              <div style="font-size:12px;margin-top:5px;">&yen;{{userInfo.balance}}</div>
             </div>
             <div class="see" @click="login" v-else>
               登录/注册
@@ -67,7 +68,7 @@
 
 <script>
 
-
+import {playerGet} from '../../service/index'
 
 export default {
   name: 'home',
@@ -125,6 +126,7 @@ export default {
           actImg: require('../../assets/images/home/icon_esports_white.png')
         }
       ],
+      userInfo: '',
       sideImg1: require('../../assets/images/home/side_menu_1_1.png'),
       swipeIndex: 0//tab激活下标
     }
@@ -141,7 +143,22 @@ export default {
       return localStorage.playerNick ? true : false
     }
   },
+  mounted() {
+    this.getInfo()
+  },
   methods: {
+    jumpToGame() {
+      let id = JSON.parse(localStorage.playerInfo).id
+      window.location.href = `https://testgame.anasym.com:45555/enter?plat=YIBO&gameId=70001&userId=${id}&token=xxx`
+    },
+    getInfo() {
+      let params = {
+        id: JSON.parse(localStorage.playerInfo).id
+      }
+      playerGet(params).then(res => {
+        this.userInfo = res.res
+      })
+    },
     changeMenu(index) {
       this.swipeIndex = index
     },

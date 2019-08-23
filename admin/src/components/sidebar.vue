@@ -34,6 +34,10 @@
             <Icon type="md-checkbox-outline" />
             <span v-if="unFlodMenu" class="ml">审核中心</span>
           </MenuItem>
+          <MenuItem name="profit" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
+            <Icon type="md-checkbox-outline" />
+            <span v-if="unFlodMenu" class="ml">业务结算</span>
+          </MenuItem>
           <MenuItem name="messageCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
             <Icon type="logo-twitch" />
             <span v-if="unFlodMenu" class="ml">消息中心</span>

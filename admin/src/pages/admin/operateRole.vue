@@ -75,6 +75,11 @@ export default {
               checked: false
             },
             {
+              title: "业务结算",
+              expand: false,
+              checked: false
+            },
+            {
               title: "消息中心",
               expand: false,
               checked: false

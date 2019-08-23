@@ -131,3 +131,8 @@ export async function vroundPage(params) {
 export async function billPage(params) {
   return axios.get(`/xnosql/bill/page`, params);
 }
+
+//获取个人资料
+export async function playerGet(params) {
+  return axios.get(`/xnosql/player/get/${params.id}`, params);
+}

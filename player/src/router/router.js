@@ -12,6 +12,7 @@ import ShowBankCard from '../views/mine/ShowBankCard.vue'
 import TransactionRecord from '../views/mine/TransactionRecord.vue'
 import DepositRecord from '../views/mine/DepositRecord.vue'
 import WithdrawalRecord from '../views/mine/WithdrawalRecord.vue'
+import Personal from '../views/mine/Personal.vue'
 
 const mainRouter = {
   path: '/',
@@ -87,6 +88,11 @@ const otherRouter = [
     path: '/withdrawalRecord',
     name: 'withdrawalRecord',
     component: WithdrawalRecord
+  },
+  {
+    path: '/personal',
+    name: 'personal',
+    component: Personal
   }
 ]
 

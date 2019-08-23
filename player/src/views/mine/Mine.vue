@@ -16,8 +16,8 @@
       <div class="content">
         <div class="left">
           <div>
-            <p>&yen</p>
-            <p>{{formatMoney}}</p>
+            <span>&yen</span>
+            <span>{{userInfo.balance}}</span>
           </div>
           <div>钱包余额</div>
         </div>
@@ -51,7 +51,7 @@
 
 <script>
 // @ is an alias to /src
-
+import {playerGet} from '../../service/index'
 export default {
   name: 'mine',
   data() {
@@ -81,6 +81,7 @@ export default {
           {
             img: require("../../assets/images/mine/icon_home_setting.png"),
             text: '个人资料',
+            routeName: 'personal'
           },
           {
             img: require("../../assets/images/mine/icon_mine_account.png"),
@@ -109,7 +110,8 @@ export default {
           }
         ],
       ],
-      isLogin: false
+      isLogin: false,
+      userInfo: ''
     }
   },
   computed: {
@@ -121,9 +123,18 @@ export default {
     } 
   },
   mounted() {
+    this.getInfo()
     this.isLogin = localStorage.playerNick == undefined ? false : true
   },
   methods:{
+    getInfo() {
+      let params = {
+        id: JSON.parse(localStorage.playerInfo).id
+      }
+      playerGet(params).then(res => {
+        this.userInfo = res.res
+      })
+    },
     operate(name) {
       if (name == 'logout') {
         this.$dialog.confirm({

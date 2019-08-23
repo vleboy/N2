@@ -170,6 +170,16 @@ export async function createMessage(params) {
 }
 
 
+/* 业务结算 */
+//获取业务结算列表
+export async function profitPage(params) {
+  return axios.get("/xnosql/profit/page", params);
+}
+//发放业务
+export async function profitUpdate(params) {
+  return axios.post("/xserver/profit/update", params);
+}
+
 
 /* 管理员中心 */
 
