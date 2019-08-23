@@ -54,22 +54,22 @@ router.post('/transfer', async (ctx, next) => {
         // TODO 玩家点数与N1同步
         // 变更余额
         if (inparam.project == Util.ProjectEnum.TransferIn) {
-            res0 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+            res0 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
             if (res0.value.balance) {
-                ownerBalance = res0.value.balance
-                ownerPreBalance = NP.minus(ownerBalance, ownerAmount)
-                res1 = await global.mongodb.collection(collectionName).findOneAndUpdate(targetQuery, { $inc: { balance: targetAmout } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
-                targetBalance = res1.value.balance
-                targetBalance = NP.minus(targetBalance, targetAmout)
+                ownerPreBalance = +res0.value.balance.toFixed(2)
+                ownerBalance = NP.plus(ownerPreBalance, ownerAmount)
+                res1 = await global.mongodb.collection(collectionName).findOneAndUpdate(targetQuery, { $inc: { balance: targetAmout } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
+                targetPreBalance = +res1.value.balance.toFixed(2)
+                targetBalance = NP.plus(targetPreBalance, targetAmout)
             }
         } else {
-            res0 = await global.mongodb.collection(collectionName).findOneAndUpdate(targetQuery, { $inc: { balance: targetAmout } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
+            res0 = await global.mongodb.collection(collectionName).findOneAndUpdate(targetQuery, { $inc: { balance: targetAmout } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
             if (res0.value.balance) {
-                targetBalance = res0.value.balance
-                targetBalance = NP.minus(targetBalance, targetAmout)
-                res1 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: false, projection: { balance: 1, _id: 0 }, session })
-                ownerBalance = res1.value.balance
-                ownerPreBalance = NP.minus(ownerBalance, ownerAmount)
+                targetPreBalance = +res0.value.balance.toFixed(2)
+                targetBalance = NP.plus(targetPreBalance, targetAmout)
+                res1 = await global.mongodb.collection(Util.CollectionEnum.agent).findOneAndUpdate(ownerQuery, { $inc: { balance: ownerAmount } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
+                ownerPreBalance = +res1.value.balance.toFixed(2)
+                ownerBalance = NP.plus(ownerPreBalance, ownerAmount)
             }
         }
         // 写入流水

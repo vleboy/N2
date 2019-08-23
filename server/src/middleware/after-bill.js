@@ -14,10 +14,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
  */
 router.get('/bill/page', async (ctx, next) => {
     const token = ctx.tokenVerify
-    ctx.body.res.forEach(o => {
-        o.projectStr = Util.ProjectStrEnum[o.project]
-        o.balance = +o.balance.toFixed(2)
-    })
+    ctx.body.res.forEach(o => { o.projectStr = Util.ProjectStrEnum[o.project] })
 })
 
 module.exports = router
