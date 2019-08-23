@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="list">
-        <div>
+        <div @click="jumpTo('commission')">
           <div class="name">红利加返水</div>
           <div class="num">
             {{dataList.commissionFee}}

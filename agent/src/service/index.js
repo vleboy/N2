@@ -127,12 +127,13 @@ export async function platformBill(params) {
   return axios.get("/xserver/agent/platformFeeDetail", params);
 }
 //总输赢
-export async function winLosePage(params) {
+//红利加返水 //type = commission
+export async function vroundPage(params) {
   return axios.get("/xnosql/vround/page", params);
 }
 
-//佣金报表
 
+//佣金报表
 export async function commissionPage(params) {
   return axios.get("/xnosql/profit/page", params);
 }

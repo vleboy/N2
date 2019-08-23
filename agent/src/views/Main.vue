@@ -7,13 +7,13 @@
           <span>首页</span>
           <img slot="icon" slot-scope="props" :src="props.active ? home.active : home.normal">
         </van-tabbar-item>
+        <van-tabbar-item to="/player">
+          <span>玩家</span>
+          <img slot="icon" slot-scope="props" :src="props.active ? vip.active : vip.normal">
+        </van-tabbar-item>
         <van-tabbar-item to="/agent">
           <span>代理</span>
           <img slot="icon" slot-scope="props" :src="props.active ? agent.active : agent.normal">
-        </van-tabbar-item>
-        <van-tabbar-item to="/vip">
-          <span>VIP专享</span>
-          <img slot="icon" slot-scope="props" :src="props.active ? vip.active : vip.normal">
         </van-tabbar-item>
         <van-tabbar-item to="/setting">
           <span>设置</span>

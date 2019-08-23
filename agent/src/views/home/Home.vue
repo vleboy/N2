@@ -62,15 +62,6 @@
           <div>取款申请</div>
         </div>
         <div class="split"></div>
-        <div @click="jump('/playerReport')">
-          <van-image
-            :show-loading="false"
-            :src="img_user"
-          />
-          <div>玩家报表</div>
-        </div>
-      </div>
-      <div class="list">
         <div @click="jump('/news')">
           <van-image
           :show-loading="false"
@@ -78,8 +69,6 @@
           />
           <div>消息</div>
         </div>
-        <div class="split"></div>
-        <div></div>
       </div>
     </div>
   </div>

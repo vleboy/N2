@@ -67,11 +67,11 @@
 </template>
 
 <script>
-import {playerReport} from '../../../service/index'
+import {playerReport} from '../../service/index'
 export default {
   data() {
     return {
-      noData: require('../../../assets/images/home/no_data.jpg'),
+      noData: require('../../assets/images/player/no_data.jpg'),
       currentDate: new Date(),
       data: '',
       st: '',
@@ -174,7 +174,7 @@ export default {
         margin-bottom: 5px;
         >div {
           height: 100px;
-          background: url('../../../assets/images/home/v1.png') no-repeat;
+         /*  background: url('../../../assets/images/home/v1.png') no-repeat; */
           background-size: contain;
           width: 160px;
           color: #fff;

@@ -2,7 +2,7 @@
   <div class="personal">
     <div class="box">
       <van-nav-bar
-        title="总输赢"
+        title="红利加返水"
         left-arrow
         @click-left="onClickLeft"
       />
@@ -10,14 +10,14 @@
         <table>
           <tr>
             <th>账号</th>
-            <th>游戏</th>
-            <th>输赢</th>
+            <th>有效投注</th>
+            <th>返水</th>
             <th>时间</th>
           </tr>
           <tr v-for="(item, index) in data">
-            <td>{{item.ownerName}}</td>
-            <td>{{item.sourceGameIdStr}}</td>
-            <td>{{item.winloseAmount}}</td>
+            <td>{{item.parentName}}</td>
+            <td>{{item.commission}}</td>
+            <td>{{item.commissionFee}}</td>
             <td>{{createAtConfig(item.minCreateAt)}}</td>
           </tr>
         </table>
@@ -63,7 +63,8 @@ export default {
     },
     getList() {
       let params = {
-        startKey: this.startKey
+        startKey: this.startKey,
+        type: 'commission'
       }
       vroundPage(params).then(res => {
         this.data = this.data.concat(res.res)

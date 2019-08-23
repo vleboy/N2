@@ -56,11 +56,11 @@ export default {
               expand: false
             },
             {
-              title: "代理账单",
+              title: "代理流水",
               expand: false
             },
             {
-              title: "玩家账单",
+              title: "玩家流水",
               expand: false
             },
             {

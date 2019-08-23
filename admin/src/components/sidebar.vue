@@ -24,11 +24,11 @@
           </MenuItem>
           <MenuItem name="agentBill" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
             <Icon type="md-paper" />
-            <span v-if="unFlodMenu" class="ml">代理账单</span>
+            <span v-if="unFlodMenu" class="ml">代理流水</span>
           </MenuItem>
           <MenuItem name="playerBill" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
             <Icon type="md-paper" />
-            <span v-if="unFlodMenu" class="ml">玩家账单</span>
+            <span v-if="unFlodMenu" class="ml">玩家流水</span>
           </MenuItem>
           <MenuItem name="auditCenter" :class="flodMenu ? 'flodMuenS' : 'class-b' ">
             <Icon type="md-checkbox-outline" />

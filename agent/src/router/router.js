@@ -6,7 +6,6 @@ import ChangePwd from '../views/setting/ChangePwd.vue'
 
 import Agent from '../views/agent/Agent.vue'
 
-import Vip from '../views/vip/Vip.vue'
 
 import Home from '../views/home/Home.vue'
 import CommissionReport from '../views/home/commission/CommissionReport.vue'
@@ -19,9 +18,10 @@ import Deposit from '../views/home/finance/Deposit.vue'
 import Withdrawal from '../views/home/finance/Withdrawal.vue'
 import Platform from '../views/home/finance/Platform.vue'
 import WinLoseAll from '../views/home/finance/WinLoseAll.vue'
+import Commission from '../views/home/finance/Commission.vue'
 
 
-import PlayerReport from '../views/home/playerReport/PlayerReport.vue'
+import PlayerReport from '../views/player/PlayerReport.vue'
 
 
 import UserInfo from '../views/home/user/UserInfo.vue'
@@ -51,10 +51,10 @@ const mainRouter = {
       component: Agent,
     },
     {
-      path: 'vip',
-      name: 'vip',
-      component: Vip,
-    }
+      path: 'player',
+      name: 'player',
+      component: PlayerReport,
+    },
   ]
 }
 
@@ -137,6 +137,11 @@ const otherRouter = [
     path: '/playerReport',
     name: 'playerReport',
     component: PlayerReport
+  },
+  {
+    path: '/commission',
+    name: 'commission',
+    component: Commission
   }
 ]
 
