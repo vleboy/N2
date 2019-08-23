@@ -9,7 +9,7 @@
       <div class="table">
         <table>
           <tr>
-            <th>金额</th>
+            <th>操作金额</th>
             <th>余额</th>
             <th>时间</th>
           </tr>
