@@ -30,11 +30,12 @@ router.post('/repairBalance', async (ctx, next) => {
 })
 
 async function repairBalanceById(agent) {
-    let bills = await mongodb.collection(Util.CollectionEnum.bill).find({ $or: [{ parentId: agent.id }, { ownerId: agent.id }] }, { projection: { amount: 1, _id: 0 } }).toArray()
+    let bills = await mongodb.collection(Util.CollectionEnum.bill).find({ ownerId: agent.id }, { projection: { amount: 1, _id: 0 } }).toArray()
     let totalBalance = 0
     for (let bill of bills) {
         totalBalance = NP.plus(totalBalance, bill.amount)
     }
+    // 只有余额发现不一致才更新余额
     if (totalBalance != agent.balance) {
         await mongodb.collection(Util.CollectionEnum.agent).updateOne({ id: agent.id }, { $set: { balance: totalBalance } })
         console.log(`代理${agent.id}修正余额前是${agent.balance},修正后余额是${totalBalance}`)
