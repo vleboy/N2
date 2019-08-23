@@ -23,6 +23,9 @@ router.post('/message/create', async (ctx, next) => {
     if (!inparam.project || !inparam.msg) {
         return ctx.body = { err: true, res: '请检查入参' }
     }
+    if (inparam.msg.length > 255) {
+        return ctx.body = { err: true, res: '消息长度超出限制' }
+    }
     // 检查创建人
     let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: token.id }, { projection: { _id: 0 } })
     if (!agent) {

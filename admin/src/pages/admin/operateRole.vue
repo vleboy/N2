@@ -28,7 +28,7 @@
 </template>
 <script>
 import { createRole, updateRole } from "../../service/index";
-import _ from 'lodash'
+import _ from "lodash";
 export default {
   data() {
     return {
@@ -86,9 +86,9 @@ export default {
                 {
                   title: "配置中心",
                   expand: false
-                },
+                }
               ]
-            },
+            }
           ]
         }
       ],
@@ -100,43 +100,25 @@ export default {
       return this.$store.state.admin.createRole;
     }
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     getInfo() {
-      this.newTree= _.cloneDeep(this.oldTree);
-      this.permissions = this.$store.state.admin.roleInfo.permissions
-      this.roleName = this.$store.state.admin.roleInfo.roleName
+      this.newTree = _.cloneDeep(this.oldTree);
+      this.permissions = this.$store.state.admin.roleInfo.permissions;
+      this.roleName = this.$store.state.admin.roleInfo.roleName;
       if (this.permissions.length > 0) {
-        this.permissionsConfig()
+        this.permissionsConfig(this.newTree);
       }
     },
-    permissionsConfig() {
-      for (let i = 0; i < this.permissions.length; i++) {
-      for (let j = 0; j < this.newTree.length; j++) {
-        if(this.newTree[j].title == this.permissions[i]) {
-          this.newTree[j].checked = true
-          return
-        } else {
-          if (this.newTree[j].children.length > 0) {
-            for (let k = 0; k < this.newTree[j].children.length; k++) {
-              if (this.newTree[j].children[k].title == this.permissions[i]) {
-                this.newTree[j].children[k].checked = true
-                return
-              } else {
-                let arr = this.newTree[j].children[k].children
-                for (let l = 0; l < arr.length; l++) {
-                  if (arr[l].title == this.permissions[i]) {
-                    arr[l].checked = true
-                  }
-                }
-              }
-            }
-          }
+    permissionsConfig(tree) {
+      for (let node of tree) {
+        if (node.children && node.children.length > 0) {
+          this.permissionsConfig(node.children);
+        }
+        if (this.permissions.find(o => o == node.title)) {
+          node.checked = true;
         }
       }
-    }
     },
     hideDraw() {
       this.initData();
@@ -145,49 +127,53 @@ export default {
       this.initData();
     },
     checkRole(arr) {
-      this.permissions = []
+      this.permissions = [];
       for (let i = 0; i < arr.length; i++) {
-        this.permissions.push(arr[i].title)
+        this.permissions.push(arr[i].title);
       }
     },
     sub() {
-      if (this.$store.state.admin.roleInfo.operate == 'create') {
+      if (this.$store.state.admin.roleInfo.operate == "create") {
         let params = {
           roleName: this.roleName,
-          permissions: this.permissions,
+          permissions: this.permissions
         };
-        createRole(params).then(res => {
-          this.initData();
-          this.$Message.success({ content: "创建成功" });
-          this.$parent.getList();
-        }).catch(err => {
-          this.initData();
-          this.$Message.error({ content: "创建失败" });
-        })
+        createRole(params)
+          .then(res => {
+            this.initData();
+            this.$Message.success({ content: "创建成功" });
+            this.$parent.getList();
+          })
+          .catch(err => {
+            this.initData();
+            this.$Message.error({ content: "创建失败" });
+          });
       } else {
         let params = {
           id: this.$store.state.admin.roleInfo.id,
           roleName: this.roleName,
-          permissions: this.permissions,
+          permissions: this.permissions
         };
-        updateRole(params).then(res => {
-          this.initData();
-          this.$Message.success({ content: "修改成功" });
-          this.$parent.getList();
-        }).catch(err => {
-          this.initData();
-          this.$Message.error({ content: "修改失败" });
-        })
+        updateRole(params)
+          .then(res => {
+            this.initData();
+            this.$Message.success({ content: "修改成功" });
+            this.$parent.getList();
+          })
+          .catch(err => {
+            this.initData();
+            this.$Message.error({ content: "修改失败" });
+          });
       }
     },
     initData() {
       this.roleName = "";
-      this.permissions = []
+      this.permissions = [];
       this.$store.commit("setRoleInfo", {
-      rolename: '',
-      permissions: [],
-      operate: ''
-    });
+        rolename: "",
+        permissions: [],
+        operate: ""
+      });
       this.$store.commit("showCreateRole", false);
     }
   },
@@ -195,7 +181,7 @@ export default {
     listenshowDraw: {
       handler: function(val, oldVal) {
         this.showDraw = val;
-        this.getInfo()
+        this.getInfo();
       }
     }
   }

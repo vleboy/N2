@@ -24,6 +24,26 @@ router.post('/player/create', async (ctx, next) => {
     if (inparam.playerName.length < 3 || inparam.playerName.length > 20 || inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20 || inparam.playerNick.length < 3 || inparam.playerNick.length > 20) {
         return ctx.body = { err: true, res: '参数不合法' }
     }
+    // 返佣玩家检查每类游戏的返佣比例
+    if (inparam.mode == Util.ModeEnum.Commission) {
+        if (isNaN(inparam.modeValue)) {
+            return ctx.body = { err: true, res: '无效的返佣比例' }
+        } else {
+            inparam.modeValue = +(+inparam.modeValue).toFixed(2)
+        }
+        if (!inparam.gameList) {
+            return ctx.body = { err: true, res: '返佣玩家需要设置游戏列表' }
+        } else {
+            for (let game of inparam.gameList) {
+                if (game.value != '') {
+                    if (isNaN(game.value)) {
+                        return ctx.body = { err: true, res: '存在无效返佣比例' }
+                    }
+                    game.value = +(+game.value).toFixed(2)
+                }
+            }
+        }
+    }
     if (await mongodb.collection(Util.CollectionEnum.player).findOne({ $or: [{ playerName: inparam.playerName }, { playerNick: inparam.playerNick }, { id: inparam.id }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
@@ -58,6 +78,17 @@ router.post('/player/update', async (ctx, next) => {
     }
     if (inparam.playerPwd && (inparam.playerPwd.length < 6 || inparam.playerPwd.length > 20)) {
         return ctx.body = { err: true, res: '密码长度不合法' }
+    }
+    // 返佣玩家检查每类游戏的返佣比例
+    if (inparam.gameList) {
+        for (let game of inparam.gameList) {
+            if (game.value != '') {
+                if (isNaN(game.value)) {
+                    return ctx.body = { err: true, res: '存在无效返佣比例' }
+                }
+                game.value = +(+game.value).toFixed(2)
+            }
+        }
     }
     let player = await mongodb.collection(Util.CollectionEnum.player).findOne({ id: inparam.id || token.id })
     if (!player) {
@@ -101,6 +132,18 @@ router.get('/player/page', async (ctx, next) => {
     }
     inparam.sortBy = 'createAt'
     inparam.findOption = { projection: { playerPwd: 0, _id: 0 } }
+    return next()
+})
+
+/**
+ * 获取玩家信息
+ */
+router.get('/player/get/:id', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    // 玩家查看自己信息
+    if (token.role == Util.RoleEnum.player) {
+        ctx.params.id = token.id
+    }
     return next()
 })
 

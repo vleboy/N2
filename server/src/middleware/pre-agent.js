@@ -27,12 +27,28 @@ router.post('/agent/create', async (ctx, next) => {
     if (inparam.mode != Util.ModeEnum.Rebate && inparam.mode != Util.ModeEnum.Commission && inparam.mode != Util.ModeEnum.Ratio) {
         return ctx.body = { err: true, res: '请选择业务模式' }
     }
-    inparam.modeValue = inparam.modeValue || 0
+    if (isNaN(inparam.modeValue)) {
+        return ctx.body = { err: true, res: '无效的返佣比例' }
+    } else {
+        inparam.modeValue = +(+inparam.modeValue).toFixed(2)
+    }
     if (await mongodb.collection(Util.CollectionEnum.agent).findOne({ $or: [{ userName: inparam.userName }, { userNick: inparam.userNick }, { id: inparam.id }] })) {
         return ctx.body = { err: true, res: '帐号/昵称已存在' }
     }
-    if (inparam.mode == Util.ModeEnum.Commission && !inparam.gameList) {
-        return ctx.body = { err: true, res: '返佣代理需要设置游戏列表' }
+    // 返佣代理检查每类游戏的返佣比例
+    if (inparam.mode == Util.ModeEnum.Commission) {
+        if (!inparam.gameList) {
+            return ctx.body = { err: true, res: '返佣代理需要设置游戏列表' }
+        } else {
+            for (let game of inparam.gameList) {
+                if (game.value != '') {
+                    if (isNaN(game.value)) {
+                        return ctx.body = { err: true, res: '存在无效返佣比例' }
+                    }
+                    game.value = +(+game.value).toFixed(2)
+                }
+            }
+        }
     }
 
     // 查询上级代理
@@ -79,6 +95,24 @@ router.post('/agent/update', async (ctx, next) => {
     let agent = await mongodb.collection(Util.CollectionEnum.agent).findOne({ id: inparam.id || token.id })
     if (!agent) {
         return ctx.body = { err: true, res: '代理不存在' }
+    }
+    if (inparam.modeValue) {
+        if (isNaN(inparam.modeValue)) {
+            return ctx.body = { err: true, res: '无效的返佣比例' }
+        } else {
+            inparam.modeValue = +(+inparam.modeValue).toFixed(2)
+        }
+    }
+    // 返佣代理检查每类游戏的返佣比例
+    if (inparam.gameList) {
+        for (let game of inparam.gameList) {
+            if (game.value != '') {
+                if (isNaN(game.value)) {
+                    return ctx.body = { err: true, res: '存在无效返佣比例' }
+                }
+                game.value = +(+game.value).toFixed(2)
+            }
+        }
     }
     // 状态变更权限控制
     if (inparam.status == Util.StatusEnum.Disable || inparam.status == Util.StatusEnum.Enable) {

@@ -83,7 +83,24 @@ const MsgStrEnum = {
 
 // 游戏枚举
 const GameStrEnum = {
-    70001: '',
+    70001: "塔罗之谜",
+    70002: "小厨娘",
+    70003: "降龙献瑞",
+    70004: "四方神兽",
+    70005: "财神进宝",
+    70006: "福运亨通",
+    70007: "熊猫传奇",
+    70010: "财源广进",
+    70011: "珠光宝气",
+    70012: "锦鲤",
+    70013: "金狮送福",
+    70014: "幸运钱庄",
+    70022: "年年有余",
+    70024: "猪年大吉",
+    70026: "财神到",
+    70028: "老寿星",
+    70030: "凤舞朝阳",
+    70032: "鲤跃龙门"
 }
 // 平台枚举
 const PlatStrEnum = {
@@ -150,7 +167,7 @@ async function checkHandlerPoint(inparam) {
 }
 
 //获取代理相关费用
-function agentFee(rounds, bills, configArr, data) {
+function calcRebateFee(rounds, bills, configArr, data) {
     let platFeeMap = {}
     // 遍历所有游戏记录
     for (let round of rounds) {
@@ -274,11 +291,8 @@ module.exports = {
     GameStrEnum,
     PlatStrEnum,
 
-    // n1RegPlayer,
-    // n1Transfer,
-
-    checkType,
     getSeq,
+    checkType,
     checkHandlerPoint,
-    agentFee
+    calcRebateFee
 }

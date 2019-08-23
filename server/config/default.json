@@ -80,6 +80,7 @@
             "player": [
                 "/xserver/player/realtime",
                 "/xnosql/player/update",
+                "/xnosql/player/get/*",
                 "/xnosql/bill/page",
                 "/xnosql/message/query",
                 "/xnosql/vround/page",
