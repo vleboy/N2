@@ -29,7 +29,7 @@ module.exports = {
     workboxOptions: {
       runtimeCaching: [{
         urlPattern: new RegExp('^https://api.1bets.co/'),
-        handler: 'staleWhileRevalidate',
+        handler: 'networkFirst',//staleWhileRevalidate
         options: {
           cacheName: 'api-cache',
           cacheableResponse: {
