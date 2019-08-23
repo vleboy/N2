@@ -35,9 +35,9 @@ async function repairBalanceById(agent) {
     for (let bill of bills) {
         totalBalance = NP.plus(totalBalance, bill.amount)
     }
-    if (totalBalance != agentInfo.balance) {
+    if (totalBalance != agent.balance) {
         await mongodb.collection(Util.CollectionEnum.agent).updateOne({ id: agent.id }, { $set: { balance: totalBalance } })
-        console.log(`代理${agent.id}修正余额前是${agentInfo.balance},修正后余额是${totalBalance}`)
+        console.log(`代理${agent.id}修正余额前是${agent.balance},修正后余额是${totalBalance}`)
     }
 }
 
