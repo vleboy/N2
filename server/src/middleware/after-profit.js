@@ -14,6 +14,7 @@ const log = require('tracer').colorConsole({ level: config.log.level })
  */
 router.get('/profit/page', async (ctx, next) => {
     const token = ctx.tokenVerify
+    ctx.body.res.forEach(o => o.modeStr = `${Util.ModeStrEnum[o.mode]}(${o.modeValue}%)`)
     // ctx.body.res.forEach(o => { o.sourceGameIdStr = Util.GameStrEnum[o.sourceGameId] })
 })
 
