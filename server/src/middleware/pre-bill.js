@@ -25,6 +25,12 @@ router.get('/bill/page', async (ctx, next) => {
     // 代理APP，查看自己的账单流水
     if (token.role == Util.RoleEnum.agent) {
         inparam.ownerId = token.id
+        inparam.limit = 50
+    }
+    // 玩家APP，查看自己的游戏记录
+    if (token.role == Util.RoleEnum.player) {
+        inparam.ownerId = token.id
+        inparam.limit = 50
     }
     // 设置分页参数
     if (inparam.startKey) {
