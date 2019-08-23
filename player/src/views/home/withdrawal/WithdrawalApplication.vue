@@ -13,7 +13,7 @@
         <van-col span="10" class="col10">0.00</van-col>
         <van-col span="7"></van-col>
       </van-row>
-      <van-row align="center">
+      <!-- <van-row align="center">
         <van-col span="7" class="col7">
           
         </van-col>
@@ -24,7 +24,7 @@
         <van-col span="7" class="col7">
           
         </van-col>
-      </van-row>
+      </van-row> -->
     </div>
     <div class="container">
       <van-field v-model="value" label="申请金额" :placeholder="pointHolder" :error="pointErr" @focus="pointFocus" @touchstart.native.stop="show = true" clickable/>
