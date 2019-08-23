@@ -51,7 +51,7 @@ export default {
       font-size: 19.2px; 
     }
     .van-nav-bar__title {
-      color: #50505;
+      color: #505050;
       font-size: 19.2px; 
     }
   }
