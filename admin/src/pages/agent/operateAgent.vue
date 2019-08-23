@@ -202,6 +202,7 @@ export default {
           this.$parent.getList();
         });
       } else {
+        params.id = this.$store.state.admin.agentInfo.id
         if (this.mode == "commission") {
         params.gameList = this.gameList
       }
