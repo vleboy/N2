@@ -11,7 +11,7 @@ cron.schedule('0 */5 * * * *', async () => {
 })
 
 // 每月的一号零点统计（上月的利润）0 1 0 1 * *
-cron.schedule('*/10 * * * * *', async () => {
+cron.schedule('*/50 * * * * *', async () => {
     const mongodb = global.mongodb
     //构造时间
     let startTime = moment().month(moment().month()).startOf('month').valueOf()
