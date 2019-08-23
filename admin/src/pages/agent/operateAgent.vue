@@ -202,6 +202,9 @@ export default {
           this.$parent.getList();
         });
       } else {
+        if (this.mode == "commission") {
+        params.gameList = this.gameList
+      }
         editAgent(params).then(res => {
           this.initData();
           this.$Message.success({ content: "修改成功" });
