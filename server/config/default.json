@@ -87,7 +87,8 @@
                 "/xserver/system/createReview",
                 "/xserver/bankcard/create",
                 "/xserver/bankcard/get",
-                "/xserver/bankcard/delete"
+                "/xserver/bankcard/delete",
+                "/xnosql/vround/page"
             ]
         },
         "cors": true,
