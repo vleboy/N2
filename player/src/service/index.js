@@ -121,3 +121,13 @@ export async function getCardList(params) {
 export async function queryMessage(params) {
   return axios.get(`/xnosql/message/query`, params);
 }
+
+/* 个人中心 */
+//交易记录
+export async function vroundPage(params) {
+  return axios.get(`/xnosql/vround/page`, params);
+}
+//存取款记录
+export async function billPage(params) {
+  return axios.get(`/xnosql/bill/page`, params);
+}

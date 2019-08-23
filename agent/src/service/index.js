@@ -105,6 +105,11 @@ export async function getView(params) {
   return axios.get("/xserver/agent/realtime", params);
 }
 
+//取款金额
+export async function getBalance(params) {
+  return axios.get("/xserver/agent/getBalance", params);
+}
+
 //消息
 export async function queryMessage(params) {
   return axios.get(`/xnosql/message/query`, params);

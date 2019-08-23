@@ -8,7 +8,10 @@ import WithdrawalApplication from '../views/home/withdrawal/WithdrawalApplicatio
 import AddBankCard from '../views/home/withdrawal/AddBankCard.vue'
 import DepositApplication from '../views/home/deposit/DepositApplication.vue'
 import Message from '../views/home/message/Message.vue'
-
+import ShowBankCard from '../views/mine/ShowBankCard.vue'
+import TransactionRecord from '../views/mine/TransactionRecord.vue'
+import DepositRecord from '../views/mine/DepositRecord.vue'
+import WithdrawalRecord from '../views/mine/WithdrawalRecord.vue'
 
 const mainRouter = {
   path: '/',
@@ -64,6 +67,26 @@ const otherRouter = [
     path: '/message',
     name: 'message',
     component: Message
+  },
+  {
+    path: '/showBankCard',
+    name: 'showBankCard',
+    component: ShowBankCard
+  },
+  {
+    path: '/transactionRecord',
+    name: 'transactionRecord',
+    component: TransactionRecord
+  },
+  {
+    path: '/depositRecord',
+    name: 'depositRecord',
+    component: DepositRecord
+  },
+  {
+    path: '/withdrawalRecord',
+    name: 'withdrawalRecord',
+    component: WithdrawalRecord
   }
 ]
 

@@ -23,7 +23,7 @@
         </div>
         <div class="split"></div>
         <div class="right">
-          <div class="list" v-for="(item, index) in topMenu" :key="index">
+          <div class="list" v-for="(item, index) in topMenu" :key="index" @click="operate(item.routeName)">
               <van-image
                 :src="item.img"
                 :show-loading='false'
@@ -35,7 +35,7 @@
     </div>
     <div class="container">
       <div class="list" v-for="val in contentMenu">
-        <div v-for="item in val" @click="operate(item)">
+        <div v-for="item in val" @click="operate(item.routeName)">
           <div>
             <div>
               <van-image :src="item.img" :show-loading="false" />
@@ -62,11 +62,13 @@ export default {
       topMenu: [
         {
           img: require("../../assets/images/mine/icon_charge.png"),
-          text: '存款'
+          text: '存款',
+          routeName: 'depositRecord'
         },
         {
           img: require("../../assets/images/mine/ico_withdraw.png"),
-          text: '取款'
+          text: '取款',
+          routeName: 'withdrawalRecord'
         },
         {
           img: require("../../assets/images/mine/icon_discount.png"),
@@ -79,34 +81,31 @@ export default {
           {
             img: require("../../assets/images/mine/icon_home_setting.png"),
             text: '个人资料',
-            name: ''
           },
           {
             img: require("../../assets/images/mine/icon_mine_account.png"),
             text: '交易记录',
-            name: ''
+            routeName: 'transactionRecord'
           },
           {
             img: require("../../assets/images/mine/icon_mine_settle.png"),
             text: '投注记录',
-            name: 'betRecord'
           }
         ],
         [
           {
             img: require("../../assets/images/mine/icon_home_about.png"),
             text: '关于YIBO',
-            name: 'about'
           },
           {
             img: require("../../assets/images/mine/icon_home_partner.png"),
             text: '银行卡号',
-            name: 'bank'
+            routeName: 'showBankCard'
           },
           {
             img: require("../../assets/images/mine/icon_mine_unsettle.png"),
             text: '安全退出',
-            name: 'logout'
+            routeName: 'logout'
           }
         ],
       ],
@@ -125,8 +124,8 @@ export default {
     this.isLogin = localStorage.playerNick == undefined ? false : true
   },
   methods:{
-    operate(item) {
-      if (item.name == 'logout') {
+    operate(name) {
+      if (name == 'logout') {
         this.$dialog.confirm({
         title: '退出当前账号',
         message: '确定退出当前账号?'
@@ -136,6 +135,8 @@ export default {
         }).catch(err => {
           return
         })
+      } else {
+        this.$router.push({name})
       }
     },
     toLogin() {

@@ -2,30 +2,13 @@
   <div class="home">
     <div class="top">
       <van-nav-bar
-        title="取款申请"
+        title="银行卡号"
         left-arrow
         @click-left="onClickLeft"
         :border="false"
       />
-      <p class="fs12">可取款金额</p>
-      <van-row>
-        <van-col span="7"></van-col>
-        <van-col span="10" class="col10">{{balance.balance}}</van-col>
-        <van-col span="7"></van-col>
-      </van-row>
-      <div align="center" style="display:flex;justify-content:space-around;color:#fff;">
-        <div>
-          <div>历史累计</div>
-          <div>{{balance.historyBalance}}</div>
-        </div>
-        <div>
-          <div>上月发放</div>
-          <div>{{balance.lastMonthBalance}}</div>
-        </div>
-      </div>
     </div>
     <div class="container">
-      <van-field v-model="value" label="申请金额" :placeholder="pointHolder" :error="pointErr" @focus="pointFocus" @touchstart.native.stop="show = true" clickable/>
       <div class="cardInfo">
         <div class="card" :class="{cardBg: actCard == index}" v-for="(item, index) in cardList" :key="index" @click="checkBankCard(item, index)">
           <van-swipe-cell>
@@ -45,24 +28,12 @@
           <div>点击添加银行卡</div>
         </div>
       </div>
-      <div class="sub">
-        <van-button type="info" size="large" @click="sub">提交申请</van-button>
-      </div>
     </div>
-     <van-number-keyboard
-      v-model="value"
-      :show="show"
-      :maxlength="6"
-      theme="custom"
-      close-button-text="完成"
-      extra-key="."
-      @blur="show = false"
-    /> 
-  </div>
+  </div>  
 </template>
 
 <script>
-import { getCardList, createReview, deleteBankCard, getBalance } from "../../../service/index";
+import { getCardList, createReview, deleteBankCard } from "../../service/index";
 import { log } from 'util';
 export default {
   data() {
@@ -77,28 +48,16 @@ export default {
       cardName: '',
       cardNo: '',
       show: false,
-      balance: [],
       actCard: 0
     };
   },
   mounted() {
     this.getCardList()
-    this.getBalance()
   },
   computed: {
     
   },
   methods: {
-    getBalance() {
-      getBalance().then(res => {
-        this.balance = res
-      })
-    },
-    pointFocus() {
-      document.activeElement.blur()
-      this.pointErr = false
-      this.pointHolder = '请输入金额'
-    },
     cardNoFormat(val) {
       let length = val.length - 4
       return '**** **** **** ' + val.substr(length)
@@ -141,47 +100,8 @@ export default {
       });
       
     },
-    sub() {
-       let params = {
-        project: -1, //-1代表取款(提现)
-        amount: this.value,
-        cardBank: this.cardBank,
-        cardName: this.cardName,
-        cardNo: this.cardNo
-      };
-      console.log(params)
-      if (this.value != '') {
-        createReview(params)
-        .then(res => {
-          this.$notify({
-            message: '取款成功',
-            duration: 1000,
-            background: 'green'
-          })
-          this.pointErr = false
-          this.value = ''
-          this.getCardList()
-        })
-        .catch(err => {
-          this.value = ''
-          this.pointHolder = err.res
-          this.pointErr = true
-        });
-      } else {
-        this.pointErr = true
-      }
-    },
     addBankCard() {
       this.$router.push({ name: "addBankCard" });
-    },
-    onInput(key) {
-      this.point += key;
-    },
-    showKeyboard() {
-      console.log(1);
-      console.log(document.activeElement);
-      this.show = true;
-      document.activeElement.blur();
     }
   }
 };
@@ -196,7 +116,7 @@ export default {
   .top {
     box-sizing: border-box;
     background: #6cbfff;
-    height: 160px;
+    height: 80px;
     position: relative;
     padding-top: 10px;
     box-sizing: border-box;
@@ -222,7 +142,7 @@ export default {
       padding:0 16px;
       margin: 10px 0;
       .card {
-        background: url('../../../assets/images/home/card.png') no-repeat;
+        background: url('../../assets/images/mine/card.png') no-repeat;
         background-size: cover;
         box-sizing: border-box;
         padding: 0 0 0 10px;
@@ -243,7 +163,7 @@ export default {
         }
       }
       .cardBg {
-        background: url('../../../assets/images/home/card_select.png') no-repeat;
+        background: url('../../assets/images/mine//card_select.png') no-repeat;
         background-size: cover;
       }
     }
