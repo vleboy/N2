@@ -29,6 +29,7 @@
 <script>
 import { createRole, updateRole } from "../../service/index";
 import _ from "lodash";
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
@@ -42,57 +43,67 @@ export default {
         paddingBottom: "53px",
         position: "static"
       },
-      oldTree: [
+      newTree: [
         {
           title: "所有权限",
           expand: true,
+          checked: false,
           children: [
             {
               title: "代理中心",
-              expand: false
+              expand: false,
+              checked: false
             },
             {
               title: "玩家中心",
-              expand: false
+              expand: false,
+              checked: false
             },
             {
               title: "代理流水",
-              expand: false
+              expand: false,
+              checked: false
             },
             {
               title: "玩家流水",
-              expand: false
+              expand: false,
+              checked: false
             },
             {
               title: "审核中心",
-              expand: false
+              expand: false,
+              checked: false
             },
             {
               title: "消息中心",
-              expand: false
+              expand: false,
+              checked: false
             },
             {
               title: "管理中心",
               expand: false,
+              checked: false,
               children: [
                 {
                   title: "管理员列表",
-                  expand: false
+                  expand: false,
+                  checked: false
                 },
                 {
                   title: "角色列表",
-                  expand: false
+                  expand: false,
+                  checked: false
                 },
                 {
                   title: "配置中心",
-                  expand: false
+                  expand: false,
+                  checked: false
                 }
               ]
             }
           ]
         }
-      ],
-      newTree: []
+      ]
     };
   },
   computed: {
@@ -103,7 +114,6 @@ export default {
   mounted() {},
   methods: {
     getInfo() {
-      this.newTree = _.cloneDeep(this.oldTree);
       this.permissions = this.$store.state.admin.roleInfo.permissions;
       this.roleName = this.$store.state.admin.roleInfo.roleName;
       if (this.permissions.length > 0) {
