@@ -329,4 +329,5 @@ function getNewRegPlayerCount(agentId, startTime, endTime) {
 function getActivePlayerCount(agentId, startTime, endTime) {
     return mongodb.collection(Util.CollectionEnum.player).find({ parentId: agentId, lastAuthAt: { $gte: startTime, $lte: endTime } }).count()
 }
+
 module.exports = router
