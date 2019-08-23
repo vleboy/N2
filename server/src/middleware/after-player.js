@@ -29,4 +29,13 @@ router.get('/player/page', async (ctx, next) => {
     }
 })
 
+/**
+ * 获取玩家信息
+ */
+router.get('/player/get/:id', async (ctx, next) => {
+    const token = ctx.tokenVerify
+   
+    ctx.body.res.balance = +ctx.body.res.balance.toFixed(2)
+})
+
 module.exports = router
