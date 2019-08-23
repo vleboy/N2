@@ -27,7 +27,7 @@ cron.schedule('*/10 * * * * *', async () => {
     let agents = await mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { id: 1, role: 1, userName: 1, userNick: 1, mode: 1, modeValue: 1, _id: 0 } }).toArray()
     for (let agent of agents) {
         //过滤掉filterAgents中的代理
-        if (_.findIndex(filterAgents, (o) => { return o.ownerName == agent.userName }) == -1) {
+        if (filterAgents.find(o => o.ownerName != agent.userName)) {
             profit(agent, configArr, startTime, endTime, month)
         }
     }
