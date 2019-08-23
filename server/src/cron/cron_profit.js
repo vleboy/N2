@@ -17,13 +17,19 @@ cron.schedule('*/10 * * * * *', async () => {
     let startTime = moment().month(moment().month()).startOf('month').valueOf()
     let endTime = moment().month(moment().month()).endOf('month').valueOf()
     let month = moment(startTime).format('YYMM')
-    await mongodb.collection(Util.CollectionEnum.profit).deleteMany({ month })
+    // 删除已统计的未被审核的发放单
+    await mongodb.collection(Util.CollectionEnum.profit).deleteMany({ month, status: Util.ReviewEnum.Process })
+    // 获取已统计已经审核的发放单
+    let filterAgents = await mongodb.collection(Util.CollectionEnum.profit).find({ month }, { projection: { ownerName: 1, _id: 0 } }).toArray()
     // 获取所有配置
     let configArr = await mongodb.collection(Util.CollectionEnum.config).find().toArray()
     //获取所有代理
     let agents = await mongodb.collection(Util.CollectionEnum.agent).find({ role: Util.RoleEnum.agent }, { projection: { id: 1, role: 1, userName: 1, userNick: 1, mode: 1, modeValue: 1, _id: 0 } }).toArray()
     for (let agent of agents) {
-        profit(agent, configArr, startTime, endTime, month)
+        //过滤掉filterAgents中的代理
+        if (_.findIndex(filterAgents, (o) => { return o.ownerName == agent.userName }) == -1) {
+            profit(agent, configArr, startTime, endTime, month)
+        }
     }
 })
 
