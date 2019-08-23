@@ -5,7 +5,9 @@
         title="取款申请"
         left-arrow
         @click-left="onClickLeft"
+         @click-right="onClickRight"
         :border="false"
+        right-text="取款记录"
       />
       <p class="fs12">可取款金额</p>
       <van-row>
@@ -126,7 +128,10 @@ export default {
       this.cardNo = val.cardNo
     },
     onClickLeft() {
-      this.$router.push("home");
+      this.$router.go(-1);
+    },
+    onClickRight() {
+      this.$router.push({name:'withdrawalRecord'})
     },
     deleteCard(val) {
       this.$dialog.confirm({

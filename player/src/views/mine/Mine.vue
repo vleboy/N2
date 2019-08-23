@@ -63,12 +63,12 @@ export default {
         {
           img: require("../../assets/images/mine/icon_charge.png"),
           text: '存款',
-          routeName: 'depositRecord'
+          routeName: 'depositApplication'
         },
         {
           img: require("../../assets/images/mine/ico_withdraw.png"),
           text: '取款',
-          routeName: 'withdrawalRecord'
+          routeName: 'withdrawalApplication'
         },
         {
           img: require("../../assets/images/mine/icon_discount.png"),

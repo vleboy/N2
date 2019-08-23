@@ -5,7 +5,9 @@
         title="存款申请"
         left-arrow
         @click-left="onClickLeft"
+         @click-right="onClickRight"
         :border="false"
+        right-text="存款记录"
       />
     </div>
     <div class="container">
@@ -64,7 +66,10 @@ export default {
     },
     
     onClickLeft() {
-      this.$router.push("home");
+      this.$router.go(-1);
+    },
+    onClickRight() {
+      this.$router.push({name:'depositRecord'})
     },
     sub() {
        let params = {
