@@ -11,10 +11,10 @@ const http = require('http')
 const server = http.createServer((async (req, res) => {
     // 构建
     await gitPull()
+    deployServer('server')
     deployWeb('admin')
     deployWeb('agent')
     deployWeb('player')
-    deployServer('server')
     // 响应
     res.writeHead(200, { 'Content-Type': 'text/plain' })
     res.end('Y')
