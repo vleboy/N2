@@ -9,7 +9,7 @@
         </van-tabbar-item>
         <van-tabbar-item to="/player">
           <span>玩家</span>
-          <img slot="icon" slot-scope="props" :src="props.active ? vip.active : vip.normal">
+          <img slot="icon" slot-scope="props" :src="props.active ? player.active : player.normal">
         </van-tabbar-item>
         <van-tabbar-item to="/agent">
           <span>代理</span>
@@ -40,9 +40,9 @@ export default {
        normal: require('../assets/images/agent/agent.png'),
         active: require('../assets/images/agent/agent_active.png')
       },
-      vip: {
-        normal: require('../assets/images/vip/vip.png'),
-        active: require('../assets/images/vip/vip_active.png')
+      player: {
+        normal: require('../assets/images/player/vip.png'),
+        active: require('../assets/images/player/vip_active.png')
       },
       setting: {
         normal: require('../assets/images/setting/setting.png'),

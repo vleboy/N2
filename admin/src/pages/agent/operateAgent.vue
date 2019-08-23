@@ -183,17 +183,19 @@ export default {
       let params = {
         mobile: this.mobile,
         email: this.email,
-        mode: this.mode,
         modeValue: this.modeValue
       };
-      if (this.mode == "commission") {
-        params.gameList = this.gameList;
-        params.parentId = this.$store.state.admin.agentInfo.id
-      }
+
       if (this.$store.state.admin.agentInfo.operate == "create") {
-        params.userPwd = this.userPwd;
+        params.userPwd = this.userPwd
         params.userName = this.userName
         params.userNick = this.userNick
+        params.mode = this.mode
+        params.parentId = this.$store.state.admin.agentInfo.id
+        //返佣传入游戏列表
+        if (this.mode == "commission") {
+        params.gameList = this.gameList
+      }
         createAgent(params).then(res => {
           this.initData();
           this.$Message.success({ content: "创建成功" });
