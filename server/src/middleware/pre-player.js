@@ -104,4 +104,16 @@ router.get('/player/page', async (ctx, next) => {
     return next()
 })
 
+/**
+ * 获取玩家信息
+ */
+router.get('/player/get/:id', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    // 玩家查看自己信息
+    if (token.role == Util.RoleEnum.player) {
+        ctx.params.id = token.id
+    }
+    return next()
+})
+
 module.exports = router

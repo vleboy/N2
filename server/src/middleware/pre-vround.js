@@ -19,9 +19,11 @@ router.get('/vround/page', async (ctx, next) => {
     if (inparam.ownerId) {
         inparam.ownerId = +inparam.ownerId
     }
+    // 下拉框全部
     if (inparam.project == 'all') {
         delete inparam.project
     }
+    // 代理APP，查看红利返水
     if (inparam.type == Util.ModeEnum.Commission) {
         ctx.request.commission = Util.ModeEnum.Commission
         delete inparam.type
@@ -29,7 +31,12 @@ router.get('/vround/page', async (ctx, next) => {
     // 代理APP，查看自己玩家的游戏记录
     if (token.role == Util.RoleEnum.agent) {
         inparam.parentId = token.id
-        inparam.limit = 30
+        inparam.limit = 50
+    }
+    // 玩家APP，查看自己的游戏记录
+    if (token.role == Util.RoleEnum.player) {
+        inparam.ownerId = token.id
+        inparam.limit = 50
     }
     // 设置分页参数
     if (inparam.startKey) {
