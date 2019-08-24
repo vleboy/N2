@@ -25,6 +25,7 @@ router.get('/vround/page', async (ctx, next) => {
         })
     } else {
         ctx.body.res.map((round) => {
+            round.winloseAmount = +round.winloseAmount.toFixed(2)
             round.sourceGameIdStr = Util.GameStrEnum[round.sourceGameId]
             delete round.bills
         })
