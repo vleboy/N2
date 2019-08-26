@@ -34,7 +34,6 @@ router.get('/player/page', async (ctx, next) => {
  */
 router.get('/player/get/:id', async (ctx, next) => {
     const token = ctx.tokenVerify
-    console.log(ctx.body)
     ctx.body.res.balance = +ctx.body.res.balance.toFixed(2)
 })
 
