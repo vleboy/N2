@@ -297,6 +297,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 await session.endSession()
             }
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
+            const session = await global.getMongoSession()
             // 变更余额
             let res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
             // 写入流水，先解冻
