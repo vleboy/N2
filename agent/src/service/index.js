@@ -26,7 +26,7 @@ const axios = {
         if (obj.err) {
           Notify({
             message: obj.res,
-            duration: 5000,
+            duration: 2000,
             background: 'red',
           });
          
@@ -37,7 +37,7 @@ const axios = {
       } catch (error) {
         Notify({
           message: '网络连接错误',
-          duration: 1000,
+          duration: 2000,
           background: 'red'
         });
         reject(error)
@@ -59,7 +59,7 @@ const axios = {
         if (obj.err) {
           Notify({
             message: obj.res,
-            duration: 1000,
+            duration: 2000,
             background: 'red'
           });
 
@@ -70,7 +70,7 @@ const axios = {
       } catch (error) {
         Notify({
           message: '网络连接错误',
-          duration: 1000,
+          duration: 2000,
           background: 'red'
         });
         reject(error)
