@@ -25,7 +25,7 @@ router.get('/profit/page', async (ctx, next) => {
     if (inparam.role == 'all') {
         delete inparam.role
     }
-    if (inparam.stauts == 'all') {
+    if (inparam.status == 'all') {
         delete inparam.stauts
     }
     // 代理或玩家，查看自己的奖金
