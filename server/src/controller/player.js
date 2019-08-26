@@ -46,4 +46,18 @@ router.post('/login', async (ctx, next) => {
 router.get('/realtime', async (ctx, next) => {
 })
 
+/**
+ * 获取玩家余额
+ */
+router.get('/getBalance', async (ctx, next) => {
+    const token = ctx.tokenVerify
+    let player = await global.mongodb.collection(Util.CollectionEnum.player).findOne({ id: token.id }, { projection: { id: 1, balance: 1, _id: 0 } })
+    if (!player) {
+        return ctx.body = { err: true, res: '玩家不存在' }
+    }
+    let [mixAmount, lastBillTime] = await Util.getPlayerMixAmount(player)
+    let data = { balance: player.balance, mixAmount, lastBillTime: lastBillTime || '-' }
+    ctx.body = data
+})
+
 module.exports = router

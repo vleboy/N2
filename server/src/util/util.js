@@ -160,10 +160,36 @@ async function checkHandlerPoint(inparam) {
     const parentName = user.parentName
     const parentNick = user.parentNick
     if (inparam.role == RoleEnum.player) {
+        let mixAmount = await getPlayerMixAmount(inparam)
+        if (mixAmount * 2 < user.balance) {
+            throw { err: true, res: '玩家流水不足' }
+        }
         ownerName = user.playerName
         ownerNick = user.playerNick
     }
     return { id, ownerName, ownerNick, parentId, parentName, parentNick }
+}
+
+// 获取玩家有效投注的流水值
+async function getPlayerMixAmount(player) {
+    // 查找玩家最近是否有取款记录
+    let lastBillTime = 0
+    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ id: player.id, project: ProjectEnum.Withdraw, status: ReviewEnum.Agree }, { projection: { reviewAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
+    if (reviewArr.length != 0) {
+        lastBillTime = reviewArr[0].reviewAt
+    }
+    // 查询玩家目前流水值
+    let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gte: lastBillTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
+    let mixAmount = 0
+    for (let round of rounds) {
+        // 当局输赢
+        let roundWinloseAmount = +round.winloseAmount.toFixed(2)
+        // 累计有效投注
+        let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == ProjectEnum.Bet) return Math.abs(o.amount) })
+        let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
+        mixAmount = NP.plus(mixAmount, roundValidBetAmount)
+    }
+    return [mixAmount, lastBillTime]
 }
 
 //获取代理相关费用
@@ -294,5 +320,6 @@ module.exports = {
     getSeq,
     checkType,
     checkHandlerPoint,
-    calcRebateFee
+    calcRebateFee,
+    getPlayerMixAmount
 }

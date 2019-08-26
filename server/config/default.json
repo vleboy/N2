@@ -82,6 +82,7 @@
                 "/xserver/player/realtime",
                 "/xnosql/player/update",
                 "/xnosql/player/get/*",
+                "/xserver/player/getBalance",
                 "/xnosql/bill/page",
                 "/xnosql/message/query",
                 "/xnosql/vround/page",
