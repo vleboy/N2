@@ -176,7 +176,7 @@ async function getPlayerCommission(player) {
         lastCommissionTime = reviewArr[0].reviewAt
     }
     // 查询玩家目前流水值
-    let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gte: lastBillTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
+    let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gte: lastCommissionTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     let commission = 0
     for (let round of rounds) {
         // 当局输赢
