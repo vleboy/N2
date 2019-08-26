@@ -90,7 +90,8 @@
     </div>
     <div class="footer">
       <p>提示:</p>
-      <p>总输赢,净输赢中正数表示公司盈利,负数表示公司亏损.每天数据只做普通参考,并不做诗句佣金派发标准</p>
+      <p>总输赢/净输赢中正数表示公司盈利,负数表示公司亏损</p>
+      <p>每日数据仅供参考,并不作为结算佣金派发标准</p>
     </div>
   </div>
 </template>
@@ -242,12 +243,9 @@ export default {
       p {
         margin: 0;
         color: #515151;
+        font-size: 12.8px;
         &:first-child {
           font-size: 16px;
-        }
-        &:last-child {
-          font-size: 12.8px;
-          margin-top: 5px;
         }
       }
     }

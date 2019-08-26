@@ -131,6 +131,10 @@ export async function vroundPage(params) {
 export async function billPage(params) {
   return axios.get(`/xnosql/bill/page`, params);
 }
+//玩家可取款金额
+export async function playerGetBalance(params) {
+  return axios.get(`/xserver/player/getBalance`, params);
+}
 
 //获取个人资料
 export async function playerGet(params) {

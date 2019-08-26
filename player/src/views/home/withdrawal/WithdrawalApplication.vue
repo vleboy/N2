@@ -9,11 +9,17 @@
         :border="false"
         right-text="取款记录"
       />
-      <p class="fs12">可取款金额</p>
-      <van-row>
-        <van-col span="7"></van-col>
-        <van-col span="10" class="col10">0.00</van-col>
-        <van-col span="7"></van-col>
+      <p class="fs12">余额</p>
+      <van-row class="data">
+        <van-col span="7">
+          <div>有效流水</div>
+          <div>{{formatConfig(balance.commission)}}</div>
+        </van-col>
+        <van-col span="10" class="col10">{{formatConfig(balance.balance)}}</van-col>
+        <van-col span="7">
+          <div>上次取款时间</div>
+          <div>{{createConfig(balance.lastWithdrawTime)}}</div>
+        </van-col>
       </van-row>
       <!-- <van-row align="center">
         <van-col span="7" class="col7">
@@ -66,8 +72,9 @@
 </template>
 
 <script>
-import { getCardList, createReview, deleteBankCard } from "../../../service/index";
-import { log } from 'util';
+import { getCardList, createReview, deleteBankCard, playerGetBalance } from "../../../service/index";
+import dayjs from 'dayjs';
+import {formatMoney} from '../../../config/format'
 export default {
   beforeRouteEnter(to, from, next) {
     let token = window.localStorage.getItem('playerToken')
@@ -94,7 +101,8 @@ export default {
       cardName: '',
       cardNo: '',
       show: false,
-      actCard: 0
+      actCard: 0,
+      balance: []
     };
   },
   mounted() {
@@ -104,6 +112,12 @@ export default {
     
   },
   methods: {
+    formatConfig(num) {
+      return formatMoney(num)
+    },
+    createConfig(row) {
+      return dayjs(row).format('YY/MM/DD')
+    },
     pointFocus() {
       document.activeElement.blur()
       this.pointErr = false
@@ -119,6 +133,9 @@ export default {
         this.checkBankCard(this.cardList[0], 0)
       }).catch(err => {
 
+      })
+      playerGetBalance().then(res => {
+        this.balance = res
       })
     },
     checkBankCard(val, index) {
@@ -227,8 +244,13 @@ export default {
       div {
         text-align: center;
         font-size: 12.8px;
-      }
+      } 
     }
+    .data {
+        color:#fff;
+        box-sizing: border-box;
+        padding: 0 15px;
+      }
   }
   .container {
     .cardInfo {
