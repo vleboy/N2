@@ -174,10 +174,12 @@ async function getPlayerCommission(player) {
     let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ proposerId: player.id, $or: [{ project: ProjectEnum.Deposit }, { project: ProjectEnum.Withdraw }], status: ReviewEnum.Agree }, { projection: { amount: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
     if (reviewArr.length != 0) {
         let reviewInfo = reviewArr.find(o => o.project == ProjectEnum.Withdraw)
+        console.log(reviewInfo)
         if(reviewInfo){
             lastCommissionTime = reviewInfo.reviewAt
         }
         for (let item of reviewArr) {
+            console.log(item)
             restAmount = NP.plus(restAmount, item.project == ProjectEnum.Withdraw ? item.amount * -1 : item.amount)
         }
     }
