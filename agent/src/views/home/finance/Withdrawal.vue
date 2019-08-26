@@ -16,8 +16,8 @@
           </tr>
           <tr v-for="(item, index) in data">
             <td>{{item.ownerName}}</td>
-            <td style="color:green;">{{item.amount}}</td>
-            <td>{{item.channelFee}}</td>
+            <td style="color:green;">{{formatConfig(item.amount)}}</td>
+            <td>{{formatConfig(item.channelFee)}}</td>
             <td>{{createAtConfig(item.createAt)}}</td>
           </tr>
         </table>
@@ -28,6 +28,7 @@
 
 <script>
 import {depositBill} from '../../../service/index'
+import { formatMoney } from '../../../config/format'
 import dayjs from 'dayjs'
 export default {
   data() {
@@ -41,6 +42,9 @@ export default {
     this.getList()
   },
   methods: {
+    formatConfig(num) {
+      return formatMoney(num)
+    },
     createAtConfig(val) {
       return dayjs(val).format('YY/MM/DD HH:mm')
     },

@@ -14,7 +14,7 @@
           </tr>
           <tr v-for="(item, index) in data">
             <td>{{item.plat}}</td>
-            <td>{{item.platFee}}</td>
+            <td>{{formatConfig(item.platFee)}}</td>
           </tr>
         </table>
       </div>
@@ -24,6 +24,7 @@
 
 <script>
 import {platformBill} from '../../../service/index'
+import { formatMoney } from '../../../config/format'
 import dayjs from 'dayjs'
 export default {
   data() {
@@ -37,6 +38,9 @@ export default {
     this.getList()
   },
   methods: {
+    formatConfig(num) {
+      return formatMoney(num)
+    },
     createAtConfig(val) {
       return dayjs(val).format('YY/MM/DD HH:mm')
     },

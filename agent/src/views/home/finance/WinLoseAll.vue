@@ -17,7 +17,7 @@
           <tr v-for="(item, index) in data">
             <td>{{item.ownerName}}</td>
             <td>{{item.sourceGameIdStr}}</td>
-            <td :style="{color: item.winloseAmount > 0 ? 'green' : 'red'}">{{item.winloseAmount}}</td>
+            <td :style="{color: item.winloseAmount > 0 ? 'green' : 'red'}">{{formatConfig(item.winloseAmount)}}</td>
             <td>{{createAtConfig(item.minCreateAt)}}</td>
           </tr>
         </table>
@@ -29,6 +29,7 @@
 
 <script>
 import {vroundPage} from '../../../service/index'
+import { formatMoney } from '../../../config/format'
 import dayjs from 'dayjs'
 export default {
   data() {
@@ -47,13 +48,8 @@ export default {
     this.getList(Window.sc)
   },
   methods: {
-    amountConfig(val) {
-      let color =  val > 0 ? 'green' : 'red'
-      let platFee = val > 0 ? `+${val}` : `${val}`
-      return {
-        color,
-        platFee
-      }
+    formatConfig(num) {
+      return formatMoney(num)
     },
     createAtConfig(val) {
       return dayjs(val).format('YY/MM/DD HH:mm')

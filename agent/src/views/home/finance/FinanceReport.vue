@@ -46,14 +46,14 @@
         <div @click="jumpTo('deposit')">
           <div class="name">存款通道费</div>
           <div class="num">
-            {{dataList.depositFee || 0}}
+            {{formatConfig(dataList.depositFee)}}
             <van-button type="default">查看详情</van-button>
           </div>
         </div>
         <div @click="jumpTo('withdrawal')">
           <div class="name">取款通道费</div>
           <div class="num">
-            {{dataList.withdrawFee}}
+            {{formatConfig(dataList.withdrawFee) || 0.00}}
             <van-button type="default">查看详情</van-button>
           </div>
         </div>
@@ -62,14 +62,14 @@
         <div @click="jumpTo('commission')">
           <div class="name">红利加返水</div>
           <div class="num">
-            {{dataList.commissionFee}}
+            {{formatConfig(dataList.commissionFee) || 0.00}}
             <van-button type="default">查看详情</van-button>
           </div>
         </div>
         <div @click="jumpTo('platform')">
           <div class="name">平台费</div>
           <div class="num">
-            {{dataList.platformFee}}
+            {{formatConfig(dataList.platformFee) || 0.00}}
             <van-button type="default">查看详情</van-button>
           </div>
         </div>
@@ -78,13 +78,13 @@
         <div @click="jumpTo('winLoseAll')">
           <div class="name">总输赢</div>
           <div class="num">
-            {{dataList.winlose}}
+            {{formatConfig(dataList.winlose) || 0.00}}
             <van-button type="default">查看详情</van-button>
           </div>
         </div>
         <div>
           <div class="name">净输赢</div>
-          <div class="num">{{dataList.profit}}</div>
+          <div class="num">{{formatConfig(dataList.profit) || 0.00}}</div>
         </div>
       </div>
     </div>
@@ -97,6 +97,7 @@
 
 <script>
 import { getView } from '../../../service/index'
+import { formatMoney } from '../../../config/format'
 export default {
   data() {
     return {
@@ -116,6 +117,9 @@ export default {
     this.getData()
   },
   methods: {
+    formatConfig(num) {
+      return formatMoney(num)
+    },
     onClickLeft() {
       this.$router.push('home')
     },
