@@ -320,7 +320,7 @@ router.post('/handlerReview', async (ctx, next) => {
             // 变更余额
             res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount * -1 } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
             // 写入流水，再提现
-            let billId = await Util.getSeq('billSeq')
+            billId = await Util.getSeq('billSeq')
             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                 id: billId,
                 role: reviewInfo.role,
