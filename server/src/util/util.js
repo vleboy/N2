@@ -175,29 +175,20 @@ async function getPlayerCommission(player) {
     let lastWithdrawTime = 0
     let billArr = await global.mongodb.collection(CollectionEnum.bill).find({
         ownerId: player.id,
-        project: ProjectEnum.Withdraw,
-        status: ReviewEnum.Agree
+        project: ProjectEnum.Withdraw
     }, { projection: { amount: 1, project: 1, createAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
     if (billArr.length > 0) {
         lastWithdrawTime = billArr[0].createAt
     }
     // 查询上次取款到现在的所有存款
     let lastCommissionTime = 0, restAmount = 0
-    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({
-        proposerId: player.id,
-        $or: [{ project: ProjectEnum.Deposit }, { project: ProjectEnum.Withdraw }],
-        status: ReviewEnum.Agree,
-        createAt: { $gt: startTime }
-    }, { projection: { amount: 1, project: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
-
-    if (reviewArr.length != 0) {
-        let reviewInfo = reviewArr.find(o => o.project == ProjectEnum.Withdraw)
-        if (reviewInfo) {
-            lastCommissionTime = reviewInfo.reviewAt
-        }
-        for (let item of reviewArr) {
-            restAmount = NP.plus(restAmount, item.project == ProjectEnum.Withdraw ? item.amount * -1 : item.amount)
-        }
+    let depositArr = await global.mongodb.collection(CollectionEnum.bill).find({
+        ownerId: player.id,
+        project: ProjectEnum.Deposit,
+        createAt: { $gt: lastWithdrawTime }
+    }, { projection: { amount: 1, project: 1, createAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
+    if (depositArr.length > 0) {
+        restAmount = NP.plus(restAmount, item.amount)
     }
     // 查询玩家目前流水值
     let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gte: lastCommissionTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
