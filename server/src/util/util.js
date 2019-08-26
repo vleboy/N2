@@ -176,7 +176,8 @@ async function getPlayerCommission(player) {
         let reviewInfo = reviewArr.find(o => o.project == ProjectEnum.withdraw)
         lastCommissionTime = reviewInfo.reviewAt
         for (let item of reviewArr) {
-            restAmount = NP.plus(restAmount, item.amount)
+            console.log(item)
+            restAmount = NP.plus(restAmount, item.project == ProjectEnum.Withdraw ? item.amount * -1 : item.amount)
         }
     }
     // 查询玩家目前流水值
