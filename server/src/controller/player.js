@@ -55,8 +55,8 @@ router.get('/getBalance', async (ctx, next) => {
     if (!player) {
         return ctx.body = { err: true, res: '玩家不存在' }
     }
-    let { commission, lastCommissionTime, restAmount } = await Util.getPlayerCommission(player)
-    let data = { restAmount, balance: +player.balance.toFixed(2), commission, lastCommissionTime: lastCommissionTime || '-' }
+    let { commission, lastWithdrawTime, depositAmount } = await Util.getPlayerCommission(player)
+    let data = { depositAmount, balance: +player.balance.toFixed(2), commission, lastWithdrawTime  }
     ctx.body = data
 })
 
