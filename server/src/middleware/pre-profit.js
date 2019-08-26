@@ -26,7 +26,7 @@ router.get('/profit/page', async (ctx, next) => {
         delete inparam.role
     }
     if (inparam.status == 'all') {
-        delete inparam.stauts
+        delete inparam.status
     }
     // 代理或玩家，查看自己的奖金
     if (token.role != Util.RoleEnum.admin) {
