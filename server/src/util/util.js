@@ -17,6 +17,7 @@ const ProjectEnum = {
 
     Deposit: 'deposit',         // 存款
     Withdraw: 'withdraw',       // 取款
+    Freeze: 'freeze',           // 冻结
     Unfreeze: 'unfreeze',       // 解冻
 
     TransferIn: 'transferIn',   // 转入
@@ -34,6 +35,7 @@ const ProjectStrEnum = {
 
     deposit: '存款',
     withdraw: '取款',
+    freeze: '冻结',
     unfreeze: '解冻',
 
     transferIn: '转入',
@@ -169,9 +171,24 @@ async function checkHandlerPoint(inparam) {
 
 // 获取玩家有效投注的流水值
 async function getPlayerCommission(player) {
-    // 查找玩家最近是否有取款记录
+    // 查询最近一次取款
+    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({
+        proposerId: player.id,
+        project: ProjectEnum.Withdraw,
+        status: ReviewEnum.Agree
+    }, { projection: { amount: 1, project: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
+    if (reviewArr.length > 0) {
+        reviewArr[0].createAt
+    }
+    // 查询上次取款到现在的所有存款
     let lastCommissionTime = 0, restAmount = 0
-    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ proposerId: player.id, $or: [{ project: ProjectEnum.Deposit }, { project: ProjectEnum.Withdraw }], status: ReviewEnum.Agree }, { projection: { amount: 1, project: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
+    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({
+        proposerId: player.id,
+        $or: [{ project: ProjectEnum.Deposit }, { project: ProjectEnum.Withdraw }],
+        status: ReviewEnum.Agree,
+        createAt: { $gt: startTime }
+    }, { projection: { amount: 1, project: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
+
     if (reviewArr.length != 0) {
         let reviewInfo = reviewArr.find(o => o.project == ProjectEnum.Withdraw)
         if (reviewInfo) {

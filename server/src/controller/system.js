@@ -157,7 +157,7 @@ router.post('/createReview', async (ctx, next) => {
                 await mongodb.collection(Util.CollectionEnum.bill).insertOne({
                     id: billId,
                     role: inparam.role,
-                    project: inparam.project,
+                    project: Util.ProjectEnum.Freeze,
                     preBalance: +res.value.balance.toFixed(2),
                     amount,
                     balance: NP.plus(+res.value.balance.toFixed(2), amount),
@@ -297,6 +297,46 @@ router.post('/handlerReview', async (ctx, next) => {
                 await session.endSession()
             }
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
+            // 变更余额
+            const res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
+             // 写入流水，先解冻
+             let billId = await Util.getSeq('billSeq')
+             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
+                 id: billId,
+                 role: reviewInfo.role,
+                 project: Util.ProjectEnum.Unfreeze,
+                 preBalance: +res.value.balance.toFixed(2),
+                 amount: reviewInfo.amount,
+                 balance: NP.plus(+res.value.balance.toFixed(2), reviewInfo.amount),
+                 ownerId: owner.id,
+                 ownerName: owner.ownerName,
+                 ownerNick: owner.ownerNick,
+                 parentId: owner.parentId,
+                 parentName: owner.parentName,
+                 parentNick: owner.parentNick,
+                 createAt,
+                 createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
+             }, { session })
+             // 变更余额
+            const res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
+             // 写入流水，再提现
+             let billId = await Util.getSeq('billSeq')
+             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
+                 id: billId,
+                 role: reviewInfo.role,
+                 project: Util.ProjectEnum.Withdraw,
+                 preBalance: +res.value.balance.toFixed(2),
+                 amount: reviewInfo.amount,
+                 balance: NP.plus(+res.value.balance.toFixed(2), reviewInfo.amount),
+                 ownerId: owner.id,
+                 ownerName: owner.ownerName,
+                 ownerNick: owner.ownerNick,
+                 parentId: owner.parentId,
+                 parentName: owner.parentName,
+                 parentNick: owner.parentNick,
+                 createAt,
+                 createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
+             }, { session })
             await mongodb.collection(Util.CollectionEnum.review).updateOne({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } })
         }
     }
