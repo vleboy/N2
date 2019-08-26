@@ -161,6 +161,8 @@ async function checkHandlerPoint(inparam) {
     const parentNick = user.parentNick
     if (inparam.role == RoleEnum.player) {
         let mixAmount = await getPlayerMixAmount(inparam)[0]
+        console.log(mixAmount)
+        console.log(mixAmount * 2 < user.balance)
         if (mixAmount * 2 < user.balance) {
             throw { err: true, res: '玩家流水不足' }
         }
