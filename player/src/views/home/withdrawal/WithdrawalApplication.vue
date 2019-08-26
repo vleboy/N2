@@ -17,8 +17,8 @@
         </van-col>
         <van-col span="10" class="col10">{{formatConfig(balance.balance)}}</van-col>
         <van-col span="7">
-          <div>上次取款时间</div>
-          <div>{{createConfig(balance.lastWithdrawTime)}}</div>
+          <div>两倍流水</div>
+          <div>{{formatConfig(balance.depositAmount * 2)}}</div>
         </van-col>
       </van-row>
       <!-- <van-row align="center">
