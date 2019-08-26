@@ -191,6 +191,7 @@ async function getPlayerMixAmount(player) {
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
         mixAmount = NP.plus(mixAmount, roundValidBetAmount)
     }
+    console.log(mixAmount, lastBillTime)
     return [mixAmount, lastBillTime]
 }
 
