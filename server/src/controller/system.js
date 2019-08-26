@@ -110,7 +110,7 @@ router.post('/createReview', async (ctx, next) => {
     let queryBalance = { id: inparam.id }
     if (inparam.project == Util.ProjectEnum.Withdraw) {
         amount *= -1
-        queryBalance.balance = { $gte: Math.abs(amount) }
+        queryBalance.balance = { $gte: Math.abs(amount) - 0.001 }
     }
     // 检查代理/玩家是否满足操作条件
     const owner = await Util.checkHandlerPoint(inparam)
