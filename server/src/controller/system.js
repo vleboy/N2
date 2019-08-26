@@ -118,7 +118,7 @@ router.post('/createReview', async (ctx, next) => {
     if (inparam.role == Util.CollectionEnum.player && inparam.project == Util.ProjectEnum.Withdraw) {
         let { commission, depositAmount } = await Util.getPlayerCommission(inparam)
         if (commission < depositAmount * 2) {
-            return ctx.body = { err: true, res: '提现需满足两倍流水' }
+            return ctx.body = { err: true, res: '取款需满足两倍流水' }
         }
     }
     let createAt = Date.now()
