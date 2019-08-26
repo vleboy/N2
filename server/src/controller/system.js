@@ -115,7 +115,7 @@ router.post('/createReview', async (ctx, next) => {
     // 检查代理/玩家是否满足操作条件
     const owner = await Util.checkHandlerPoint(inparam)
     // 如果是玩家判断流水是否足够体现
-    if (inparam.role == Util.CollectionEnum.player && inparam.project != 1) {
+    if (inparam.role == Util.CollectionEnum.player && inparam.project != Util.ProjectEnum.Withdraw) {
         let { commission, restAmount } = await Util.getPlayerCommission(inparam)
         if (commission < restAmount * 2) {
             return ctx.body = { err: true, res: '提现需满足两倍流水' }
