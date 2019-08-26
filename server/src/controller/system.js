@@ -298,7 +298,7 @@ router.post('/handlerReview', async (ctx, next) => {
             }
         } else if (reviewInfo.project == Util.ProjectEnum.Withdraw) {
             // 变更余额
-            const res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
+            let res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
             // 写入流水，先解冻
             let billId = await Util.getSeq('billSeq')
             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
@@ -318,7 +318,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 createAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
             }, { session })
             // 变更余额
-            const res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount * -1 } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
+            res = await mongodb.collection(collectionName).findOneAndUpdate({ id: reviewInfo.proposerId }, { $inc: { balance: reviewInfo.amount * -1 } }, { returnOriginal: true, projection: { balance: 1, _id: 0 }, session })
             // 写入流水，再提现
             let billId = await Util.getSeq('billSeq')
             await mongodb.collection(Util.CollectionEnum.bill).insertOne({
