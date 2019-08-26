@@ -17,7 +17,7 @@
             <span>早上好,</span>
             <span>{{playerName}}</span>
           </div>
-          <div class="right">
+          <div class="right" @click="jumpTo('personal')">
             <div>个人资料</div>
           </div>
         </div>
