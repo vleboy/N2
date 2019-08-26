@@ -181,17 +181,19 @@ async function getPlayerCommission(player) {
         lastWithdrawTime = billArr[0].createAt
     }
     // 查询上次取款到现在的所有存款
-    let lastCommissionTime = 0, restAmount = 0
+    let depositAmount = 0
     let depositArr = await global.mongodb.collection(CollectionEnum.bill).find({
         ownerId: player.id,
         project: ProjectEnum.Deposit,
         createAt: { $gt: lastWithdrawTime }
     }, { projection: { amount: 1, project: 1, createAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
     if (depositArr.length > 0) {
-        restAmount = NP.plus(restAmount, item.amount)
+        for (let item of depositArr) {
+            depositAmount = NP.plus(depositAmount, item.amount)
+        }
     }
     // 查询玩家目前流水值
-    let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gte: lastCommissionTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
+    let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gt: lastWithdrawTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
     let commission = 0
     for (let round of rounds) {
         // 当局输赢
@@ -201,7 +203,7 @@ async function getPlayerCommission(player) {
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
         commission = NP.plus(commission, roundValidBetAmount)
     }
-    return { restAmount, commission, lastCommissionTime }
+    return { depositAmount, commission, lastWithdrawTime }
 }
 
 //获取代理相关费用
