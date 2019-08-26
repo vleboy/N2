@@ -338,7 +338,7 @@ router.post('/handlerReview', async (ctx, next) => {
                 createAt: createAt + 1,
                 createAtStr: moment(createAt + 1).utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
             }, { session })
-            await mongodb.collection(Util.CollectionEnum.review).updateOne({ id: inparam.id }, { $set: { status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } })
+            await mongodb.collection(Util.CollectionEnum.review).updateOne({ id: reviewInfo.id }, { $set: { billId, status: inparam.status, reviewerId: token.id, reviewerName: token.userName, reviewerNick: token.userNick, reviewAt: createAt, reviewAtStr: moment(createAt).utcOffset(8).format('YYYY-MM-DD HH:mm:ss') } }, { session })
         }
     }
     ctx.body = { err: false, res: '操作成功' }
