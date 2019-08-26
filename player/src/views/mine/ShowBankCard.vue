@@ -76,7 +76,7 @@ export default {
       this.cardNo = val.cardNo
     },
     onClickLeft() {
-      this.$router.push("home");
+      this.$router.go(-1);
     },
     deleteCard(val) {
       this.$dialog.confirm({

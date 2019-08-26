@@ -9,18 +9,18 @@
       <div class="table">
         <table>
           <tr>
-            <th>操作金额</th>
+            <th>存款金额</th>
             <th>余额</th>
             <th>时间</th>
           </tr>
           <tr v-for="(item, index) in data">
-            <td>{{item.amount}}</td>
+            <td style="color:red;">{{amountConfig(item.amount)}}</td>
             <td>{{item.balance}}</td>
             <td>{{createAtConfig(item.minCreateAt)}}</td>
           </tr>
         </table>
       </div>
-      <div v-if="isBottom">已经到底了....</div>
+      <div v-if="isBottom" style="margin-top:10px;color:gray;">已经到底了</div>
     </div>
   </div>
 </template>
@@ -46,12 +46,7 @@ export default {
   },
   methods: {
     amountConfig(val) {
-      let color =  val > 0 ? 'green' : 'red'
-      let platFee = val > 0 ? `+${val}` : `${val}`
-      return {
-        color,
-        platFee
-      }
+     return `+${val}`
     },
     createAtConfig(val) {
       return dayjs(val).format('YY/MM/DD HH:mm')

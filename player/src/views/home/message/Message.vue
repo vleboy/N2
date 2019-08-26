@@ -136,7 +136,7 @@ export default {
         .news {
           height: 100px;
           background: #fff;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -159,7 +159,7 @@ export default {
       }
       .noDada {
         position: absolute;
-        top: 160px;
+        top: 30vh;
         left: 50%;
         transform: translateX(-50%)
       }  

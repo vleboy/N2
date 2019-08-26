@@ -1,26 +1,11 @@
 <template>
   <div class="playerCenter">
     <div>
-     <!--  <div class="content">
+      <div class="content">
         <div class="fl">
-          <Input v-model="parentId" size="small">
-            <span slot="prepend">代理ID</span>
-          </Input>
-        </div>
-        <div class="fl">
-          <Input v-model="playerId" size="small">
-            <span slot="prepend">玩家ID</span>
-          </Input>
-        </div>
-        <div class="fl">
-          <Input v-model="playerName" size="small">
-            <span slot="prepend">玩家账号</span>
-          </Input>
-        </div>
-        <div class="fl">
-          <Input v-model="playerNick" size="small">
-            <span slot="prepend">玩家昵称</span>
-          </Input>
+          <Select v-model="role" style="width:100px" size="small">
+              <Option v-for="item in roleList" :value="item.label" :key="item.value">{{ item.value }}</Option>
+          </Select>
         </div>
         <div class="fl">
           <Select v-model="status" style="width:100px" size="small">
@@ -28,13 +13,28 @@
           </Select>
         </div>
         <div class="fl">
+          <Input v-model="ownerId" size="small">
+            <span slot="prepend">账号ID</span>
+          </Input>
+        </div>
+        <div class="fl">
+          <Input v-model="ownerName" size="small">
+            <span slot="prepend">账号</span>
+          </Input>
+        </div>
+        <div class="fl">
+          <Input v-model="ownerNick" size="small">
+            <span slot="prepend">昵称</span>
+          </Input>
+        </div>
+        <div class="fl">
           <Button type="primary" @click="search" size="small" class="search">搜索</Button>
           <Button @click="reset" size="small">重置</Button>
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="playerform">
-      <Table :columns="columns" :data="profitList" size="small" style="width:150%">
+      <Table :columns="columns" :data="profitList" size="small" style="width:100%">
         <template #status="{row}">
           <Tag
             type="border"
@@ -44,13 +44,14 @@
         <template #operate="{row}">
           <Button size="small" type="info" ghost @click="send(row)" v-if="!isSend(row)">发放</Button>
           <Button size="small" type="info" disabled ghost v-else>已发放</Button>
+          <Button size="small" type="info" ghost style="margin-left:5px" @click="detail(row)">查看详情</Button>
         </template>
       </Table>
     </div>
     <div class="page">
       <Page :current="currentPage" :total="totalPage" :page-size="pageSize" @on-change="changepage"/>
     </div>
-    
+    <operateProfit></operateProfit>
     <Spin size="large" fix v-show="spinShow" style="z-index:200;">
       <Icon type="ios-loading" size="64" class="demo-spin-icon-load"></Icon>
       <div style>加载中...</div>
@@ -61,18 +62,35 @@
 <script type="text/ecmascript-6">
 import dayjs from "dayjs";
 import { profitPage, profitUpdate } from "../../service/index";
-
+import operateProfit from './operateProfit'
 import _ from 'lodash'
 export default {
+  components: {
+    operateProfit
+  },
   data() {
     return {
-      parentId: "",
       spinShow: false,
-      playerId: "",
-      playerName: "",
-      playerNick: "",
+      ownerId: "",
+      ownerName: "",
+      ownerNick: "",
       startKey: null,
       status: 'all',
+      role: 'all',
+      roleList: [
+        {
+          value: '全部角色',
+          label: 'all'
+        },
+        {
+          value: '代理',
+          label: 'agent'
+        },
+        {
+          value: '玩家',
+          label: 'player'
+        }
+      ],
       statusList: [
         {
           value: '全部状态',
@@ -126,12 +144,12 @@ export default {
           align: "center"
         },
         {
-          title: "存款通道费",
+          title: "存款费",
           key: "depositFee",
           align: "center"
         },
         {
-          title: "取款通道费",
+          title: "取款费",
           key: "withdrawFee",
           align: "center"
         },
@@ -151,39 +169,18 @@ export default {
           align: "center"
         },
         {
-          title: "状态",
-          slot: "status",
-          align: "center"
-        },
-        {
           title: "流水号",
           key: "billId",
           align: "center",
           minWidth: 70
         },
         {
-          title: "发放人ID",
-          key: "profitId",
-          align: "center"
-        },
-        {
-          title: "发放人账号",
-          key: "profitName",
-          align: "center"
-        },
-        {
-          title: "发放人昵称",
-          key: "profitNick",
-          align: "center",
-          minWidth: 60,
-        },
-        {
           title: "发放时间",
           key: "profitAt",
           align: "center",
-          minWidth: 60,
+          minWidth: 45,
           render: (h, params) => {
-            return params.row.profitAt == undefined ? '' : h("span", dayjs(params.row.profitAt).format("YY-MM-DD HH:mm:ss"));
+            return params.row.profitAt == undefined ? '' : h("span", dayjs(params.row.profitAt).format("YY-MM-DD HH:mm"));
           }
         },
         {
@@ -213,31 +210,27 @@ export default {
         this.profitList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
       }
     },
+    detail(row) {
+      console.log(row)
+      this.$store.commit('setProfitInfo', row)
+      this.$store.commit("showOperateProfit", true);
+    },
     getList() {
-      /* let params = {
-        id: this.playerId,
-        playerName: this.playerName,
-        playerNick: this.playerNick,
-        parentId: this.parentId,
+      this.spinShow = true
+      let params = {
+        ownerId: this.ownerId,
+        ownerName: this.ownerName,
+        ownerNick: this.ownerNick,
         startKey: this.startKey,
-        status: this.status
-      };
-      this.spinShow = true;
-      queryPlayer(params).then(res => {
-        this.data = this.data.concat(res.res)
-        this.totalPage = this.data.length
-        this.playerList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
-        this.startKey = res.startKey
-        this.spinShow = false;
-      }).catch(err => {
-        this.spinShow = false
-      }) */
-      profitPage().then(res => {
+        status: this.status,
+        role: this.role,
+      }
+      profitPage(params).then(res => {
         this.data = this.data.concat(res.res)
         this.totalPage = this.data.length
         this.profitList = _.chunk(this.data, this.pageSize)[this.currentPage - 1]
         this.startKey = res.startKey
-        this.spinShow = false;
+        this.spinShow = false
       }).catch(err => {
          this.spinShow = false
       })
@@ -247,6 +240,12 @@ export default {
       this.getList()
     },
     reset() {
+      this.ownerId = ""
+      this.ownerName = ""
+      this.ownerNick = ""
+      this.status = 'all'
+      this.role = 'all'
+      this.initPage()
       this.search();
     },
     //重置分页

@@ -15,12 +15,12 @@
           </tr>
           <tr v-for="(item, index) in data">
             <td>{{item.sourceGameIdStr}}</td>
-            <td>{{item.winloseAmount}}</td>
+            <td :style="{color: item.winloseAmount > 0 ? 'red' : 'green'}">{{item.winloseAmount}}</td>
             <td>{{createAtConfig(item.minCreateAt)}}</td>
           </tr>
         </table>
       </div>
-      <div v-if="isBottom">已经到底了....</div>
+      <div v-if="isBottom" style="margin-top:10px;color:gray;">已经到底了</div>
     </div>
   </div>
 </template>
@@ -45,14 +45,6 @@ export default {
     this.getList(Window.sc)
   },
   methods: {
-    amountConfig(val) {
-      let color =  val > 0 ? 'green' : 'red'
-      let platFee = val > 0 ? `+${val}` : `${val}`
-      return {
-        color,
-        platFee
-      }
-    },
     createAtConfig(val) {
       return dayjs(val).format('YY/MM/DD HH:mm')
     },

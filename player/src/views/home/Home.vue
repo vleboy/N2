@@ -25,7 +25,7 @@
           <div class="left">
             <div v-if="isLogin">
               {{playerName}}
-              <div style="font-size:12px;margin-top:5px;">&yen;{{userInfo.balance}}</div>
+              <div style="font-size:12px;margin-top:5px;">&yen;{{userInfo.balance || 0}}</div>
             </div>
             <div class="see" @click="login" v-else>
               登录/注册
@@ -54,11 +54,42 @@
         <div class="right">
           <ul ref="swipe" :style="{transform: swipeTo}">
             <li class="swip1">
-              <img :src="sideImg1" alt="">
+              <img :src="sideImg11" alt="">
             </li>
-            <li style="background:yellow">2</li>
-            <li style="background:blue">3</li>
-            <li style="background:green">4</li>
+            <li class="swip2">
+              <div>
+                <img :src="sideImg21" alt="">
+              </div>
+              <div>
+                <img :src="sideImg22" alt="">
+              </div>
+            </li>
+            <li class="swip3">
+              <div>
+                <img :src="sideImg31" alt="">
+              </div>
+              <div>
+                <img :src="sideImg32" alt="">
+              </div>
+            </li>
+            <li class="swip4">
+              <div class="row">
+                <div>
+                  <img :src="sideImg41" alt="">
+                </div>
+                <div>
+                  <img :src="sideImg42" alt="">
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <img :src="sideImg43" alt="">
+                </div>
+                <div>
+                  <img :src="sideImg44" alt="">
+                </div>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -127,7 +158,15 @@ export default {
         }
       ],
       userInfo: '',
-      sideImg1: require('../../assets/images/home/side_menu_1_1.png'),
+      sideImg11: require('../../assets/images/home/side_menu_1_1.png'),
+      sideImg21: require('../../assets/images/home/side_menu_2_1.png'),
+      sideImg22: require('../../assets/images/home/side_menu_2_2.png'),
+      sideImg31: require('../../assets/images/home/side_menu_3_1.png'),
+      sideImg32: require('../../assets/images/home/side_menu_3_2.png'),
+      sideImg41: require('../../assets/images/home/side_menu_4_1.png'),
+      sideImg42: require('../../assets/images/home/side_menu_4_2.png'),
+      sideImg43: require('../../assets/images/home/side_menu_4_3.png'),
+      sideImg44: require('../../assets/images/home/side_menu_4_4.png'),
       swipeIndex: 0//tab激活下标
     }
   },
@@ -335,11 +374,60 @@ export default {
             transition: all .2s linear;
             li {
               height: 100%;
+              box-sizing: border-box;
+              padding: 1px 0;
             }
             .swip1 {
               img {
                 height: 100%;
                 width: 100%;
+              }
+            }
+            .swip2 {
+              div {
+                width: 100%;
+                height: 49.5%;
+                &:first-child {
+                  margin-bottom: 1%;
+                }
+                img {
+                  display: block;
+                  width: 100%;
+                  height: 100%;
+                }
+              }
+            }
+            .swip3 {
+              div {
+                width: 100%;
+                height: 49.5%;
+                &:first-child {
+                  margin-bottom: 1%;
+                }
+                img {
+                  display: block;
+                  width: 100%;
+                  height: 100%;
+                }
+              }
+            }
+            .swip4 {
+              .row {
+                display: flex;
+                height: 49.5%;
+                margin-bottom: 1%;
+                div {
+                  width: 49.5%;
+                  &:first-child {
+                    margin-right: 1%;
+                    height: 100%;
+                  }
+                  img {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
               }
             }
           }

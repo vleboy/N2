@@ -11,6 +11,7 @@ export const admin = {
     operateAdmin: false,
     operateConfig: false,
     auditDetail: false,
+    operateProfit: false,
     agentPointInfo: {},
     playerPointInfo: {},
     playerInfo: {},
@@ -26,6 +27,7 @@ export const admin = {
     },
     configInfo: {},
     auditInfo: {},
+    profitInfo: {},
 
     //存放数据
     info: {},
@@ -77,6 +79,9 @@ export const admin = {
     showAuditDetail(state, params) {
       state.auditDetail = params
     },
+    showOperateProfit(state, params) {
+      state.operateProfit = params
+    },
     setAgentPointInfo(state, params) {
       state.agentPointInfo = params
     },
@@ -100,6 +105,9 @@ export const admin = {
     },
     setAuditInfo(state, params) {
       state.auditInfo = params
+    },
+    setProfitInfo(state, params) {
+      state.profitInfo = params
     }
   },
   actions: {
