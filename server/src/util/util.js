@@ -186,7 +186,6 @@ async function getPlayerCommission(player) {
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
         commission = NP.plus(commission, roundValidBetAmount)
     }
-    console.log(commission, lastCommissionTime)
     return { commission, lastCommissionTime }
 }
 
