@@ -16,8 +16,8 @@
           </tr>
           <tr v-for="(item, index) in data">
             <td>{{item.parentName}}</td>
-            <td>{{item.commission}}</td>
-            <td>{{item.commissionFee}}</td>
+            <td>{{formatConfig(item.commission)}}</td>
+            <td>{{formatConfig(item.commissionFee)}}</td>
             <td>{{createAtConfig(item.minCreateAt)}}</td>
           </tr>
         </table>
@@ -30,6 +30,7 @@
 <script>
 import {vroundPage} from '../../../service/index'
 import dayjs from 'dayjs'
+import { formatMoney } from '../../../config/format'
 export default {
   data() {
     return {
@@ -47,6 +48,9 @@ export default {
     this.getList(Window.sc)
   },
   methods: {
+    formatConfig(num) {
+      return formatMoney(num)
+    },
     amountConfig(val) {
       let color =  val > 0 ? 'green' : 'red'
       let platFee = val > 0 ? `+${val}` : `${val}`

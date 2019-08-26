@@ -12,7 +12,7 @@
           v-model="username"
           clearable
           left-icon="contact"
-          placeholder="请输入用户名"
+          placeholder="请输入玩家账号"
           :border="false"
         />
         <div class="time">
@@ -48,7 +48,7 @@
         @change="getStartTime"
         v-if="showModel1"
       /> -->
-      <table>
+      <table v-if="hasData">
           <tr>
             <th>账号</th>
             <th>输赢</th>
@@ -57,17 +57,25 @@
           </tr>
           <tr v-for="(item, index) in data">
             <td>{{item.playerName}}</td>
-            <td>{{item.winloseAmount}}</td>
-            <td>{{item.deposit}}</td>
-            <td>{{item.withdraw}}</td>
+            <td :style="{color: item.winloseAmount > 0 ? 'green' : 'red'}">{{formatConfig(item.winloseAmount)}}</td>
+            <td>{{formatConfig(item.deposit)}}</td>
+            <td>{{formatConfig(item.withdraw)}}</td>
           </tr>
         </table>
+        <div class="no-data" v-else>
+          <van-image
+            :src="noData"
+            :show-loading="false"
+          />
+          <div class="msg">暂无相关数据</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import {playerReport} from '../../service/index'
+import {formatMoney} from '../../config/format'
 export default {
   data() {
     return {
@@ -84,10 +92,18 @@ export default {
       username: ''
     }
   },
+  computed: {
+    hasData() {
+      return this.data.length > 0 ? true : false
+    }
+  },
   mounted() {
     this.getList()
   },
   methods: {
+    formatConfig(num) {
+      return formatMoney(num)
+    },
     getList() {
       playerReport().then(res => {
         this.data = res
@@ -162,6 +178,7 @@ export default {
       }
     }
     .container {
+      text-align: center;
       /* display: flex;
       justify-content: space-around;
       background: blue; */
@@ -200,6 +217,14 @@ export default {
               margin-top: 5px;
             }
           }
+        }
+      }
+      .no-data {
+        box-sizing: border-box;
+        padding-top: 20%;
+        .van-image {
+          width: 100px;
+          height: 100px;
         }
       }
     }

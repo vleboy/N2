@@ -55,7 +55,6 @@ export default {
         mobile: true
       }
       logIn(params).then(res => {
-        console.log(res)
         localStorage.setItem("agentToken", res.token);
         localStorage.userName = res.userName
         localStorage.agentInfo = JSON.stringify(res)

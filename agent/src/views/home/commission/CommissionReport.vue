@@ -14,34 +14,32 @@
       </div>
     </div>
     <div class="container">
-      <!-- <div>
-        <van-image
-          width="100"
-          height="100"
-          :src="noData"
-          :show-loading="false"
-        />
-        <div class="msg">暂无相关数据</div>
-        <van-button type="info" size="normal" plain>点击重试</van-button>
-      </div> -->
-      <table>
+        <table v-if="hasData">
           <tr>
             <th>发放金额</th>
             <th>发放时间</th>
             <th>操作</th>
           </tr>
           <tr v-for="(item, index) in dataList">
-            <td>{{item.profit}}</td>
+            <td :style="{color: item.profit > 0 ? 'red' : 'green'}">{{profitConfig(item.profit)}}</td>
             <td>{{createAtConfig(item.createAt)}}</td>
             <td>查看详情</td>
           </tr>
         </table>
+        <div class="no-data" v-else>
+        <van-image
+          :src="noData"
+          :show-loading="false"
+        />
+        <div class="msg">暂无相关数据</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import {commissionPage} from '../../../service/index'
+import { formatMoney } from '../../../config/format'
 import dayjs from 'dayjs'
 export default {
   data() {
@@ -51,10 +49,18 @@ export default {
       dataList: [],
     }
   },
+  computed: {
+    hasData() {
+      return this.dataList.length > 0 ? true : false
+    }
+  },
   mounted() {
     this.getList()
   },
   methods: {
+    profitConfig(val) {
+      return formatMoney(val)
+    },
     createAtConfig(val) {
       return dayjs(val).format("YY-MM-DD")
     },
@@ -119,6 +125,12 @@ export default {
       display: flex;
       margin-top: 20%;
       justify-content: center;
+      .no-data {
+        position: absolute;
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -50%)
+      }
       .msg {
         text-align:
         center;

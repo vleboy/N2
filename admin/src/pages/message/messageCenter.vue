@@ -81,7 +81,10 @@ export default {
         {
           title: '创建时间',
           align: 'center',
-          key: 'createAtStr'
+          key: 'createAt',
+          render: (h, params) => {
+            return h('span', dayjs(params.row.createAt).format('YY-MM-DD HH:mm'))
+          }
         },
         {
           title: '操作',
@@ -96,9 +99,6 @@ export default {
     this.search()   
   },
   methods: {
-    createAtConfig(row) {
-      return dayjs(row.createAt).format('YY-MM-DD')
-    },
     //切换页码
     changepage(val) {
       this.currentPage = val

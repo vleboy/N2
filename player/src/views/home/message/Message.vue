@@ -132,11 +132,10 @@ export default {
       background: rgb(236, 236, 236);
       .container {
        box-sizing: border-box;
-       padding: 15px;
+       padding: 15px 15px 0 15px;
         .news {
           height: 100px;
           background: #fff;
-          margin-bottom: 10px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;

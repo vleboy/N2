@@ -5,14 +5,14 @@
         <van-image
             :show-loading="false"
             round
-            src="https://img.yzcdn.cn/vant/cat.jpeg"
+            :src="avator"
           />
-        <p>早上好!</p>
+        <p>早上好,</p>
         <p>{{userName}}</p>
       </div>
       <div class="amount">
         <p>净输赢(元)</p>
-        <p>{{dataList.profit}}</p>
+        <p>{{formatMoney(dataList.profit)}}</p>
       </div>
       <div class="detail">
         <ul>
@@ -76,9 +76,11 @@
 
 <script>
 import { getView } from '../../service/index'
+import { formatMoney } from '../../config/format' 
 export default {
   data() {
     return {
+      avator: require('../../assets/images/home/cat.jpeg'),
       img_commission: require('../../assets/images/home/yongjin.png'),
       img_financing: require('../../assets/images/home/caiwu.png'),
       img_withdrawal: require('../../assets/images/home/qukuan.png'),
@@ -96,25 +98,15 @@ export default {
     this.getData()
   },
   methods: {
+    formatMoney(val) {
+      return formatMoney(val)
+    },
     jump(name) {
       this.$router.push(name)
     },
     getData() {
       getView().then(res => {
-        console.log(res)
         this.dataList = res
-        // mode: agent.mode,                     // 业务模式
-        // modeValue: agent.modeValue,           // 业务模式比例
-        // playerCount: agent.playerCount,       // 玩家数量
-        // newRegPlayerCount: 0,                 // 新注册玩家数量
-        // activePlayerCount: 0,                 // 活跃玩家数量
-        // currentProfit: 0,                     // 当前利润
-        // currentWinlose: 0,                    // 当前输赢
-        // currentPlatformFee: 0,                // 当前平台费
-        // currentDeposit: 0,                    // 当前存款
-        // currentWithdraw: 0,                   // 当前取款
-        // currentCommission: 0                  // 当前佣金
-
       })
     }
   }

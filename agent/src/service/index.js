@@ -119,6 +119,10 @@ export async function queryMessage(params) {
 export async function createReview(params) {
   return axios.post("/xserver/system/createReview", params);
 }
+//存取款记录
+export async function billPage(params) {
+  return axios.get(`/xnosql/bill/page`, params);
+}
 //存取款通道费
 export async function depositBill(params) {
   return axios.get("/xserver/agent/channelFeeDetail", params);

@@ -14,7 +14,7 @@
           </tr>
           <tr v-for="(item, index) in data">
             <td>{{item.plat}}</td>
-            <td :style="{color:amountConfig(item.platFee).color}">{{amountConfig(item.platFee).platFee}}</td>
+            <td>{{item.platFee}}</td>
           </tr>
         </table>
       </div>
@@ -37,14 +37,6 @@ export default {
     this.getList()
   },
   methods: {
-    amountConfig(val) {
-      let color =  val > 0 ? 'green' : 'red'
-      let platFee = val > 0 ? `+${val}` : `${val}`
-      return {
-        color,
-        platFee
-      }
-    },
     createAtConfig(val) {
       return dayjs(val).format('YY/MM/DD HH:mm')
     },

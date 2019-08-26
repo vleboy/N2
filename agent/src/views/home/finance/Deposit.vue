@@ -16,8 +16,8 @@
           </tr>
           <tr v-for="(item, index) in data">
             <td>{{item.ownerName}}</td>
-            <td :style="{color:amountConfig(item.amount)}">{{item.amount}}</td>
-            <td>{{item.channelFee}}</td>
+            <td style="color: red;">{{item.amount}}</td>
+            <td >{{item.channelFee}}</td>
             <td>{{createAtConfig(item.createAt)}}</td>
           </tr>
         </table>
@@ -41,14 +41,6 @@ export default {
     this.getList()
   },
   methods: {
-    amountConfig(val) {
-      let color =  val > 0 ? 'green' : 'red'
-      let amount = val > 0 ? `+${val}` : `-${val}`
-      return {
-        color,
-        amount
-      }
-    },
     createAtConfig(val) {
       return dayjs(val).format('YY/MM/DD HH:mm')
     },

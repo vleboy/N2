@@ -17,7 +17,7 @@
           <tr v-for="(item, index) in data">
             <td>{{item.ownerName}}</td>
             <td>{{item.sourceGameIdStr}}</td>
-            <td>{{item.winloseAmount}}</td>
+            <td :style="{color: item.winloseAmount > 0 ? 'green' : 'red'}">{{item.winloseAmount}}</td>
             <td>{{createAtConfig(item.minCreateAt)}}</td>
           </tr>
         </table>

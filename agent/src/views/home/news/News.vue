@@ -145,7 +145,7 @@ export default {
       }
       .noDada {
         position: absolute;
-        top: 160px;
+        top: 30vh;
         left: 50%;
         transform: translateX(-50%)
       }  

@@ -5,22 +5,24 @@
         title="取款申请"
         left-arrow
         @click-left="onClickLeft"
+        @click-right="onClickRight"
         :border="false"
+        right-text="取款记录"
       />
       <p class="fs12">可取款金额</p>
       <van-row>
         <van-col span="7"></van-col>
-        <van-col span="10" class="col10">{{balance.balance}}</van-col>
+        <van-col span="10" class="col10">{{formatConfig(balance.balance)}}</van-col>
         <van-col span="7"></van-col>
       </van-row>
       <div align="center" style="display:flex;justify-content:space-around;color:#fff;">
         <div>
           <div>历史累计</div>
-          <div>{{balance.historyBalance}}</div>
+          <div>{{formatConfig(balance.historyBalance)}}</div>
         </div>
         <div>
           <div>上月发放</div>
-          <div>{{balance.lastMonthBalance}}</div>
+          <div>{{formatConfig(balance.lastMonthBalance)}}</div>
         </div>
       </div>
     </div>
@@ -64,6 +66,7 @@
 <script>
 import { getCardList, createReview, deleteBankCard, getBalance } from "../../../service/index";
 import { log } from 'util';
+import { formatMoney } from '../../../config/format'
 export default {
   data() {
     return {
@@ -89,6 +92,9 @@ export default {
     
   },
   methods: {
+    formatConfig(num) {
+      return formatMoney(num)
+    },
     getBalance() {
       getBalance().then(res => {
         this.balance = res
@@ -118,6 +124,9 @@ export default {
     },
     onClickLeft() {
       this.$router.push("home");
+    },
+    onClickRight() {
+      this.$router.push({name:'withdrawalRecord'})
     },
     deleteCard(val) {
       this.$dialog.confirm({
@@ -149,7 +158,6 @@ export default {
         cardName: this.cardName,
         cardNo: this.cardNo
       };
-      console.log(params)
       if (this.value != '') {
         createReview(params)
         .then(res => {
@@ -178,8 +186,6 @@ export default {
       this.point += key;
     },
     showKeyboard() {
-      console.log(1);
-      console.log(document.activeElement);
       this.show = true;
       document.activeElement.blur();
     }
