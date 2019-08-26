@@ -22,6 +22,12 @@ router.get('/profit/page', async (ctx, next) => {
     if (inparam.project == 'all') {
         delete inparam.project
     }
+    if (inparam.role == 'all') {
+        delete inparam.role
+    }
+    if (inparam.stauts == 'all') {
+        delete inparam.stauts
+    }
     // 代理或玩家，查看自己的奖金
     if (token.role != Util.RoleEnum.admin) {
         inparam.ownerId = token.id
