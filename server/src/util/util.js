@@ -170,10 +170,14 @@ async function checkHandlerPoint(inparam) {
 // 获取玩家有效投注的流水值
 async function getPlayerCommission(player) {
     // 查找玩家最近是否有取款记录
-    let lastCommissionTime = 0
-    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ id: player.id, project: ProjectEnum.Withdraw, status: ReviewEnum.Agree }, { projection: { reviewAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
+    let lastCommissionTime = 0, restAmount = 0
+    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ id: player.id, $or: [{ project: ProjectEnum.Deposit }, { project: ProjectEnum.Withdraw }], status: ReviewEnum.Agree }, { projection: { amount: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
     if (reviewArr.length != 0) {
-        lastCommissionTime = reviewArr[0].reviewAt
+        let reviewInfo = reviewArr.find(o => o.project == ProjectEnum.withdraw)
+        lastCommissionTime = reviewInfo.reviewAt
+        for (let item of reviewArr) {
+            restAmount = NP.plus(restAmount, item.amount)
+        }
     }
     // 查询玩家目前流水值
     let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gte: lastCommissionTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
@@ -186,7 +190,7 @@ async function getPlayerCommission(player) {
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
         commission = NP.plus(commission, roundValidBetAmount)
     }
-    return { commission, lastCommissionTime }
+    return { restAmount, commission, lastCommissionTime }
 }
 
 //获取代理相关费用
