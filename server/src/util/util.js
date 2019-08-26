@@ -172,13 +172,14 @@ async function checkHandlerPoint(inparam) {
 // 获取玩家有效投注的流水值
 async function getPlayerCommission(player) {
     // 查询最近一次取款
-    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({
-        proposerId: player.id,
+    let lastWithdrawTime = 0
+    let billArr = await global.mongodb.collection(CollectionEnum.bill).find({
+        ownerId: player.id,
         project: ProjectEnum.Withdraw,
         status: ReviewEnum.Agree
-    }, { projection: { amount: 1, project: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
-    if (reviewArr.length > 0) {
-        reviewArr[0].createAt
+    }, { projection: { amount: 1, project: 1, createAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
+    if (billArr.length > 0) {
+        lastWithdrawTime = billArr[0].createAt
     }
     // 查询上次取款到现在的所有存款
     let lastCommissionTime = 0, restAmount = 0
