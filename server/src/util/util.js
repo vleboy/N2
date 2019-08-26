@@ -171,11 +171,11 @@ async function checkHandlerPoint(inparam) {
 async function getPlayerCommission(player) {
     // 查找玩家最近是否有取款记录
     let lastCommissionTime = 0, restAmount = 0
-    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ proposerId: player.id, $or: [{ project: ProjectEnum.Deposit }, { project: ProjectEnum.Withdraw }], status: ReviewEnum.Agree }, { projection: { amount: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
+    let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ proposerId: player.id, $or: [{ project: ProjectEnum.Deposit }, { project: ProjectEnum.Withdraw }], status: ReviewEnum.Agree }, { projection: { amount: 1, project: 1, reviewAt: 1, _id: 0 } }).sort({ id: -1 }).toArray()
     if (reviewArr.length != 0) {
         let reviewInfo = reviewArr.find(o => o.project == ProjectEnum.Withdraw)
         console.log(reviewInfo)
-        if(reviewInfo){
+        if (reviewInfo) {
             lastCommissionTime = reviewInfo.reviewAt
         }
         for (let item of reviewArr) {
