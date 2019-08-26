@@ -156,43 +156,38 @@ async function checkHandlerPoint(inparam) {
     const id = user.id
     let ownerName = user.userName
     let ownerNick = user.userNick
+    let ownerBalance = user.balance
     const parentId = user.parentId
     const parentName = user.parentName
     const parentNick = user.parentNick
     if (inparam.role == RoleEnum.player) {
-        let mixAmount = await getPlayerMixAmount(inparam)[0]
-        console.log(mixAmount)
-        console.log(mixAmount * 2 < user.balance)
-        if (mixAmount * 2 < user.balance) {
-            throw { err: true, res: '玩家流水不足' }
-        }
         ownerName = user.playerName
         ownerNick = user.playerNick
     }
-    return { id, ownerName, ownerNick, parentId, parentName, parentNick }
+    return { id, ownerName, ownerNick, parentId, parentName, parentNick, ownerBalance }
 }
 
 // 获取玩家有效投注的流水值
-async function getPlayerMixAmount(player) {
+async function getPlayerCommission(player) {
     // 查找玩家最近是否有取款记录
-    let lastBillTime = 0
+    let lastCommissionTime = 0
     let reviewArr = await global.mongodb.collection(CollectionEnum.review).find({ id: player.id, project: ProjectEnum.Withdraw, status: ReviewEnum.Agree }, { projection: { reviewAt: 1, _id: 0 } }).sort({ id: -1 }).limit(1).toArray()
     if (reviewArr.length != 0) {
-        lastBillTime = reviewArr[0].reviewAt
+        lastCommissionTime = reviewArr[0].reviewAt
     }
     // 查询玩家目前流水值
     let rounds = await global.mongodb.collection(CollectionEnum.vround).find({ ownerId: player.id, minCreateAt: { $gte: lastBillTime, $lte: Date.now() } }, { projection: { winloseAmount: 1, bills: 1, _id: 0 } }).toArray()
-    let mixAmount = 0
+    let commission = 0
     for (let round of rounds) {
         // 当局输赢
         let roundWinloseAmount = +round.winloseAmount.toFixed(2)
         // 累计有效投注
         let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == ProjectEnum.Bet) return Math.abs(o.amount) })
         let roundValidBetAmount = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(roundWinloseAmount))
-        mixAmount = NP.plus(mixAmount, roundValidBetAmount)
+        commission = NP.plus(commission, roundValidBetAmount)
     }
-    console.log(mixAmount, lastBillTime)
-    return [mixAmount, lastBillTime]
+    console.log(commission, lastCommissionTime)
+    return { commission, lastCommissionTime }
 }
 
 //获取代理相关费用
@@ -324,5 +319,5 @@ module.exports = {
     checkType,
     checkHandlerPoint,
     calcRebateFee,
-    getPlayerMixAmount
+    getPlayerCommission
 }
