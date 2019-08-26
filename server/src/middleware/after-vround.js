@@ -18,7 +18,7 @@ router.get('/vround/page', async (ctx, next) => {
         let configInfo = await mongodb.collection(Util.CollectionEnum.config).findOne({ id: Util.ModeEnum.Commission })
         ctx.body.res.map((round) => {
             let roundBetAmount = _.sumBy(round.bills, o => { if (o.project == Util.ProjectEnum.Bet) return Math.abs(o.amount) })
-            round.commission = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(round.winloseAmount))
+            round.commission = Math.min(Math.abs(+roundBetAmount.toFixed(2)), Math.abs(+round.winloseAmount.toFixed(2)))
             round.commissionFee = +(round.commission * configInfo.value / 100).toFixed(2)
             round.sourceGameIdStr = Util.GameStrEnum[round.sourceGameId]
             delete round.bills
