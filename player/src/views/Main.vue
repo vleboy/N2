@@ -3,14 +3,14 @@
     <router-view />
     <div class="tabbar">
       <van-tabbar v-model="active" active-color="#937769" inactive-color="#999" route>
-        <!-- <van-tabbar-item icon="home-o" to="/test">
+        <van-tabbar-item icon="home-o" to="/test">
           <span>测试</span>
           <img
             slot="icon"
             slot-scope="props"
             :src="props.active ? home.active : home.normal"
           >
-        </van-tabbar-item> -->
+        </van-tabbar-item>
         <van-tabbar-item icon="home-o" to="/home">
           <span>首页</span>
           <img

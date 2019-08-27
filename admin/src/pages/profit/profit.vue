@@ -169,12 +169,6 @@ export default {
           align: "center"
         },
         {
-          title: "流水号",
-          key: "billId",
-          align: "center",
-          minWidth: 70
-        },
-        {
           title: "发放时间",
           key: "profitAt",
           align: "center",

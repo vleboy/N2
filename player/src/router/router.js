@@ -1,4 +1,5 @@
 import Home from '../views/home/Home.vue'
+import Test from '../views/home/Test.vue'
 import Main from '../views/Main.vue'
 import Service from '../views/service/Service.vue'
 import Mine from '../views/mine/Mine.vue'
@@ -24,6 +25,11 @@ const mainRouter = {
       path: 'home',
       name: 'home',
       component: Home
+    },
+    {
+      path: 'test',
+      name: 'test',
+      component: Test
     },
     {
       path: 'service',

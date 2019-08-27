@@ -33,6 +33,12 @@
             <span>{{profitInfo.profitNick}}</span>
           </Col>
         </Row>
+        <Row class-name="content">
+          <Col span="6" class-name="tc">流水号:</Col>
+          <Col span="16" push="2">
+            <span>{{profitInfo.billId}}</span>
+          </Col>
+        </Row>
       </div>
     </Drawer>
   </div>

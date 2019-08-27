@@ -22,7 +22,7 @@
           </tr>
         </table>
       </div>
-      <div v-if="isBottom">已经到底了....</div>
+      <div v-if="isBottom" style="margin-top:10px;color:gray;text-align:center;">已经到底了</div>
     </div>
   </div>
 </template>
